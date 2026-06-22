@@ -3,9 +3,9 @@
 Application Symfony 7 de gestion de protocoles médicaux.
 
 ## Stack technique
-- PHP 8.3 / Symfony 7.3
+- PHP 8.4 / Symfony 7.4
 - MySQL 8
 - Docker / Docker Compose
-- Tailwind CSS
+- Tailwind CSS v3.4
 - Stimulus + Turbo (Hotwired)
 - Vich UploaderBundle (PDF)
