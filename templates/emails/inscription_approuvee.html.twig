@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"></head>
+<body style="font-family: sans-serif; color: #374151; max-width: 600px; margin: 0 auto; padding: 24px;">
+
+    <h2 style="color: #16a34a;">Votre accès a été approuvé</h2>
+
+    <p>Bonjour {{ demande.prenom }},</p>
+
+    <p>Bonne nouvelle ! Votre demande d'accès au <strong>Repère des Protocoles</strong> a été approuvée.</p>
+
+    <p>Vous pouvez maintenant vous connecter avec votre adresse email et le mot de passe que vous avez choisi lors de votre inscription.</p>
+
+    <p style="text-align: center; margin: 32px 0;">
+        <a href="{{ url('app_login') }}"
+           style="background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+            Se connecter
+        </a>
+    </p>
+
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+    <p style="color: #9ca3af; font-size: 12px;">Le Repère des Protocoles</p>
+
+</body>
+</html>

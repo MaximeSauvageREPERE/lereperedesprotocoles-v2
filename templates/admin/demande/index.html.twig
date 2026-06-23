@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes d'inscription{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-8">Demandes d'inscription</h1>
+
+    {% if demandes is empty and demandes_en_attente_email is empty %}
+        <p class="text-gray-500">Aucune demande en attente.</p>
+    {% endif %}
+
+    {% if demandes is not empty %}
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">À traiter ({{ demandes|length }})</h2>
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-10">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Nom</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Email</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Profession</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Soumise le</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for demande in demandes %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium text-gray-800">{{ demande.prenom }} {{ demande.nom }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ demande.email }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ demande.profession }}</td>
+                            <td class="px-4 py-3 text-gray-500">{{ demande.createdAt|date('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3 flex gap-2 justify-end">
+                                <form method="post" action="{{ path('admin_demande_approuver', {id: demande.id}) }}" onsubmit="return confirm('Créer le compte de {{ demande.prenom }} {{ demande.nom }} ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('approuver_' ~ demande.id) }}">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                        Approuver
+                                    </button>
+                                </form>
+                                <a href="{{ path('admin_demande_refuser', {id: demande.id}) }}" class="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                    Refuser
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if demandes_en_attente_email is not empty %}
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">
+            En attente de confirmation email ({{ demandes_en_attente_email|length }})
+        </h2>
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Nom</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Email</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Soumise le</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Expire le</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for demande in demandes_en_attente_email %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-gray-600">{{ demande.prenom }} {{ demande.nom }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ demande.email }}</td>
+                            <td class="px-4 py-3 text-gray-500">{{ demande.createdAt|date('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3 text-gray-400">{{ demande.tokenExpiresAt ? demande.tokenExpiresAt|date('d/m/Y H:i') : '—' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -15,4 +15,28 @@ class DemandeInscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, DemandeInscription::class);
     }
+
+    /** Demandes dont l'email est vérifié et en attente de traitement admin */
+    public function findEnAttentePourAdmin(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.statut = :statut')
+            ->andWhere('d.emailVerifie = true')
+            ->setParameter('statut', DemandeInscription::STATUT_EN_ATTENTE)
+            ->orderBy('d.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Demandes soumises mais email non encore vérifié */
+    public function findNonVerifiees(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.statut = :statut')
+            ->andWhere('d.emailVerifie = false')
+            ->setParameter('statut', DemandeInscription::STATUT_EN_ATTENTE)
+            ->orderBy('d.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
