@@ -57,8 +57,8 @@ user.email = maxime-sauvage@live.fr
 | 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
 | 6 | CRUD Domaines (modérateur) | feature, admin | ✅ Done |
-| 7 | CRUD Thèmes (admin) | feature, admin | Todo |
-| 8 | CRUD Rubriques (admin) | feature, admin | Todo |
+| 7 | CRUD Rubriques (admin) | feature, admin | Todo |
+| 8 | CRUD Thèmes (admin) | feature, admin | 🔵 In Progress |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
@@ -79,6 +79,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/4-authentification` | #4 | ✅ Mergée |
 | `feature/5-workflow-inscription` | #5 | ✅ Mergée |
 | `feature/6-crud-domaines` | #6 | ✅ Mergée |
+| `feature/8-crud-themes` | #8 | 🔵 Active |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -216,7 +217,33 @@ class UtilisateurController extends AbstractController {}
 - **CSRF sur la suppression** — token `delete_domaine_{id}` validé côté controller. Le bouton Supprimer est dans un `<form>` POST inline avec confirmation JavaScript.
 - **Lien "Modération" dans la navbar** — pointe désormais vers `moderateur_domaine_index` (remplace le `/moderateur` en dur).
 
-## 12. Leçons apprises
+## 12. CRUD Thèmes (ticket #8)
+
+### Composants créés
+
+- `src/Form/ThemeType.php` — champs `nom` (obligatoire) et `rubrique` (EntityType, obligatoire)
+- `src/Controller/Moderateur/ThemeController.php` — routes `/moderateur/themes` avec `#[IsGranted('ROLE_MODERATEUR')]`
+- `templates/moderateur/theme/index.html.twig` — liste avec rubrique parente, boutons Modifier / Supprimer
+- `templates/moderateur/theme/new.html.twig` — formulaire de création
+- `templates/moderateur/theme/edit.html.twig` — formulaire d'édition
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `moderateur_theme_index` | GET | `/moderateur/themes` |
+| `moderateur_theme_new` | GET/POST | `/moderateur/themes/nouveau` |
+| `moderateur_theme_edit` | GET/POST | `/moderateur/themes/{id}/modifier` |
+| `moderateur_theme_delete` | POST | `/moderateur/themes/{id}/supprimer` |
+
+### Choix de conception
+
+- **`rubrique` obligatoire dans le formulaire** — un thème sans rubrique parente n'a pas de sens dans la hiérarchie. `EntityType` avec placeholder vide + contrainte `NotBlank`.
+- **Slug auto-généré** — même logique que les Domaines, via `AsciiSlugger('fr')`.
+- **CSRF sur la suppression** — token `delete_theme_{id}`.
+- **Navbar mise à jour** — lien "Modération" remplacé par deux liens séparés "Domaines" et "Thèmes".
+
+## 13. Leçons apprises
 
 ### Ordre de création d'un projet
 
