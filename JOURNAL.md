@@ -142,6 +142,18 @@ Chaque rôle hérite des permissions du rôle inférieur. Configuré via `role_h
 - **Provider Doctrine** — Symfony charge les utilisateurs depuis la base via `User.email`. Remplace le provider `users_in_memory` par défaut.
 - **CSRF activé sur le formulaire de login** — protection contre les attaques CSRF sur la route d'authentification (`enable_csrf: true`).
 - **Redirection post-login vers `app_home`** — `default_target_path: app_home`. Si l'utilisateur tentait d'accéder à une page protégée, Symfony le redirige automatiquement vers cette page après connexion.
+- **`UserChecker`** (`src/Security/UserChecker.php`) — vérifie `isVerified` avant chaque connexion. Un utilisateur dont le compte n'est pas encore activé reçoit un message d'erreur clair et ne peut pas se connecter.
+- **Double protection obligatoire pour chaque nouveau controller protégé** — `access_control` dans `security.yaml` protège les zones par préfixe d'URL (filet global), mais chaque controller admin/modérateur doit aussi porter `#[IsGranted]` en attribut de classe pour une protection explicite au niveau du code :
+
+```php
+#[Route('/moderateur/domaines')]
+#[IsGranted('ROLE_MODERATEUR')]
+class DomaineController extends AbstractController {}
+
+#[Route('/admin/utilisateurs')]
+#[IsGranted('ROLE_ADMIN')]
+class UtilisateurController extends AbstractController {}
+```
 
 ## 10. Leçons apprises
 
