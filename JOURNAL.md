@@ -58,7 +58,7 @@ user.email = maxime-sauvage@live.fr
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
 | 6 | CRUD Domaines (modérateur) | feature, admin | ✅ Done |
 | 7 | CRUD Rubriques (admin) | feature, admin | Todo |
-| 8 | CRUD Thèmes (admin) | feature, admin | 🔵 In Progress |
+| 8 | CRUD Thèmes (admin) | feature, admin | ✅ Done |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
@@ -79,7 +79,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/4-authentification` | #4 | ✅ Mergée |
 | `feature/5-workflow-inscription` | #5 | ✅ Mergée |
 | `feature/6-crud-domaines` | #6 | ✅ Mergée |
-| `feature/8-crud-themes` | #8 | 🔵 Active |
+| `feature/8-crud-themes` | #8 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 

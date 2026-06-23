@@ -62,7 +62,7 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #5 | Workflow d'inscription | ✅ |
 | #6 | CRUD Domaines (modérateur) | ✅ |
 | #7 | CRUD Rubriques (modérateur) | ⬜ |
-| #8 | CRUD Thèmes (modérateur) | 🔵 En cours |
+| #8 | CRUD Thèmes (modérateur) | ✅ |
 | #9 | CRUD Protocoles + Upload PDF | ⬜ |
 | #10 | Navigation publique | ⬜ |
 | #19 | CRUD Utilisateurs (admin) | ⬜ |
