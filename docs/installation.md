@@ -97,7 +97,7 @@ Les migrations créent toutes les tables à partir de l'historique versionné :
 php bin/console doctrine:migrations:migrate
 ```
 
-Taper `yes` pour confirmer. Les 3 migrations s'exécutent dans l'ordre et créent les tables `profession`, `user`, `demande_inscription`, `domaine`, `rubrique`, `theme`, `protocole` et la table de liaison `rubrique_domaine`.
+Taper `yes` pour confirmer. Les migrations s'exécutent dans l'ordre et créent les tables `profession`, `user`, `demande_inscription` (avec la colonne `email_verifie`), `domaine`, `rubrique`, `theme`, `protocole` et la table de liaison `rubrique_domaine`.
 
 **Vérification :**
 ```powershell
@@ -226,3 +226,6 @@ Node.js doit être installé et accessible dans le PATH. Relancer PowerShell apr
 
 **Page blanche ou erreur 500 après `git pull`**  
 Lancer `composer install` (une dépendance a peut-être été ajoutée) puis `php bin/console doctrine:migrations:migrate` (une migration a peut-être été ajoutée).
+
+**Emails non reçus en développement**  
+C'est normal. `MAILER_DSN=null://null` intercepte tous les emails. Les consulter dans le Symfony Profiler : barre de débogage en bas → onglet "Emails".

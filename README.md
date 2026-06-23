@@ -59,7 +59,7 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #3 | Entités Doctrine + Migrations | ✅ |
 | #18 | Entité Profession | ✅ |
 | #4 | Authentification login/logout | ✅ |
-| #5 | Workflow d'inscription | 🔵 En cours |
+| #5 | Workflow d'inscription | ✅ |
 | #6–#9 | CRUDs admin/modérateur | ⬜ |
 | #10 | Navigation publique | ⬜ |
 | #19 | CRUD Utilisateurs (admin) | ⬜ |

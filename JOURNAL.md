@@ -55,7 +55,7 @@ user.email = maxime-sauvage@live.fr
 | 2 | Configuration Tailwind CSS v3.4 | feature, frontend | ✅ Done |
 | 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
 | 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
-| 5 | Workflow d'inscription (DemandeInscription) | feature, auth | 🔵 In Progress |
+| 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
 | 6 | CRUD Domaines (admin) | feature, admin | Todo |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
 | 8 | CRUD Rubriques (admin) | feature, admin | Todo |
@@ -77,7 +77,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/3-entites-doctrine-migrations` | #3 | ✅ Mergée |
 | `feature/18-entite-profession` | #18 | ✅ Mergée |
 | `feature/4-authentification` | #4 | ✅ Mergée |
-| `feature/5-workflow-inscription` | #5 | 🔵 Active |
+| `feature/5-workflow-inscription` | #5 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
