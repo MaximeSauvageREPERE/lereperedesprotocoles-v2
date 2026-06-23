@@ -26,8 +26,9 @@ class DemandeInscription
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 150)]
-    private ?string $profession = null;
+    #[ORM\ManyToOne(inversedBy: 'demandesInscription')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Profession $profession = null;
 
     /** Mot de passe haché, copié vers User lors de l'approbation */
     #[ORM\Column]
@@ -104,12 +105,12 @@ class DemandeInscription
         return $this;
     }
 
-    public function getProfession(): ?string
+    public function getProfession(): ?Profession
     {
         return $this->profession;
     }
 
-    public function setProfession(string $profession): static
+    public function setProfession(?Profession $profession): static
     {
         $this->profession = $profession;
 

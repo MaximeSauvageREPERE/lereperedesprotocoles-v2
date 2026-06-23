@@ -53,7 +53,7 @@ user.email = maxime-sauvage@live.fr
 |---|---|---|---|
 | 1 | Setup projet : Symfony 7.4 + Docker + MySQL | feature, backend | ✅ Done |
 | 2 | Configuration Tailwind CSS v3.4 | feature, frontend | ✅ Done |
-| 3 | Entités Doctrine + Migrations | feature, database | 🔵 In Progress |
+| 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
 | 4 | Authentification (login/logout/sécurité) | feature, auth | Todo |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | Todo |
 | 6 | CRUD Domaines (admin) | feature, admin | Todo |
@@ -64,6 +64,8 @@ user.email = maxime-sauvage@live.fr
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
 | 12 | DataFixtures (données de test) | feature, database | Todo |
 | 13 | Tests PHPUnit | test | Todo |
+| 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | 🔵 In Progress |
+| 19 | CRUD Utilisateurs (admin) | feature, admin | Todo |
 
 ## 7. Branches Git
 
@@ -72,7 +74,8 @@ user.email = maxime-sauvage@live.fr
 | `main` | — | Base du projet |
 | `feature/1-setup-symfony-docker-mysql` | #1 | ✅ Mergée |
 | `feature/2-tailwind-css` | #2 | ✅ Mergée |
-| `feature/3-entites-doctrine-migrations` | #3 | 🔵 Active |
+| `feature/3-entites-doctrine-migrations` | #3 | ✅ Mergée |
+| `feature/18-entite-profession` | #18 | 🔵 Active |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -86,8 +89,9 @@ Domaine ↔(ManyToMany)↔ Rubrique ──(OneToMany)──► Thème ──(One
 
 | Entité | Table SQL | Description |
 |---|---|---|
-| `User` | `user` | Utilisateur authentifié (email, rôles, profession) |
-| `DemandeInscription` | `demande_inscription` | Demande d'accès (workflow admin) |
+| `User` | `user` | Utilisateur authentifié (email, rôles, FK → Profession) |
+| `DemandeInscription` | `demande_inscription` | Demande d'accès (workflow admin, FK → Profession) |
+| `Profession` | `profession` | Profession médicale (liste déroulante, extensible par admin) |
 | `Domaine` | `domaine` | Domaine médical (ex : Cardiologie) |
 | `Rubrique` | `rubrique` | Regroupement thématique au sein d'un domaine |
 | `Theme` | `theme` | Thème au sein d'une rubrique |
@@ -100,7 +104,8 @@ Domaine ↔(ManyToMany)↔ Rubrique ──(OneToMany)──► Thème ──(One
 - **`Protocole.titre`** au lieu de `nom` — plus clair pour un protocole médical
 - **Slugs sur toutes les entités naviguables** — `Domaine`, `Rubrique`, `Thème`, `Protocole` — pour les URLs propres
 - **`UniqueEntity` sur `User.email`** — validation côté formulaire, pas seulement DB
-- **`DemandeInscription`** enrichie : `profession`, `token`, `tokenExpiresAt`, `motifRejet`, `traiteeAt`, lien `OneToOne → User`
+- **`DemandeInscription`** enrichie : `token`, `tokenExpiresAt`, `motifRejet`, `traiteeAt`, lien `OneToOne → User`
+- **`Profession` entité dédiée** (ticket #18) — `User.profession` et `DemandeInscription.profession` sont des FK vers `Profession` plutôt que des chaînes libres, pour permettre une liste déroulante extensible par l'admin
 
 ## 9. Leçons apprises
 

@@ -34,8 +34,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 150)]
-    private ?string $profession = null;
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Profession $profession = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
@@ -127,12 +128,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getProfession(): ?string
+    public function getProfession(): ?Profession
     {
         return $this->profession;
     }
 
-    public function setProfession(string $profession): static
+    public function setProfession(?Profession $profession): static
     {
         $this->profession = $profession;
 
