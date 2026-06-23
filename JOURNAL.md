@@ -56,7 +56,7 @@ user.email = maxime-sauvage@live.fr
 | 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
 | 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
-| 6 | CRUD Domaines (modérateur) | feature, admin | 🔵 In Progress |
+| 6 | CRUD Domaines (modérateur) | feature, admin | ✅ Done |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
 | 8 | CRUD Rubriques (admin) | feature, admin | Todo |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
@@ -78,7 +78,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/18-entite-profession` | #18 | ✅ Mergée |
 | `feature/4-authentification` | #4 | ✅ Mergée |
 | `feature/5-workflow-inscription` | #5 | ✅ Mergée |
-| `feature/6-crud-domaines` | #6 | 🔵 Active |
+| `feature/6-crud-domaines` | #6 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 

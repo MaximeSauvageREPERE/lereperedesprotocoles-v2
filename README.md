@@ -60,7 +60,7 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #18 | Entité Profession | ✅ |
 | #4 | Authentification login/logout | ✅ |
 | #5 | Workflow d'inscription | ✅ |
-| #6 | CRUD Domaines (modérateur) | 🔵 En cours |
+| #6 | CRUD Domaines (modérateur) | ✅ |
 | #7–#9 | CRUDs modérateur / admin | ⬜ |
 | #10 | Navigation publique | ⬜ |
 | #19 | CRUD Utilisateurs (admin) | ⬜ |
