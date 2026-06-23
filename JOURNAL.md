@@ -56,7 +56,7 @@ user.email = maxime-sauvage@live.fr
 | 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
 | 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
-| 6 | CRUD Domaines (admin) | feature, admin | Todo |
+| 6 | CRUD Domaines (modérateur) | feature, admin | 🔵 In Progress |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
 | 8 | CRUD Rubriques (admin) | feature, admin | Todo |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
@@ -78,6 +78,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/18-entite-profession` | #18 | ✅ Mergée |
 | `feature/4-authentification` | #4 | ✅ Mergée |
 | `feature/5-workflow-inscription` | #5 | ✅ Mergée |
+| `feature/6-crud-domaines` | #6 | 🔵 Active |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -190,7 +191,32 @@ class UtilisateurController extends AbstractController {}
 - **`MAILER_DSN=null://null`** — en développement, les emails sont interceptés et visibles dans le Symfony Profiler (onglet "Emails"). Aucun email n'est réellement envoyé.
 - **Vérification de doublon email** — avant de créer la demande, on vérifie qu'il n'existe ni `User` ni `DemandeInscription en_attente` avec le même email.
 
-## 11. Leçons apprises
+## 11. CRUD Domaines (ticket #6)
+
+### Composants créés
+
+- `src/Form/DomaineType.php` — champs `nom` (obligatoire) et `description` (optionnelle)
+- `src/Controller/Moderateur/DomaineController.php` — routes `/moderateur/domaines` avec `#[IsGranted('ROLE_MODERATEUR')]`
+- `templates/moderateur/domaine/index.html.twig` — liste avec boutons Modifier / Supprimer
+- `templates/moderateur/domaine/new.html.twig` — formulaire de création
+- `templates/moderateur/domaine/edit.html.twig` — formulaire d'édition
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `moderateur_domaine_index` | GET | `/moderateur/domaines` |
+| `moderateur_domaine_new` | GET/POST | `/moderateur/domaines/nouveau` |
+| `moderateur_domaine_edit` | GET/POST | `/moderateur/domaines/{id}/modifier` |
+| `moderateur_domaine_delete` | POST | `/moderateur/domaines/{id}/supprimer` |
+
+### Choix de conception
+
+- **Slug auto-généré** — calculé depuis le `nom` via `AsciiSlugger('fr')` à chaque création/modification. Pas exposé dans le formulaire.
+- **CSRF sur la suppression** — token `delete_domaine_{id}` validé côté controller. Le bouton Supprimer est dans un `<form>` POST inline avec confirmation JavaScript.
+- **Lien "Modération" dans la navbar** — pointe désormais vers `moderateur_domaine_index` (remplace le `/moderateur` en dur).
+
+## 12. Leçons apprises
 
 ### Ordre de création d'un projet
 
