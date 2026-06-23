@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\DomaineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: DomaineRepository::class)]
+class Domaine
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    /** @var Collection<int, Rubrique> */
+    #[ORM\ManyToMany(targetEntity: Rubrique::class, mappedBy: 'domaines')]
+    #[ORM\OrderBy(['nom' => 'ASC'])]
+    private Collection $rubriques;
+
+    public function __construct()
+    {
+        $this->rubriques = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /** @return Collection<int, Rubrique> */
+    public function getRubriques(): Collection
+    {
+        return $this->rubriques;
+    }
+
+    public function addRubrique(Rubrique $rubrique): static
+    {
+        if (!$this->rubriques->contains($rubrique)) {
+            $this->rubriques->add($rubrique);
+            $rubrique->addDomaine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRubrique(Rubrique $rubrique): static
+    {
+        if ($this->rubriques->removeElement($rubrique)) {
+            $rubrique->removeDomaine($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom ?? '';
+    }
+}

@@ -47,18 +47,18 @@ user.email = maxime-sauvage@live.fr
 | `admin` | Violet | Interfaces d'administration |
 | `test` | Gris | Tests PHPUnit |
 
-## 6. Tickets créés (Issues GitHub)
+## 6. Tickets (Issues GitHub)
 
 | # | Titre | Labels | Statut |
 |---|---|---|---|
-| 1 | Setup projet : Symfony 7.4 + Docker + MySQL | feature, backend | 🔵 In Progress |
-| 2 | Configuration Tailwind CSS v3.4 | feature, frontend | Todo |
-| 3 | Entités Doctrine + Migrations | feature, database | Todo |
+| 1 | Setup projet : Symfony 7.4 + Docker + MySQL | feature, backend | ✅ Done |
+| 2 | Configuration Tailwind CSS v3.4 | feature, frontend | ✅ Done |
+| 3 | Entités Doctrine + Migrations | feature, database | 🔵 In Progress |
 | 4 | Authentification (login/logout/sécurité) | feature, auth | Todo |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | Todo |
 | 6 | CRUD Domaines (admin) | feature, admin | Todo |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
-| 8 | CRUD Thèmes (admin) | feature, admin | Todo |
+| 8 | CRUD Rubriques (admin) | feature, admin | Todo |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
@@ -70,9 +70,41 @@ user.email = maxime-sauvage@live.fr
 | Branche | Ticket | Statut |
 |---|---|---|
 | `main` | — | Base du projet |
-| `feature/1-setup-symfony-docker-mysql` | #1 | Active |
+| `feature/1-setup-symfony-docker-mysql` | #1 | ✅ Mergée |
+| `feature/2-tailwind-css` | #2 | ✅ Mergée |
+| `feature/3-entites-doctrine-migrations` | #3 | 🔵 Active |
 
-## 8. Leçon apprise — ordre de création d'un projet
+## 8. Modèle de données (ticket #3)
+
+### Hiérarchie du contenu
+
+```
+Domaine ↔(ManyToMany)↔ Rubrique ──(OneToMany)──► Thème ──(OneToMany)──► Protocole
+```
+
+### Entités créées
+
+| Entité | Table SQL | Description |
+|---|---|---|
+| `User` | `user` | Utilisateur authentifié (email, rôles, profession) |
+| `DemandeInscription` | `demande_inscription` | Demande d'accès (workflow admin) |
+| `Domaine` | `domaine` | Domaine médical (ex : Cardiologie) |
+| `Rubrique` | `rubrique` | Regroupement thématique au sein d'un domaine |
+| `Theme` | `theme` | Thème au sein d'une rubrique |
+| `Protocole` | `protocole` | Protocole médical avec PDF |
+
+### Choix de conception (différences vs v1)
+
+- **Pas d'entité `Admin`** — le rôle admin est géré via `ROLE_ADMIN` dans `User.roles` (plus simple, standard Symfony)
+- **`User` au lieu de `Utilisateur`** — nom anglais, convention Symfony MakerBundle
+- **`Protocole.titre`** au lieu de `nom` — plus clair pour un protocole médical
+- **Slugs sur toutes les entités naviguables** — `Domaine`, `Rubrique`, `Thème`, `Protocole` — pour les URLs propres
+- **`UniqueEntity` sur `User.email`** — validation côté formulaire, pas seulement DB
+- **`DemandeInscription`** enrichie : `profession`, `token`, `tokenExpiresAt`, `motifRejet`, `traiteeAt`, lien `OneToOne → User`
+
+## 9. Leçons apprises
+
+### Ordre de création d'un projet
 
 **À éviter :** Créer le repo GitHub avec README avant d'installer Symfony — les deux outils refusent un dossier non vide.
 
@@ -83,3 +115,17 @@ user.email = maxime-sauvage@live.fr
 3. git remote add origin https://github.com/MonCompte/mon-projet.git
 4. git push -u origin main
 ```
+
+### Page d'accueil Symfony par défaut
+
+La page `/` générée par Symfony (`templates/bundles/TwigBundle/Exception/error.html.twig`) n'étend pas `base.html.twig` et injecte son propre CSS. Tester Tailwind visuellement n'est possible qu'avec de vraies templates (ticket #11).
+
+### `git add .` vs fichiers spécifiques
+
+`git add .` est sûr si `.gitignore` est correct (il exclut `.env.local`, `var/`, etc.). Lister les fichiers un par un est plus rigoureux mais rarement nécessaire.
+
+### PR via GitHub CLI vs interface web
+
+- `gh pr create` → crée uniquement la PR
+- `gh pr merge --merge --delete-branch` → merge + supprime la branche source
+- Supprimer une branche mergée est sans risque (le code est dans `main`)
