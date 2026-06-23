@@ -1,24 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Le Repère des Protocoles{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
-
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphpHotReload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="min-h-screen bg-gray-50 flex flex-col">
+
+        <nav class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <a href="{{ path('app_home') }}" class="text-xl font-semibold text-blue-700">
+                        Le Repère des Protocoles
+                    </a>
+                    <div class="flex items-center gap-4 text-sm">
+                        {% if app.user %}
+                            <span class="text-gray-600">
+                                {{ app.user.prenom }} {{ app.user.nom }}
+                            </span>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_home') }}" class="text-blue-600 hover:underline">Admin</a>
+                            {% endif %}
+                            <a href="{{ path('app_logout') }}" class="text-red-600 hover:underline">Déconnexion</a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="text-blue-600 hover:underline">Connexion</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-1">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="max-w-7xl mx-auto px-4 mt-4">
+                        <div class="rounded-md p-4 text-sm
+                            {% if label == 'success' %}bg-green-50 text-green-800 border border-green-200
+                            {% elseif label == 'error' %}bg-red-50 text-red-800 border border-red-200
+                            {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="bg-white border-t border-gray-200 text-center text-xs text-gray-400 py-4">
+            Le Repère des Protocoles &copy; {{ "now"|date("Y") }}
+        </footer>
+
     </body>
 </html>
