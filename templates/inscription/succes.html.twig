@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande envoyée{% endblock %}
+
+{% block body %}
+<div class="max-w-lg mx-auto px-4 py-16 text-center">
+    <div class="text-5xl mb-6">✉️</div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-3">Vérifiez votre email</h1>
+    <p class="text-gray-600 mb-2">
+        Un email de confirmation a été envoyé à <strong>{{ email }}</strong>.
+    </p>
+    <p class="text-gray-500 text-sm">
+        Cliquez sur le lien dans cet email pour valider votre adresse. Le lien est valable 24 heures.
+    </p>
+    <p class="mt-8 text-sm text-gray-400">
+        Une fois votre email confirmé, votre demande sera examinée par un administrateur.
+    </p>
+</div>
+{% endblock %}

@@ -54,8 +54,8 @@ user.email = maxime-sauvage@live.fr
 | 1 | Setup projet : Symfony 7.4 + Docker + MySQL | feature, backend | ✅ Done |
 | 2 | Configuration Tailwind CSS v3.4 | feature, frontend | ✅ Done |
 | 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
-| 4 | Authentification (login/logout/sécurité) | feature, auth | 🔵 In Progress |
-| 5 | Workflow d'inscription (DemandeInscription) | feature, auth | Todo |
+| 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
+| 5 | Workflow d'inscription (DemandeInscription) | feature, auth | 🔵 In Progress |
 | 6 | CRUD Domaines (admin) | feature, admin | Todo |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
 | 8 | CRUD Rubriques (admin) | feature, admin | Todo |
@@ -76,7 +76,8 @@ user.email = maxime-sauvage@live.fr
 | `feature/2-tailwind-css` | #2 | ✅ Mergée |
 | `feature/3-entites-doctrine-migrations` | #3 | ✅ Mergée |
 | `feature/18-entite-profession` | #18 | ✅ Mergée |
-| `feature/4-authentification` | #4 | 🔵 Active |
+| `feature/4-authentification` | #4 | ✅ Mergée |
+| `feature/5-workflow-inscription` | #5 | 🔵 Active |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -155,7 +156,41 @@ class DomaineController extends AbstractController {}
 class UtilisateurController extends AbstractController {}
 ```
 
-## 10. Leçons apprises
+## 10. Workflow d'inscription (ticket #5)
+
+### Flux complet
+
+```
+[Visiteur] /inscription ──► DemandeInscription (statut=en_attente, emailVerifie=false, token généré)
+                ▼ email envoyé
+[Visiteur] /inscription/confirmer/{token} ──► emailVerifie=true, token=null
+                ▼
+[Admin] /admin/demandes ──► liste des demandes email-vérifiées en attente
+          ├── Approuver ──► User créé (isVerified=true), statut=approuvee, email de bienvenue
+          └── Refuser   ──► motifRejet saisi, statut=refusee, email de refus
+```
+
+### Composants créés
+
+- `src/Entity/DemandeInscription.php` — champ `emailVerifie` ajouté
+- `src/Form/InscriptionType.php` — prenom, nom, email, profession, plainPassword (RepeatedType)
+- `src/Form/RefuserDemandeType.php` — motifRejet (textarea)
+- `src/Controller/InscriptionController.php` — routes publiques `/inscription` et `/inscription/confirmer/{token}`
+- `src/Controller/Admin/DemandeController.php` — routes `/admin/demandes` avec `#[IsGranted('ROLE_ADMIN')]`
+- `src/Repository/DemandeInscriptionRepository.php` — `findEnAttentePourAdmin()`, `findNonVerifiees()`
+- Templates inscription : formulaire, succes, email_verifie, token_invalide
+- Templates admin : index (deux tableaux : à traiter / email non vérifié), refuser
+- Templates emails HTML : confirmation, approbation, refus
+
+### Choix de conception
+
+- **`emailVerifie` séparé du `statut`** — le statut (`en_attente/approuvee/refusee`) est une décision admin ; la vérification email est une étape technique distincte. L'admin ne voit que les demandes avec `emailVerifie=true`.
+- **Mot de passe haché dès la soumission** — stocké dans `DemandeInscription.password` et copié tel quel vers `User.password` lors de l'approbation. Évite de stocker un mot de passe en clair.
+- **CSRF sur le bouton Approuver** — action irréversible (création d'un compte), protégée via `isCsrfTokenValid()`.
+- **`MAILER_DSN=null://null`** — en développement, les emails sont interceptés et visibles dans le Symfony Profiler (onglet "Emails"). Aucun email n'est réellement envoyé.
+- **Vérification de doublon email** — avant de créer la demande, on vérifie qu'il n'existe ni `User` ni `DemandeInscription en_attente` avec le même email.
+
+## 11. Leçons apprises
 
 ### Ordre de création d'un projet
 

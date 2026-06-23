@@ -54,6 +54,9 @@ class DemandeInscription
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $traiteeAt = null;
 
+    #[ORM\Column]
+    private bool $emailVerifie = false;
+
     /** Lien vers le compte créé après approbation */
     #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
@@ -202,6 +205,18 @@ class DemandeInscription
     public function setTraiteeAt(?\DateTimeImmutable $traiteeAt): static
     {
         $this->traiteeAt = $traiteeAt;
+
+        return $this;
+    }
+
+    public function isEmailVerifie(): bool
+    {
+        return $this->emailVerifie;
+    }
+
+    public function setEmailVerifie(bool $emailVerifie): static
+    {
+        $this->emailVerifie = $emailVerifie;
 
         return $this;
     }
