@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil — Le Repère des Protocoles{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Le Repère des Protocoles</h1>
+    <p class="text-gray-600">Bienvenue{% if app.user %}, {{ app.user.prenom }}{% endif %}.</p>
+</div>
+{% endblock %}

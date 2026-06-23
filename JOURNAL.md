@@ -54,7 +54,7 @@ user.email = maxime-sauvage@live.fr
 | 1 | Setup projet : Symfony 7.4 + Docker + MySQL | feature, backend | ✅ Done |
 | 2 | Configuration Tailwind CSS v3.4 | feature, frontend | ✅ Done |
 | 3 | Entités Doctrine + Migrations | feature, database | ✅ Done |
-| 4 | Authentification (login/logout/sécurité) | feature, auth | Todo |
+| 4 | Authentification (login/logout/sécurité) | feature, auth | 🔵 In Progress |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | Todo |
 | 6 | CRUD Domaines (admin) | feature, admin | Todo |
 | 7 | CRUD Thèmes (admin) | feature, admin | Todo |
@@ -64,7 +64,7 @@ user.email = maxime-sauvage@live.fr
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
 | 12 | DataFixtures (données de test) | feature, database | Todo |
 | 13 | Tests PHPUnit | test | Todo |
-| 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | 🔵 In Progress |
+| 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | ✅ Done |
 | 19 | CRUD Utilisateurs (admin) | feature, admin | Todo |
 
 ## 7. Branches Git
@@ -75,7 +75,8 @@ user.email = maxime-sauvage@live.fr
 | `feature/1-setup-symfony-docker-mysql` | #1 | ✅ Mergée |
 | `feature/2-tailwind-css` | #2 | ✅ Mergée |
 | `feature/3-entites-doctrine-migrations` | #3 | ✅ Mergée |
-| `feature/18-entite-profession` | #18 | 🔵 Active |
+| `feature/18-entite-profession` | #18 | ✅ Mergée |
+| `feature/4-authentification` | #4 | 🔵 Active |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -107,7 +108,54 @@ Domaine ↔(ManyToMany)↔ Rubrique ──(OneToMany)──► Thème ──(One
 - **`DemandeInscription`** enrichie : `token`, `tokenExpiresAt`, `motifRejet`, `traiteeAt`, lien `OneToOne → User`
 - **`Profession` entité dédiée** (ticket #18) — `User.profession` et `DemandeInscription.profession` sont des FK vers `Profession` plutôt que des chaînes libres, pour permettre une liste déroulante extensible par l'admin
 
-## 9. Leçons apprises
+## 9. Authentification et rôles (ticket #4)
+
+### Hiérarchie des rôles
+
+```
+ROLE_USER
+    └── ROLE_MODERATEUR
+            └── ROLE_ADMIN
+```
+
+Chaque rôle hérite des permissions du rôle inférieur. Configuré via `role_hierarchy` dans `security.yaml`.
+
+### Zones URL par rôle
+
+| Rôle | Préfixe | Périmètre |
+|---|---|---|
+| `ROLE_USER` | `/profil/*` | Consulter et télécharger les protocoles |
+| `ROLE_MODERATEUR` | `/moderateur/*` | CRUD Domaine, Rubrique, Thème, Protocole |
+| `ROLE_ADMIN` | `/admin/*` | CRUD Utilisateurs, Professions + tout le reste |
+
+### Composants créés
+
+- `src/Controller/SecurityController.php` — routes `app_login` (`/login`) et `app_logout` (`/logout`)
+- `src/Controller/HomeController.php` — route `app_home` (`/`)
+- `templates/security/login.html.twig` — formulaire de connexion avec CSRF
+- `templates/home/index.html.twig` — page d'accueil
+- `templates/base.html.twig` — layout Tailwind complet (navbar, flash messages, footer)
+
+### Choix de conception
+
+- **3 rôles au lieu de 2** — un rôle `ROLE_MODERATEUR` intermédiaire permet aux soignants référents de gérer le contenu sans avoir accès à la gestion des utilisateurs. Différence avec la v1 qui n'avait qu'admin/utilisateur.
+- **Provider Doctrine** — Symfony charge les utilisateurs depuis la base via `User.email`. Remplace le provider `users_in_memory` par défaut.
+- **CSRF activé sur le formulaire de login** — protection contre les attaques CSRF sur la route d'authentification (`enable_csrf: true`).
+- **Redirection post-login vers `app_home`** — `default_target_path: app_home`. Si l'utilisateur tentait d'accéder à une page protégée, Symfony le redirige automatiquement vers cette page après connexion.
+- **`UserChecker`** (`src/Security/UserChecker.php`) — vérifie `isVerified` avant chaque connexion. Un utilisateur dont le compte n'est pas encore activé reçoit un message d'erreur clair et ne peut pas se connecter.
+- **Double protection obligatoire pour chaque nouveau controller protégé** — `access_control` dans `security.yaml` protège les zones par préfixe d'URL (filet global), mais chaque controller admin/modérateur doit aussi porter `#[IsGranted]` en attribut de classe pour une protection explicite au niveau du code :
+
+```php
+#[Route('/moderateur/domaines')]
+#[IsGranted('ROLE_MODERATEUR')]
+class DomaineController extends AbstractController {}
+
+#[Route('/admin/utilisateurs')]
+#[IsGranted('ROLE_ADMIN')]
+class UtilisateurController extends AbstractController {}
+```
+
+## 10. Leçons apprises
 
 ### Ordre de création d'un projet
 
@@ -134,3 +182,14 @@ La page `/` générée par Symfony (`templates/bundles/TwigBundle/Exception/erro
 - `gh pr create` → crée uniquement la PR
 - `gh pr merge --merge --delete-branch` → merge + supprime la branche source
 - Supprimer une branche mergée est sans risque (le code est dans `main`)
+- `gh pr create` échoue avec les caractères spéciaux (accents, `→`) dans PowerShell — utiliser l'interface web GitHub à la place.
+
+### Commit messages multi-lignes en PowerShell
+
+PowerShell 5.1 ne supporte pas les heredocs bash (`<<'EOF'`). Utiliser les here-strings PowerShell :
+```powershell
+git commit -m @'
+Mon message
+sur plusieurs lignes
+'@
+```
