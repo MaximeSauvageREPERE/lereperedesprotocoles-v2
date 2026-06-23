@@ -23,7 +23,9 @@
                                 {{ app.user.prenom }} {{ app.user.nom }}
                             </span>
                             {% if is_granted('ROLE_ADMIN') %}
-                                <a href="{{ path('app_home') }}" class="text-blue-600 hover:underline">Admin</a>
+                                <a href="/admin" class="text-blue-600 hover:underline">Admin</a>
+                            {% elseif is_granted('ROLE_MODERATEUR') %}
+                                <a href="/moderateur" class="text-blue-600 hover:underline">Modération</a>
                             {% endif %}
                             <a href="{{ path('app_logout') }}" class="text-red-600 hover:underline">Déconnexion</a>
                         {% else %}

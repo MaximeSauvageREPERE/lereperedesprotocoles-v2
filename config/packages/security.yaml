@@ -24,9 +24,14 @@ security:
                 path: app_logout
                 target: app_login
 
+    role_hierarchy:
+        ROLE_MODERATEUR: ROLE_USER
+        ROLE_ADMIN: ROLE_MODERATEUR
+
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profil, roles: ROLE_USER }
+        - { path: ^/admin,       roles: ROLE_ADMIN }
+        - { path: ^/moderateur,  roles: ROLE_MODERATEUR }
+        - { path: ^/profil,      roles: ROLE_USER }
 
 when@test:
     security:
