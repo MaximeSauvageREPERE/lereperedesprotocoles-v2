@@ -19,7 +19,7 @@ class DomaineType extends AbstractType
             ->add('nom', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['min' => 2, 'max' => 255]),
+                    new Length(min: 2, max: 255),
                 ],
             ])
             ->add('description', TextareaType::class, [

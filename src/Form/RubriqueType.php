@@ -19,7 +19,7 @@ class RubriqueType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'constraints' => [new NotBlank(), new Length(['min' => 2, 'max' => 255])],
+                'constraints' => [new NotBlank(), new Length(min: 2, max: 255)],
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,

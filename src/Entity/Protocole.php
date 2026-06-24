@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ProtocoleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: ProtocoleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 class Protocole
 {
     #[ORM\Id]
@@ -23,8 +26,14 @@ class Protocole
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
+    #[Vich\UploadableField(mapping: 'protocole_pdf', fileNameProperty: 'pdfFilename')]
+    private ?File $pdfFile = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pdfFilename = null;
+
+    #[Vich\UploadableField(mapping: 'protocole_image', fileNameProperty: 'imageFilename')]
+    private ?File $imageFile = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
@@ -92,6 +101,22 @@ class Protocole
         return $this;
     }
 
+    public function getPdfFile(): ?File
+    {
+        return $this->pdfFile;
+    }
+
+    public function setPdfFile(?File $pdfFile): static
+    {
+        $this->pdfFile = $pdfFile;
+
+        if ($pdfFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
     public function getPdfFilename(): ?string
     {
         return $this->pdfFilename;
@@ -100,6 +125,22 @@ class Protocole
     public function setPdfFilename(?string $pdfFilename): static
     {
         $this->pdfFilename = $pdfFilename;
+
+        return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile): static
+    {
+        $this->imageFile = $imageFile;
+
+        if ($imageFile !== null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
 
         return $this;
     }

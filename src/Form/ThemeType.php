@@ -18,7 +18,7 @@ class ThemeType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'constraints' => [new NotBlank(), new Length(['min' => 2, 'max' => 255])],
+                'constraints' => [new NotBlank(), new Length(min: 2, max: 255)],
             ])
             ->add('rubrique', EntityType::class, [
                 'class' => Rubrique::class,

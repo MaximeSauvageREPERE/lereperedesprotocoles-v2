@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Protocoles{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Protocoles</h1>
+        <a href="{{ path('moderateur_protocole_new') }}"
+           class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+            + Nouveau protocole
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="mb-4 bg-green-50 border border-green-200 text-green-800 text-sm rounded-md px-4 py-3">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if protocoles is empty %}
+        <p class="text-gray-500 text-sm">Aucun protocole pour l'instant.</p>
+    {% else %}
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Titre</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Thème / Domaine(s)</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">PDF</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Image</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Modifié le</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for protocole in protocoles %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium text-gray-800">{{ protocole.titre }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            {{ protocole.theme.nom }}
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                {% for domaine in protocole.theme.rubrique.domaines %}
+                                    <span class="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full">{{ domaine.nom }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if protocole.pdfFilename %}
+                                <a href="{{ vich_uploader_asset(protocole, 'pdfFile') }}"
+                                   target="_blank"
+                                   class="text-blue-600 hover:underline text-xs">
+                                    Voir PDF
+                                </a>
+                            {% else %}
+                                <span class="text-gray-400 text-xs">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if protocole.imageFilename %}
+                                <img src="{{ vich_uploader_asset(protocole, 'imageFile') }}"
+                                     alt="{{ protocole.titre }}"
+                                     class="h-10 w-10 object-cover rounded">
+                            {% else %}
+                                <span class="text-gray-400 text-xs">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-gray-500 text-xs">
+                            {{ protocole.updatedAt|date('d/m/Y') }}
+                        </td>
+                        <td class="px-4 py-3 text-right space-x-2">
+                            <a href="{{ path('moderateur_protocole_edit', {id: protocole.id}) }}"
+                               class="text-blue-600 hover:underline text-xs">Modifier</a>
+
+                            <form method="post"
+                                  action="{{ path('moderateur_protocole_delete', {id: protocole.id}) }}"
+                                  class="inline"
+                                  onsubmit="return confirm('Supprimer ce protocole ?')">
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('delete_protocole_' ~ protocole.id) }}">
+                                <button type="submit" class="text-red-600 hover:underline text-xs">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
