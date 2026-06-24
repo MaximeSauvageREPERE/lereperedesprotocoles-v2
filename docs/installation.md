@@ -107,7 +107,18 @@ Les deux lignes doivent afficher `[OK]`.
 
 ---
 
-## 6. Installer les assets JavaScript
+## 6. Créer les dossiers d'upload
+
+VichUploader a besoin que les dossiers de destination existent (ils sont dans `.gitignore` donc non commités) :
+
+```powershell
+mkdir public\uploads\protocoles\pdf
+mkdir public\uploads\protocoles\images
+```
+
+---
+
+## 7. Installer les assets JavaScript
 
 ```powershell
 php bin/console importmap:install
@@ -117,7 +128,7 @@ Cette commande télécharge les dépendances JS déclarées dans `importmap.php`
 
 ---
 
-## 7. Compiler Tailwind CSS
+## 8. Compiler Tailwind CSS
 
 Le projet utilise Tailwind via `symfonycasts/tailwind-bundle`. La compilation se fait à la volée en développement :
 
@@ -135,7 +146,7 @@ php bin/console tailwind:build
 
 ---
 
-## 8. Démarrer le serveur de développement
+## 9. Démarrer le serveur de développement
 
 Dans un terminal séparé (pour garder Tailwind en watch dans le premier) :
 
@@ -163,6 +174,10 @@ php bin/console importmap:install
 # Base de données (Laragon doit être démarré)
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
+
+# Dossiers d'upload (non commités, à créer manuellement)
+mkdir public\uploads\protocoles\pdf
+mkdir public\uploads\protocoles\images
 
 # Vérification
 php bin/console doctrine:schema:validate
@@ -209,6 +224,7 @@ lereperedesprotocoles-v2/
 | Base de données | MySQL | 8.4 |
 | CSS | Tailwind CSS | 3.4 |
 | JS | Stimulus + Turbo (Hotwired) | via AssetMapper |
+| Upload | Vich UploaderBundle | 2.9 |
 | Serveur local | Laragon | 2026 / v8.6.1 |
 
 ---

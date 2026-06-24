@@ -12,7 +12,7 @@ Application Symfony 7.4 de gestion et de consultation de protocoles médicaux. L
 | Base de données | MySQL 8.4 |
 | CSS | Tailwind CSS 3.4 (via symfonycasts/tailwind-bundle) |
 | JS | Stimulus + Turbo (Hotwired, via AssetMapper) |
-| Upload | Vich UploaderBundle *(à venir)* |
+| Upload | Vich UploaderBundle v2.9 |
 | Serveur local | Laragon 2026 |
 
 ## Installation
@@ -63,6 +63,6 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #6 | CRUD Domaines (modérateur) | ✅ |
 | #7 | CRUD Rubriques (modérateur) | ✅ |
 | #8 | CRUD Thèmes (modérateur) | ✅ |
-| #9 | CRUD Protocoles + Upload PDF | ⬜ |
+| #9 | CRUD Protocoles + Upload PDF | ✅ |
 | #10 | Navigation publique | ⬜ |
 | #19 | CRUD Utilisateurs (admin) | ⬜ |

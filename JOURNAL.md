@@ -59,7 +59,7 @@ user.email = maxime-sauvage@live.fr
 | 6 | CRUD Domaines (modérateur) | feature, admin | ✅ Done |
 | 7 | CRUD Rubriques (admin) | feature, admin | ✅ Done |
 | 8 | CRUD Thèmes (admin) | feature, admin | ✅ Done |
-| 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
+| 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | ✅ Done |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
 | 12 | DataFixtures (données de test) | feature, database | Todo |
@@ -81,6 +81,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/6-crud-domaines` | #6 | ✅ Mergée |
 | `feature/8-crud-themes` | #8 | ✅ Mergée |
 | `feature/7-crud-rubriques` | #7 | ✅ Mergée |
+| `feature/9-crud-protocoles` | #9 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -270,6 +271,36 @@ class UtilisateurController extends AbstractController {}
 - **Slug auto-généré** — même logique que les Domaines, via `AsciiSlugger('fr')`.
 - **CSRF sur la suppression** — token `delete_theme_{id}`.
 - **Navbar mise à jour** — lien "Modération" remplacé par deux liens séparés "Domaines" et "Thèmes".
+
+## 14. CRUD Protocoles (ticket #9)
+
+### Composants créés
+
+- `src/Form/ProtocoleType.php` — champs `titre`, `description`, `theme` (EntityType), `pdfFile` (VichFileType), `imageFile` (VichImageType)
+- `src/Controller/Moderateur/ProtocoleController.php` — routes `/moderateur/protocoles` avec `#[IsGranted('ROLE_MODERATEUR')]`
+- `templates/moderateur/protocole/index.html.twig` — liste avec thème, domaines associés, liens PDF, miniature image
+- `templates/moderateur/protocole/new.html.twig` — formulaire de création avec upload
+- `templates/moderateur/protocole/edit.html.twig` — formulaire d'édition avec aperçu des fichiers existants
+- `config/packages/vich_uploader.yaml` — mappings `protocole_pdf` et `protocole_image`
+- `public/uploads/protocoles/pdf/` et `public/uploads/protocoles/images/` — dossiers de destination (dans `.gitignore`)
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `moderateur_protocole_index` | GET | `/moderateur/protocoles` |
+| `moderateur_protocole_new` | GET/POST | `/moderateur/protocoles/nouveau` |
+| `moderateur_protocole_edit` | GET/POST | `/moderateur/protocoles/{id}/modifier` |
+| `moderateur_protocole_delete` | POST | `/moderateur/protocoles/{id}/supprimer` |
+
+### Choix de conception
+
+- **VichUploaderBundle v2.9** — gère automatiquement le déplacement des fichiers, le renommage unique (`SmartUniqueNamer`) et la suppression sur `remove()`. Utiliser le namespace `Vich\UploaderBundle\Mapping\Attribute` (pas `Annotation`, deprecated en v2.9).
+- **Deux mappings séparés** — `protocole_pdf` (10 Mo max, PDF uniquement) et `protocole_image` (20 Mo max, JPG/PNG/WebP). Dossiers de destination distincts pour faciliter la gestion.
+- **`updatedAt` mis à jour dans les setters** — requis par VichUploader pour détecter les changements de fichier lors des éditions (`setXxxFile()` met à jour `updatedAt`).
+- **Domaines affichés dans l'index** — dérivés via `protocole.theme.rubrique.domaines`, pas de relation directe en base. Affichés en badges gris sous le nom du thème.
+- **Navbar mise à jour** — ajout du lien "Protocoles" après "Thèmes".
+- **Syntaxe des contraintes** — Symfony 7.4 impose les named arguments : `new Length(min: 2, max: 255)` au lieu de `new Length(['min' => 2])`. Corrigé sur tous les FormTypes.
 
 ## 13. Leçons apprises
 

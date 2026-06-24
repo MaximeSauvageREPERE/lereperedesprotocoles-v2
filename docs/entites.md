@@ -141,7 +141,7 @@ Sous-catégorie d'une rubrique. Contient des protocoles.
 
 ### `Protocole` — `src/Entity/Protocole.php`
 
-L'entité centrale : un protocole médical avec son PDF.
+L'entité centrale : un protocole médical avec son PDF et son image de couverture.
 
 | Champ | Type SQL | Notes |
 |---|---|---|
@@ -149,11 +149,41 @@ L'entité centrale : un protocole médical avec son PDF.
 | `titre` | VARCHAR(255) | Nom du protocole |
 | `slug` | VARCHAR(255) UNIQUE | — |
 | `description` | TEXT nullable | — |
-| `pdf_filename` | VARCHAR(255) nullable | Nom du fichier PDF stocké |
-| `image_filename` | VARCHAR(255) nullable | Image de couverture |
+| `pdf_filename` | VARCHAR(255) nullable | Nom du fichier PDF stocké (géré par VichUploader) |
+| `image_filename` | VARCHAR(255) nullable | Nom de l'image de couverture (géré par VichUploader) |
 | `theme_id` | INT NOT NULL | FK → `theme` |
 | `created_at` | DATETIME | — |
 | `updated_at` | DATETIME | Mis à jour automatiquement |
+
+**Propriétés non-persistées (VichUploader) :**
+
+```php
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
+
+#[Vich\Uploadable]
+class Protocole
+{
+    #[Vich\UploadableField(mapping: 'protocole_pdf', fileNameProperty: 'pdfFilename')]
+    private ?File $pdfFile = null;
+
+    #[Vich\UploadableField(mapping: 'protocole_image', fileNameProperty: 'imageFilename')]
+    private ?File $imageFile = null;
+}
+```
+
+`$pdfFile` et `$imageFile` ne sont **pas** des colonnes en base (`#[ORM\Column]` absent). VichUploader les intercepte lors du `flush()`, déplace le fichier dans `public/uploads/protocoles/{pdf|images}/`, puis stocke le nom de fichier dans `pdfFilename` / `imageFilename`.
+
+Les setters mettent à jour `updatedAt` quand un fichier est fourni — requis par VichUploader pour détecter le changement lors d'une édition :
+```php
+public function setPdfFile(?File $pdfFile): static
+{
+    $this->pdfFile = $pdfFile;
+    if ($pdfFile !== null) {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+    return $this;
+}
+```
 
 **Lifecycle callback :**
 ```php
