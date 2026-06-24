@@ -60,7 +60,7 @@ user.email = maxime-sauvage@live.fr
 | 7 | CRUD Rubriques (admin) | feature, admin | ✅ Done |
 | 8 | CRUD Thèmes (admin) | feature, admin | ✅ Done |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | ✅ Done |
-| 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
+| 10 | Navigation publique (Domaine → Protocole) | feature, frontend | ✅ Done |
 | 11 | Templates Twig + Layout général | feature, frontend | Todo |
 | 12 | DataFixtures (données de test) | feature, database | Todo |
 | 13 | Tests PHPUnit | test | Todo |
@@ -82,6 +82,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/8-crud-themes` | #8 | ✅ Mergée |
 | `feature/7-crud-rubriques` | #7 | ✅ Mergée |
 | `feature/9-crud-protocoles` | #9 | ✅ Mergée |
+| `feature/10-navigation-publique` | #10 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -301,6 +302,36 @@ class UtilisateurController extends AbstractController {}
 - **Domaines affichés dans l'index** — dérivés via `protocole.theme.rubrique.domaines`, pas de relation directe en base. Affichés en badges gris sous le nom du thème.
 - **Navbar mise à jour** — ajout du lien "Protocoles" après "Thèmes".
 - **Syntaxe des contraintes** — Symfony 7.4 impose les named arguments : `new Length(min: 2, max: 255)` au lieu de `new Length(['min' => 2])`. Corrigé sur tous les FormTypes.
+
+## 15. Navigation publique (ticket #10)
+
+### Composants créés
+
+- `src/Controller/NavigationController.php` — 5 actions, `#[IsGranted('ROLE_USER')]`
+- `templates/navigation/domaines.html.twig` — grille de cards, liste tous les domaines
+- `templates/navigation/domaine.html.twig` — rubriques d'un domaine
+- `templates/navigation/rubrique.html.twig` — thèmes d'une rubrique
+- `templates/navigation/theme.html.twig` — protocoles d'un thème (cards avec image miniature)
+- `templates/navigation/protocole.html.twig` — fiche protocole (image zoomable + téléchargement PDF)
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `navigation_domaines` | GET | `/parcourir` |
+| `navigation_domaine` | GET | `/domaines/{slug}` |
+| `navigation_rubrique` | GET | `/rubriques/{slug}` |
+| `navigation_theme` | GET | `/themes/{slug}` |
+| `navigation_protocole` | GET | `/protocoles/{slug}` |
+
+### Choix de conception
+
+- **`#[IsGranted('ROLE_USER')]` sur la classe** — toutes les pages requièrent une connexion. Un visiteur non connecté est automatiquement redirigé vers `/login`.
+- **Résolution par slug via `findOneBy`** — explicite et fiable. Les routes utilisent `{slug}` et chaque action appelle `$repo->findOneBy(['slug' => $slug])`.
+- **Fil d'Ariane cliquable** — reconstruit la hiérarchie complète (Domaines → Domaine → Rubrique → Thème → Protocole) depuis les relations Doctrine, sans donnée supplémentaire en base.
+- **Image zoomable** — l'image bannière est enveloppée dans un `<a target="_blank">` avec un overlay au survol ("Voir en taille réelle"). Aucun JS requis.
+- **Téléchargement PDF** — attribut HTML `download` pour forcer le téléchargement sans ouvrir d'onglet vide.
+- **Lien "Parcourir" dans la navbar** — visible pour tous les utilisateurs connectés (ROLE_USER et au-dessus).
 
 ## 13. Leçons apprises
 
