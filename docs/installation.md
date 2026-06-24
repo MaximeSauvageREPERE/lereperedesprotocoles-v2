@@ -139,7 +139,29 @@ VALUES (
 
 ---
 
-## 7. Créer les dossiers d'upload
+## 7. Charger les données de test (fixtures)
+
+Le projet inclut des fixtures Doctrine qui peuplent la base avec des données de test :
+
+```powershell
+php bin/console doctrine:fixtures:load
+```
+
+> **Attention :** cette commande purge toutes les tables avant de recharger. Taper `yes` pour confirmer.
+
+**Comptes créés :**
+
+| Email | Mot de passe | Rôle |
+|---|---|---|
+| admin@test.fr | administrateur | ROLE_ADMIN |
+| modo@test.fr | moderateur | ROLE_MODERATEUR |
+| user@test.fr | utilisateur | ROLE_USER |
+
+**Données de contenu créées :** 5 professions, 3 domaines, 3 rubriques, 5 thèmes, 5 protocoles.
+
+---
+
+## 8. Créer les dossiers d'upload
 
 VichUploader a besoin que les dossiers de destination existent (ils sont dans `.gitignore` donc non commités) :
 
@@ -150,7 +172,7 @@ mkdir public\uploads\protocoles\images
 
 ---
 
-## 8. Installer les assets JavaScript
+## 9. Installer les assets JavaScript
 
 ```powershell
 php bin/console importmap:install
@@ -160,7 +182,7 @@ Cette commande télécharge les dépendances JS déclarées dans `importmap.php`
 
 ---
 
-## 9. Compiler Tailwind CSS
+## 10. Compiler Tailwind CSS
 
 Le projet utilise Tailwind via `symfonycasts/tailwind-bundle`. La compilation se fait à la volée en développement :
 
@@ -178,7 +200,7 @@ php bin/console tailwind:build
 
 ---
 
-## 10. Démarrer le serveur de développement
+## 11. Démarrer le serveur de développement
 
 Dans un terminal séparé (pour garder Tailwind en watch dans le premier) :
 

@@ -430,6 +430,44 @@ VALUES (
 - **Nom cliquable dans la navbar** — le `<span>` du nom a été remplacé par un `<a href="{{ path('profil_index') }}">` pour un accès rapide au profil depuis n'importe quelle page.
 - **Zone `/profil` déjà déclarée dans `security.yaml`** — l'`access_control` `{ path: ^/profil, roles: ROLE_USER }` était en place depuis le ticket #4 ; le controller vient simplement la couvrir.
 
+## 19. DataFixtures (ticket #12)
+
+### Composants créés
+
+- `src/DataFixtures/ProfessionFixtures.php` — 5 professions (Médecin généraliste, Infirmier, Aide-soignant, Kinésithérapeute, Pharmacien)
+- `src/DataFixtures/UserFixtures.php` — 3 comptes de test avec mots de passe hashés, `isVerified: true`
+- `src/DataFixtures/DomaineFixtures.php` — 3 domaines (Cardiologie, Neurologie, Urgences)
+- `src/DataFixtures/RubriqueFixtures.php` — 3 rubriques reliées aux domaines via ManyToMany
+- `src/DataFixtures/ThemeFixtures.php` — 5 thèmes
+- `src/DataFixtures/ProtocoleFixtures.php` — 5 protocoles (sans fichiers PDF/image)
+
+### Comptes de test
+
+| Email | Mot de passe | Rôle |
+|---|---|---|
+| admin@test.fr | administrateur | ROLE_ADMIN |
+| modo@test.fr | moderateur | ROLE_MODERATEUR |
+| user@test.fr | utilisateur | ROLE_USER |
+
+### Commande
+
+```powershell
+php bin/console doctrine:fixtures:load
+```
+
+### Bug corrigé — logout déclenché par Turbo
+
+Symfony UX Turbo précharge les liens `<a>` visibles dans la navbar. Le lien de déconnexion était un `<a href="/logout">` (GET) — Turbo le préchargeait automatiquement après le login, déconnectant l'utilisateur immédiatement.
+
+**Correction :** remplacement du lien par un formulaire POST avec token CSRF, et ajout de `csrf_token_manager` dans `security.yaml`.
+
+### Choix de conception
+
+- **`DependentFixtureInterface`** — chaîne les fixtures dans le bon ordre (Profession → User, Domaine → Rubrique → Thème → Protocole) via `getDependencies()`.
+- **`addReference` / `getReference`** — partage les entités entre classes de fixtures (ex. `UserFixtures` récupère la `Profession` créée par `ProfessionFixtures`).
+- **Protocoles sans fichiers** — les fixtures ne gèrent pas les uploads VichUploader. Les champs `pdfFilename` et `imageFilename` restent `null`.
+- **`isVerified: true`** — tous les comptes de test sont directement activés, sans passer par le workflow d'inscription.
+
 ## 13. Leçons apprises
 
 ### Ordre de création d'un projet
