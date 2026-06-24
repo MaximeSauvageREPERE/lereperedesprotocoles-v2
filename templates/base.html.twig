@@ -25,6 +25,7 @@
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('admin_demande_index') }}" class="text-blue-600 hover:underline">Demandes</a>
                                 <a href="{{ path('admin_utilisateur_index') }}" class="text-blue-600 hover:underline">Utilisateurs</a>
+                                <a href="{{ path('admin_profession_index') }}" class="text-blue-600 hover:underline">Professions</a>
                             {% endif %}
                             {% if is_granted('ROLE_MODERATEUR') %}
                                 <a href="{{ path('moderateur_domaine_index') }}" class="text-blue-600 hover:underline">Domaines</a>
