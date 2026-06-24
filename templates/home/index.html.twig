@@ -3,8 +3,73 @@
 {% block title %}Accueil — Le Repère des Protocoles{% endblock %}
 
 {% block body %}
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold text-gray-900 mb-4">Le Repère des Protocoles</h1>
-    <p class="text-gray-600">Bienvenue{% if app.user %}, {{ app.user.prenom }}{% endif %}.</p>
+<div class="max-w-4xl mx-auto px-4 py-16">
+
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Le Repère des Protocoles</h1>
+        <p class="text-lg text-gray-600 max-w-xl mx-auto">
+            Accédez aux protocoles médicaux de votre établissement, organisés par domaine, rubrique et thème.
+        </p>
+    </div>
+
+    {% if app.user %}
+
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-8 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg select-none">
+                {{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                <p class="text-sm text-gray-500">
+                    {% if is_granted('ROLE_ADMIN') %}Administrateur
+                    {% elseif is_granted('ROLE_MODERATEUR') %}Modérateur
+                    {% else %}Utilisateur{% endif %}
+                    — {{ app.user.profession.nom }}
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ path('navigation_domaines') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors">
+                Parcourir les protocoles
+            </a>
+            <a href="{{ path('profil_index') }}"
+               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+                Mon profil
+            </a>
+            {% if is_granted('ROLE_MODERATEUR') %}
+                <a href="{{ path('moderateur_protocole_index') }}"
+                   class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+                    Gérer les contenus
+                </a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_demande_index') }}"
+                   class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+                    Administration
+                </a>
+            {% endif %}
+        </div>
+
+    {% else %}
+
+        <div class="flex justify-center gap-4">
+            <a href="{{ path('app_login') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-3 rounded-md transition-colors">
+                Se connecter
+            </a>
+            <a href="{{ path('app_inscription') }}"
+               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-6 py-3 rounded-md border border-gray-300 transition-colors">
+                Demander l'accès
+            </a>
+        </div>
+
+        <p class="text-center text-sm text-gray-400 mt-6">
+            L'accès est réservé aux professionnels de santé autorisés.
+        </p>
+
+    {% endif %}
+
 </div>
 {% endblock %}
