@@ -65,7 +65,8 @@ user.email = maxime-sauvage@live.fr
 | 12 | DataFixtures (données de test) | feature, database | Todo |
 | 13 | Tests PHPUnit | test | Todo |
 | 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | ✅ Done |
-| 19 | CRUD Utilisateurs (admin) | feature, admin | Todo |
+| 19 | CRUD Utilisateurs (admin) | feature, admin | ✅ Done |
+| 29 | CRUD Professions (admin) | feature, admin | Todo |
 
 ## 7. Branches Git
 
@@ -83,6 +84,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/7-crud-rubriques` | #7 | ✅ Mergée |
 | `feature/9-crud-protocoles` | #9 | ✅ Mergée |
 | `feature/10-navigation-publique` | #10 | ✅ Mergée |
+| `feature/19-crud-utilisateurs` | #19 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -332,6 +334,53 @@ class UtilisateurController extends AbstractController {}
 - **Image zoomable** — l'image bannière est enveloppée dans un `<a target="_blank">` avec un overlay au survol ("Voir en taille réelle"). Aucun JS requis.
 - **Téléchargement PDF** — attribut HTML `download` pour forcer le téléchargement sans ouvrir d'onglet vide.
 - **Lien "Parcourir" dans la navbar** — visible pour tous les utilisateurs connectés (ROLE_USER et au-dessus).
+
+## 16. CRUD Utilisateurs (ticket #19)
+
+### Composants créés
+
+- `src/Form/UtilisateurType.php` — champs `prenom`, `nom`, `email`, `profession` (EntityType), `niveau` (ChoiceType non mappé), `isVerified`, `plainPassword` (non mappé, optionnel)
+- `src/Controller/Admin/UtilisateurController.php` — routes `/admin/utilisateurs` avec `#[IsGranted('ROLE_ADMIN')]`
+- `templates/admin/utilisateur/index.html.twig` — tableau avec badges rôle/statut, boutons Modifier / Supprimer
+- `templates/admin/utilisateur/edit.html.twig` — formulaire d'édition complet
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `admin_utilisateur_index` | GET | `/admin/utilisateurs` |
+| `admin_utilisateur_edit` | GET/POST | `/admin/utilisateurs/{id}/modifier` |
+| `admin_utilisateur_delete` | POST | `/admin/utilisateurs/{id}/supprimer` |
+
+### Commandes utilisées
+
+```powershell
+# Générer le hash d'un mot de passe pour insérer un compte admin en base
+php bin/console security:hash-password administrateur
+```
+
+```sql
+-- Créer le premier compte admin manuellement (aucun workflow de création admin dans l'appli)
+INSERT INTO `user` (email, roles, password, prenom, nom, profession_id, is_verified, created_at)
+VALUES (
+  'admin@test.fr',
+  '["ROLE_ADMIN"]',
+  '$2y$13$...hash...',
+  'Admin',
+  'Test',
+  (SELECT id FROM profession LIMIT 1),
+  1,
+  NOW()
+);
+```
+
+### Choix de conception
+
+- **Pas de route "new"** — les utilisateurs sont créés uniquement via le workflow d'inscription (`/admin/demandes`).
+- **Champ `niveau` non mappé** — le rôle est stocké sous forme de tableau en base (`["ROLE_ADMIN"]`). Le formulaire expose un select simple (Utilisateur / Modérateur / Admin) ; le contrôleur pré-remplit ce champ avec le rôle le plus élevé de l'utilisateur et le reconvertit en tableau à la sauvegarde.
+- **Changement de mot de passe optionnel** — champ `plainPassword` non mappé. Si laissé vide, le mot de passe existant est conservé.
+- **Suppression de son propre compte bloquée** — le contrôleur vérifie `$utilisateur === $this->getUser()` et affiche un flash error.
+- **Navbar admin** — lien "Utilisateurs" ajouté. Le bloc `if/elseif` a été remplacé par deux `if` indépendants pour que l'admin voie aussi les liens modérateur (Domaines, Rubriques, Thèmes, Protocoles), auxquels il a déjà accès via la hiérarchie des rôles.
 
 ## 13. Leçons apprises
 

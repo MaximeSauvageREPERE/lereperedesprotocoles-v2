@@ -107,7 +107,38 @@ Les deux lignes doivent afficher `[OK]`.
 
 ---
 
-## 6. Créer les dossiers d'upload
+## 6. Créer un compte administrateur
+
+L'application ne fournit pas de compte par défaut. Créer un compte admin manuellement :
+
+**Étape 1 — Générer le hash du mot de passe :**
+```powershell
+php bin/console security:hash-password votre_mot_de_passe
+```
+
+**Étape 2 — Insérer l'utilisateur en base (MySQL / Laragon) :**
+```sql
+INSERT INTO `user` (email, roles, password, prenom, nom, profession_id, is_verified, created_at)
+VALUES (
+  'admin@example.fr',
+  '["ROLE_ADMIN"]',
+  'HASH_GENERE_ETAPE_1',
+  'Admin',
+  'Test',
+  (SELECT id FROM profession LIMIT 1),
+  1,
+  NOW()
+);
+```
+
+> **Note :** `(SELECT id FROM profession LIMIT 1)` suppose qu'au moins une profession existe en base. Si la table est vide, insérer d'abord une profession :
+> ```sql
+> INSERT INTO profession (nom, slug) VALUES ('Médecin', 'medecin');
+> ```
+
+---
+
+## 7. Créer les dossiers d'upload
 
 VichUploader a besoin que les dossiers de destination existent (ils sont dans `.gitignore` donc non commités) :
 
@@ -118,7 +149,7 @@ mkdir public\uploads\protocoles\images
 
 ---
 
-## 7. Installer les assets JavaScript
+## 8. Installer les assets JavaScript
 
 ```powershell
 php bin/console importmap:install
@@ -128,7 +159,7 @@ Cette commande télécharge les dépendances JS déclarées dans `importmap.php`
 
 ---
 
-## 8. Compiler Tailwind CSS
+## 9. Compiler Tailwind CSS
 
 Le projet utilise Tailwind via `symfonycasts/tailwind-bundle`. La compilation se fait à la volée en développement :
 
@@ -146,7 +177,7 @@ php bin/console tailwind:build
 
 ---
 
-## 9. Démarrer le serveur de développement
+## 10. Démarrer le serveur de développement
 
 Dans un terminal séparé (pour garder Tailwind en watch dans le premier) :
 
