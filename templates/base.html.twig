@@ -19,9 +19,9 @@
                     </a>
                     <div class="flex items-center gap-4 text-sm">
                         {% if app.user %}
-                            <span class="text-gray-600">
+                            <a href="{{ path('profil_index') }}" class="text-gray-600 hover:underline">
                                 {{ app.user.prenom }} {{ app.user.nom }}
-                            </span>
+                            </a>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('admin_demande_index') }}" class="text-blue-600 hover:underline">Demandes</a>
                                 <a href="{{ path('admin_utilisateur_index') }}" class="text-blue-600 hover:underline">Utilisateurs</a>
