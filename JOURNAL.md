@@ -66,7 +66,7 @@ user.email = maxime-sauvage@live.fr
 | 13 | Tests PHPUnit | test | Todo |
 | 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | ✅ Done |
 | 19 | CRUD Utilisateurs (admin) | feature, admin | ✅ Done |
-| 29 | CRUD Professions (admin) | feature, admin | Todo |
+| 29 | CRUD Professions (admin) | feature, admin | ✅ Done |
 
 ## 7. Branches Git
 
@@ -85,6 +85,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/9-crud-protocoles` | #9 | ✅ Mergée |
 | `feature/10-navigation-publique` | #10 | ✅ Mergée |
 | `feature/19-crud-utilisateurs` | #19 | ✅ Mergée |
+| `feature/29-crud-professions` | #29 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -381,6 +382,31 @@ VALUES (
 - **Changement de mot de passe optionnel** — champ `plainPassword` non mappé. Si laissé vide, le mot de passe existant est conservé.
 - **Suppression de son propre compte bloquée** — le contrôleur vérifie `$utilisateur === $this->getUser()` et affiche un flash error.
 - **Navbar admin** — lien "Utilisateurs" ajouté. Le bloc `if/elseif` a été remplacé par deux `if` indépendants pour que l'admin voie aussi les liens modérateur (Domaines, Rubriques, Thèmes, Protocoles), auxquels il a déjà accès via la hiérarchie des rôles.
+
+## 17. CRUD Professions (ticket #29)
+
+### Composants créés
+
+- `src/Form/ProfessionType.php` — champ `nom` uniquement, slug non exposé dans le formulaire
+- `src/Controller/Admin/ProfessionController.php` — routes `/admin/professions` avec `#[IsGranted('ROLE_ADMIN')]`
+- `templates/admin/profession/index.html.twig` — tableau avec slug, nb utilisateurs, nb demandes ; bouton Supprimer grisé si liés
+- `templates/admin/profession/new.html.twig` — formulaire de création
+- `templates/admin/profession/edit.html.twig` — formulaire d'édition avec slug actuel affiché
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `admin_profession_index` | GET | `/admin/professions` |
+| `admin_profession_new` | GET/POST | `/admin/professions/nouveau` |
+| `admin_profession_edit` | GET/POST | `/admin/professions/{id}/modifier` |
+| `admin_profession_delete` | POST | `/admin/professions/{id}/supprimer` |
+
+### Choix de conception
+
+- **Slug auto-généré** — calculé depuis le `nom` via `AsciiSlugger('fr')` à chaque création/modification. Pas exposé dans le formulaire.
+- **Suppression bloquée si liée** — le contrôleur vérifie `$profession->getUsers()->count() > 0 || $profession->getDemandesInscription()->count() > 0` et retourne un flash error. Dans l'index, le bouton Supprimer est également grisé visuellement si la profession est référencée.
+- **Lien "Professions" dans la navbar admin** — ajouté après "Utilisateurs" dans le bloc `{% if is_granted('ROLE_ADMIN') %}`.
 
 ## 13. Leçons apprises
 

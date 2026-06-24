@@ -135,6 +135,7 @@ VALUES (
 > ```sql
 > INSERT INTO profession (nom, slug) VALUES ('Médecin', 'medecin');
 > ```
+> Une fois connecté en admin, les professions se gèrent directement via l'interface : `/admin/professions`.
 
 ---
 

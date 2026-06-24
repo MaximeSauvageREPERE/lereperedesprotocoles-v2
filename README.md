@@ -66,4 +66,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #9 | CRUD Protocoles + Upload PDF | ✅ |
 | #10 | Navigation publique | ✅ |
 | #19 | CRUD Utilisateurs (admin) | ✅ |
-| #29 | CRUD Professions (admin) | ⬜ |
+| #29 | CRUD Professions (admin) | ✅ |
