@@ -24,8 +24,9 @@
                             </span>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('admin_demande_index') }}" class="text-blue-600 hover:underline">Demandes</a>
-                                <a href="/admin" class="text-blue-600 hover:underline">Admin</a>
-                            {% elseif is_granted('ROLE_MODERATEUR') %}
+                                <a href="{{ path('admin_utilisateur_index') }}" class="text-blue-600 hover:underline">Utilisateurs</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_MODERATEUR') %}
                                 <a href="{{ path('moderateur_domaine_index') }}" class="text-blue-600 hover:underline">Domaines</a>
                                 <a href="{{ path('moderateur_rubrique_index') }}" class="text-blue-600 hover:underline">Rubriques</a>
                                 <a href="{{ path('moderateur_theme_index') }}" class="text-blue-600 hover:underline">Thèmes</a>

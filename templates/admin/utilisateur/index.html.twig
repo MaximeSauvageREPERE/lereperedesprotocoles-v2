@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Utilisateurs ({{ utilisateurs|length }})</h1>
+    </div>
+
+    {% if utilisateurs is empty %}
+        <p class="text-gray-500">Aucun utilisateur.</p>
+    {% else %}
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Nom</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Email</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Profession</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Rôle</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Statut</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-500">Inscrit le</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for user in utilisateurs %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium text-gray-800">{{ user.prenom }} {{ user.nom }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ user.profession }}</td>
+                            <td class="px-4 py-3">
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <span class="inline-block bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+                                {% elseif 'ROLE_MODERATEUR' in user.roles %}
+                                    <span class="inline-block bg-yellow-100 text-yellow-700 text-xs font-medium px-2 py-0.5 rounded-full">Modérateur</span>
+                                {% else %}
+                                    <span class="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded-full">Utilisateur</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3">
+                                {% if user.isVerified %}
+                                    <span class="inline-block bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">Actif</span>
+                                {% else %}
+                                    <span class="inline-block bg-gray-100 text-gray-500 text-xs font-medium px-2 py-0.5 rounded-full">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 text-gray-500">{{ user.createdAt|date('d/m/Y') }}</td>
+                            <td class="px-4 py-3 flex gap-2 justify-end">
+                                <a href="{{ path('admin_utilisateur_edit', {id: user.id}) }}"
+                                   class="text-blue-600 hover:underline text-xs font-medium">
+                                    Modifier
+                                </a>
+                                {% if user !== app.user %}
+                                    <form method="post" action="{{ path('admin_utilisateur_delete', {id: user.id}) }}"
+                                          onsubmit="return confirm('Supprimer {{ user.prenom }} {{ user.nom }} ? Cette action est irréversible.')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                        <button type="submit"
+                                                class="text-red-600 hover:underline text-xs font-medium">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
