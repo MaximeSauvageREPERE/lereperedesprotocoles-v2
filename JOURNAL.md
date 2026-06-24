@@ -408,6 +408,28 @@ VALUES (
 - **Suppression bloquée si liée** — le contrôleur vérifie `$profession->getUsers()->count() > 0 || $profession->getDemandesInscription()->count() > 0` et retourne un flash error. Dans l'index, le bouton Supprimer est également grisé visuellement si la profession est référencée.
 - **Lien "Professions" dans la navbar admin** — ajouté après "Utilisateurs" dans le bloc `{% if is_granted('ROLE_ADMIN') %}`.
 
+## 18. Templates Twig + Layout général (ticket #11)
+
+### Composants créés
+
+- `src/Controller/ProfilController.php` — route `/profil` avec `#[IsGranted('ROLE_USER')]`
+- `templates/profil/index.html.twig` — fiche utilisateur (avatar initiales, nom, email, profession, rôle badgé, date d'inscription)
+- `templates/home/index.html.twig` — hero avec CTAs adaptatifs selon le rôle
+- `templates/base.html.twig` — nom de l'utilisateur dans la navbar rendu cliquable (lien vers `/profil`)
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `profil_index` | GET | `/profil` |
+
+### Choix de conception
+
+- **Avatar initiales** — cercle CSS avec les initiales prénom + nom (`|first|upper`), aucun upload d'image requis.
+- **CTAs adaptatifs sur la home** — visiteur non connecté voit "Se connecter" / "Demander l'accès" ; user voit "Parcourir" + "Mon profil" ; modérateur voit aussi "Gérer les contenus" ; admin voit aussi "Administration".
+- **Nom cliquable dans la navbar** — le `<span>` du nom a été remplacé par un `<a href="{{ path('profil_index') }}">` pour un accès rapide au profil depuis n'importe quelle page.
+- **Zone `/profil` déjà déclarée dans `security.yaml`** — l'`access_control` `{ path: ^/profil, roles: ROLE_USER }` était en place depuis le ticket #4 ; le controller vient simplement la couvrir.
+
 ## 13. Leçons apprises
 
 ### Ordre de création d'un projet

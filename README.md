@@ -67,3 +67,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #10 | Navigation publique | ✅ |
 | #19 | CRUD Utilisateurs (admin) | ✅ |
 | #29 | CRUD Professions (admin) | ✅ |
+| #11 | Templates Twig + Layout général | ✅ |
