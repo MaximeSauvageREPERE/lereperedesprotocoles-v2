@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier — {{ utilisateur.prenom }} {{ utilisateur.nom }}{% endblock %}
+
+{% block body %}
+<div class="max-w-xl mx-auto px-4 py-8">
+
+    <div class="mb-6">
+        <a href="{{ path('admin_utilisateur_index') }}" class="text-sm text-gray-500 hover:underline">← Utilisateurs</a>
+        <h1 class="text-2xl font-bold text-gray-800 mt-2">
+            Modifier {{ utilisateur.prenom }} {{ utilisateur.nom }}
+        </h1>
+    </div>
+
+    {{ form_start(form, {attr: {class: 'bg-white shadow-sm rounded-lg p-6 space-y-5'}}) }}
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                {{ form_label(form.prenom, 'Prénom', {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.prenom, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.prenom) }}
+            </div>
+            <div>
+                {{ form_label(form.nom, 'Nom', {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.nom, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+        </div>
+
+        <div>
+            {{ form_label(form.email, 'Email', {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.email, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        <div>
+            {{ form_label(form.profession, 'Profession', {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.profession, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_errors(form.profession) }}
+        </div>
+
+        <div>
+            {{ form_label(form.niveau, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.niveau, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_errors(form.niveau) }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            {{ form_widget(form.isVerified, {attr: {class: 'h-4 w-4 text-blue-600 border-gray-300 rounded'}}) }}
+            {{ form_label(form.isVerified, null, {label_attr: {class: 'text-sm font-medium text-gray-700'}}) }}
+            {{ form_errors(form.isVerified) }}
+        </div>
+
+        <div>
+            {{ form_label(form.plainPassword, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.plainPassword, {attr: {class: 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+            {{ form_errors(form.plainPassword) }}
+        </div>
+
+        <div class="flex gap-3 pt-2">
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+                Enregistrer
+            </button>
+            <a href="{{ path('admin_utilisateur_index') }}"
+               class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                Annuler
+            </a>
+        </div>
+
+    {{ form_end(form) }}
+
+</div>
+{% endblock %}
