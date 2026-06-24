@@ -57,7 +57,7 @@ user.email = maxime-sauvage@live.fr
 | 4 | Authentification (login/logout/sécurité) | feature, auth | ✅ Done |
 | 5 | Workflow d'inscription (DemandeInscription) | feature, auth | ✅ Done |
 | 6 | CRUD Domaines (modérateur) | feature, admin | ✅ Done |
-| 7 | CRUD Rubriques (admin) | feature, admin | Todo |
+| 7 | CRUD Rubriques (admin) | feature, admin | ✅ Done |
 | 8 | CRUD Thèmes (admin) | feature, admin | ✅ Done |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | Todo |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | Todo |
@@ -80,6 +80,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/5-workflow-inscription` | #5 | ✅ Mergée |
 | `feature/6-crud-domaines` | #6 | ✅ Mergée |
 | `feature/8-crud-themes` | #8 | ✅ Mergée |
+| `feature/7-crud-rubriques` | #7 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -217,7 +218,34 @@ class UtilisateurController extends AbstractController {}
 - **CSRF sur la suppression** — token `delete_domaine_{id}` validé côté controller. Le bouton Supprimer est dans un `<form>` POST inline avec confirmation JavaScript.
 - **Lien "Modération" dans la navbar** — pointe désormais vers `moderateur_domaine_index` (remplace le `/moderateur` en dur).
 
-## 12. CRUD Thèmes (ticket #8)
+## 12. CRUD Rubriques (ticket #7)
+
+### Composants créés
+
+- `src/Form/RubriqueType.php` — champs `nom`, `description` (optionnelle), `domaines` (EntityType multiple, cases à cocher)
+- `src/Controller/Moderateur/RubriqueController.php` — routes `/moderateur/rubriques` avec `#[IsGranted('ROLE_MODERATEUR')]`
+- `templates/moderateur/rubrique/index.html.twig` — liste avec domaines en badges et nb thèmes, boutons Modifier / Supprimer
+- `templates/moderateur/rubrique/new.html.twig` — formulaire de création
+- `templates/moderateur/rubrique/edit.html.twig` — formulaire d'édition
+
+### Routes
+
+| Nom | Méthode | URL |
+|---|---|---|
+| `moderateur_rubrique_index` | GET | `/moderateur/rubriques` |
+| `moderateur_rubrique_new` | GET/POST | `/moderateur/rubriques/nouveau` |
+| `moderateur_rubrique_edit` | GET/POST | `/moderateur/rubriques/{id}/modifier` |
+| `moderateur_rubrique_delete` | POST | `/moderateur/rubriques/{id}/supprimer` |
+
+### Choix de conception
+
+- **ManyToMany Domaine/Rubrique via cases à cocher** — `EntityType` avec `multiple=true` et `expanded=true`. Plus ergonomique qu'un `<select multiple>` pour une liste courte de domaines.
+- **Domaines en badges dans la liste** — chaque domaine associé est affiché comme un tag gris dans le tableau index.
+- **Slug auto-généré** — même logique que les autres entités, via `AsciiSlugger('fr')`.
+- **CSRF sur la suppression** — token `delete_rubrique_{id}`.
+- **Navbar mise à jour** — ajout du lien "Rubriques" entre "Domaines" et "Thèmes".
+
+## 13. CRUD Thèmes (ticket #8)
 
 ### Composants créés
 
