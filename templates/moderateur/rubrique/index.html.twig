@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rubriques — Modération{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Rubriques</h1>
+        <a href="{{ path('moderateur_rubrique_new') }}"
+           class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+            + Nouvelle rubrique
+        </a>
+    </div>
+
+    {% if rubriques is empty %}
+        <p class="text-gray-500">Aucune rubrique pour l'instant.</p>
+    {% else %}
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Domaines</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thèmes</th>
+                        <th class="px-6 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for rubrique in rubriques %}
+                        <tr>
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ rubrique.nom }}</td>
+                            <td class="px-6 py-4 text-gray-600 text-sm">
+                                {% for domaine in rubrique.domaines %}
+                                    <span class="inline-block bg-gray-100 rounded px-2 py-0.5 mr-1">{{ domaine.nom }}</span>
+                                {% else %}
+                                    <span class="text-gray-400">—</span>
+                                {% endfor %}
+                            </td>
+                            <td class="px-6 py-4 text-gray-600 text-sm">{{ rubrique.themes|length }}</td>
+                            <td class="px-6 py-4 text-right space-x-3 text-sm">
+                                <a href="{{ path('moderateur_rubrique_edit', {id: rubrique.id}) }}"
+                                   class="text-blue-600 hover:underline">Modifier</a>
+                                <form method="post"
+                                      action="{{ path('moderateur_rubrique_delete', {id: rubrique.id}) }}"
+                                      class="inline"
+                                      onsubmit="return confirm('Supprimer cette rubrique ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_rubrique_' ~ rubrique.id) }}">
+                                    <button type="submit" class="text-red-600 hover:underline">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
