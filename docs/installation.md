@@ -294,6 +294,16 @@ vendor/bin/phpstan analyse     # doit retourner "No errors"
 
 La configuration se trouve dans `phpstan.dist.neon` (niveau 5).
 
+### PHP CS Fixer — formatage du code
+
+```powershell
+vendor/bin/php-cs-fixer fix --dry-run --diff   # prévisualiser les changements
+vendor/bin/php-cs-fixer fix                    # appliquer les corrections
+```
+
+La configuration se trouve dans `.php-cs-fixer.dist.php` (règles `@Symfony`, cible `src/` et `tests/`).  
+Le fichier `.php-cs-fixer.cache` est gitignorés (accélère les relances).
+
 ---
 
 ## Problèmes fréquents

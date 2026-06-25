@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 class DemandeInscription
 {
     public const STATUT_EN_ATTENTE = 'en_attente';
-    public const STATUT_APPROUVEE  = 'approuvee';
-    public const STATUT_REFUSEE    = 'refusee';
+    public const STATUT_APPROUVEE = 'approuvee';
+    public const STATUT_REFUSEE = 'refusee';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -170,7 +170,7 @@ class DemandeInscription
 
     public function isTokenValide(): bool
     {
-        return $this->tokenExpiresAt !== null && $this->tokenExpiresAt > new \DateTimeImmutable();
+        return null !== $this->tokenExpiresAt && $this->tokenExpiresAt > new \DateTimeImmutable();
     }
 
     public function getMotifRejet(): ?string

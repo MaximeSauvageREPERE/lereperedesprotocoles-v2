@@ -64,19 +64,20 @@ class ProfessionController extends AbstractController
 
         return $this->render('admin/profession/edit.html.twig', [
             'profession' => $profession,
-            'form'       => $form,
+            'form' => $form,
         ]);
     }
 
     #[Route('/{id}/supprimer', name: 'admin_profession_delete', methods: ['POST'])]
     public function delete(Profession $profession, Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('delete_profession_' . $profession->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete_profession_'.$profession->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
         if ($profession->getUsers()->count() > 0 || $profession->getDemandesInscription()->count() > 0) {
             $this->addFlash('error', 'Impossible de supprimer cette profession : des utilisateurs ou des demandes y sont rattachés.');
+
             return $this->redirectToRoute('admin_profession_index');
         }
 

@@ -110,7 +110,7 @@ class Protocole
     {
         $this->pdfFile = $pdfFile;
 
-        if ($pdfFile !== null) {
+        if (null !== $pdfFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
 
@@ -138,7 +138,7 @@ class Protocole
     {
         $this->imageFile = $imageFile;
 
-        if ($imageFile !== null) {
+        if (null !== $imageFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
 

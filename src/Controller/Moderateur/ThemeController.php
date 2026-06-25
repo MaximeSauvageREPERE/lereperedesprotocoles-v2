@@ -66,7 +66,7 @@ class ThemeController extends AbstractController
     #[Route('/{id}/supprimer', name: 'moderateur_theme_delete', methods: ['POST'])]
     public function delete(Theme $theme, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete_theme_' . $theme->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete_theme_'.$theme->getId(), $request->request->get('_token'))) {
             $em->remove($theme);
             $em->flush();
             $this->addFlash('success', 'Thème supprimé.');

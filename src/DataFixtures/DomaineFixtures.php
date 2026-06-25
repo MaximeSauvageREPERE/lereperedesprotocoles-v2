@@ -12,18 +12,18 @@ class DomaineFixtures extends Fixture
     {
         $domaines = [
             [
-                'nom'         => 'Cardiologie',
-                'slug'        => 'cardiologie',
+                'nom' => 'Cardiologie',
+                'slug' => 'cardiologie',
                 'description' => 'Protocoles relatifs aux pathologies et soins cardiovasculaires.',
             ],
             [
-                'nom'         => 'Neurologie',
-                'slug'        => 'neurologie',
+                'nom' => 'Neurologie',
+                'slug' => 'neurologie',
                 'description' => 'Protocoles relatifs aux pathologies et soins neurologiques.',
             ],
             [
-                'nom'         => 'Urgences',
-                'slug'        => 'urgences',
+                'nom' => 'Urgences',
+                'slug' => 'urgences',
                 'description' => 'Protocoles de prise en charge des situations d\'urgence.',
             ],
         ];
@@ -34,7 +34,7 @@ class DomaineFixtures extends Fixture
             $domaine->setSlug($data['slug']);
             $domaine->setDescription($data['description']);
             $manager->persist($domaine);
-            $this->addReference('domaine-' . $data['slug'], $domaine);
+            $this->addReference('domaine-'.$data['slug'], $domaine);
         }
 
         $manager->flush();

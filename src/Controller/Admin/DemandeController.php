@@ -23,7 +23,7 @@ class DemandeController extends AbstractController
     public function index(DemandeInscriptionRepository $repo): Response
     {
         return $this->render('admin/demande/index.html.twig', [
-            'demandes'             => $repo->findEnAttentePourAdmin(),
+            'demandes' => $repo->findEnAttentePourAdmin(),
             'demandes_en_attente_email' => $repo->findNonVerifiees(),
         ]);
     }
@@ -35,12 +35,13 @@ class DemandeController extends AbstractController
         EntityManagerInterface $em,
         MailerInterface $mailer,
     ): Response {
-        if (!$this->isCsrfTokenValid('approuver_' . $demande->getId(), $request->getPayload()->getString('_token'))) {
+        if (!$this->isCsrfTokenValid('approuver_'.$demande->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF invalide.');
         }
 
-        if (!$demande->isEmailVerifie() || $demande->getStatut() !== DemandeInscription::STATUT_EN_ATTENTE) {
+        if (!$demande->isEmailVerifie() || DemandeInscription::STATUT_EN_ATTENTE !== $demande->getStatut()) {
             $this->addFlash('error', 'Cette demande ne peut pas être approuvée.');
+
             return $this->redirectToRoute('admin_demande_index');
         }
 
@@ -69,6 +70,7 @@ class DemandeController extends AbstractController
         $mailer->send($email);
 
         $this->addFlash('success', "Compte créé pour {$demande->getPrenom()} {$demande->getNom()}.");
+
         return $this->redirectToRoute('admin_demande_index');
     }
 
@@ -79,8 +81,9 @@ class DemandeController extends AbstractController
         EntityManagerInterface $em,
         MailerInterface $mailer,
     ): Response {
-        if ($demande->getStatut() !== DemandeInscription::STATUT_EN_ATTENTE) {
+        if (DemandeInscription::STATUT_EN_ATTENTE !== $demande->getStatut()) {
             $this->addFlash('error', 'Cette demande a déjà été traitée.');
+
             return $this->redirectToRoute('admin_demande_index');
         }
 
@@ -101,12 +104,13 @@ class DemandeController extends AbstractController
             $mailer->send($email);
 
             $this->addFlash('success', "Demande de {$demande->getPrenom()} {$demande->getNom()} refusée.");
+
             return $this->redirectToRoute('admin_demande_index');
         }
 
         return $this->render('admin/demande/refuser.html.twig', [
             'demande' => $demande,
-            'form'    => $form,
+            'form' => $form,
         ]);
     }
 }

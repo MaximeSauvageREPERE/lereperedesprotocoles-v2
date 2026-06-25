@@ -39,12 +39,14 @@ class InscriptionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($userRepository->findOneBy(['email' => $demande->getEmail()])) {
                 $this->addFlash('error', 'Un compte existe déjà avec cette adresse email.');
+
                 return $this->redirectToRoute('app_inscription');
             }
 
             $existante = $demandeRepository->findOneBy(['email' => $demande->getEmail(), 'statut' => DemandeInscription::STATUT_EN_ATTENTE]);
             if ($existante) {
                 $this->addFlash('error', 'Une demande est déjà en cours pour cette adresse email.');
+
                 return $this->redirectToRoute('app_inscription');
             }
 

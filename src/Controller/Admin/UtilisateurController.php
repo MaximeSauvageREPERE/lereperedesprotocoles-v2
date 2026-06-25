@@ -36,9 +36,9 @@ class UtilisateurController extends AbstractController
 
         $currentRoles = $utilisateur->getRoles();
         $niveau = match (true) {
-            in_array('ROLE_ADMIN', $currentRoles, true)       => 'ROLE_ADMIN',
-            in_array('ROLE_MODERATEUR', $currentRoles, true)  => 'ROLE_MODERATEUR',
-            default                                            => 'ROLE_USER',
+            in_array('ROLE_ADMIN', $currentRoles, true) => 'ROLE_ADMIN',
+            in_array('ROLE_MODERATEUR', $currentRoles, true) => 'ROLE_MODERATEUR',
+            default => 'ROLE_USER',
         };
         $form->get('niveau')->setData($niveau);
 
@@ -60,23 +60,24 @@ class UtilisateurController extends AbstractController
 
         return $this->render('admin/utilisateur/edit.html.twig', [
             'utilisateur' => $utilisateur,
-            'form'        => $form,
+            'form' => $form,
         ]);
     }
 
     #[Route('/{id}/supprimer', name: 'admin_utilisateur_delete', methods: ['POST'])]
     public function delete(User $utilisateur, Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('delete_user_' . $utilisateur->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete_user_'.$utilisateur->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
         if ($utilisateur === $this->getUser()) {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+
             return $this->redirectToRoute('admin_utilisateur_index');
         }
 
-        $nom = $utilisateur->getPrenom() . ' ' . $utilisateur->getNom();
+        $nom = $utilisateur->getPrenom().' '.$utilisateur->getNom();
         $em->remove($utilisateur);
         $em->flush();
 

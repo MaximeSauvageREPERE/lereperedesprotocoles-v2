@@ -14,22 +14,22 @@ class RubriqueFixtures extends Fixture implements DependentFixtureInterface
     {
         $rubriques = [
             [
-                'nom'         => 'Soins courants',
-                'slug'        => 'soins-courants',
+                'nom' => 'Soins courants',
+                'slug' => 'soins-courants',
                 'description' => 'Protocoles de soins quotidiens et de surveillance.',
-                'domaines'    => ['cardiologie', 'urgences'],
+                'domaines' => ['cardiologie', 'urgences'],
             ],
             [
-                'nom'         => 'Examens complémentaires',
-                'slug'        => 'examens-complementaires',
+                'nom' => 'Examens complémentaires',
+                'slug' => 'examens-complementaires',
                 'description' => 'Protocoles de réalisation et d\'interprétation des examens.',
-                'domaines'    => ['cardiologie', 'neurologie'],
+                'domaines' => ['cardiologie', 'neurologie'],
             ],
             [
-                'nom'         => 'Procédures d\'urgence',
-                'slug'        => 'procedures-urgence',
+                'nom' => 'Procédures d\'urgence',
+                'slug' => 'procedures-urgence',
                 'description' => 'Protocoles de prise en charge en situation d\'urgence.',
-                'domaines'    => ['urgences', 'neurologie'],
+                'domaines' => ['urgences', 'neurologie'],
             ],
         ];
 
@@ -39,10 +39,10 @@ class RubriqueFixtures extends Fixture implements DependentFixtureInterface
             $rubrique->setSlug($data['slug']);
             $rubrique->setDescription($data['description']);
             foreach ($data['domaines'] as $slug) {
-                $rubrique->addDomaine($this->getReference('domaine-' . $slug, Domaine::class));
+                $rubrique->addDomaine($this->getReference('domaine-'.$slug, Domaine::class));
             }
             $manager->persist($rubrique);
-            $this->addReference('rubrique-' . $data['slug'], $rubrique);
+            $this->addReference('rubrique-'.$data['slug'], $rubrique);
         }
 
         $manager->flush();
