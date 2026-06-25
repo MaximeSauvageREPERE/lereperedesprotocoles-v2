@@ -18,10 +18,10 @@ class Protocole
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $titre = null;
+    private string $titre = '';
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
+    private string $slug = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -43,10 +43,10 @@ class Protocole
     private ?Theme $theme = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private \DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
@@ -65,7 +65,7 @@ class Protocole
         return $this->id;
     }
 
-    public function getTitre(): ?string
+    public function getTitre(): string
     {
         return $this->titre;
     }
@@ -77,7 +77,7 @@ class Protocole
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -169,7 +169,7 @@ class Protocole
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -181,7 +181,7 @@ class Protocole
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -195,6 +195,6 @@ class Protocole
 
     public function __toString(): string
     {
-        return $this->titre ?? '';
+        return $this->titre;
     }
 }
