@@ -61,9 +61,10 @@ user.email = maxime-sauvage@live.fr
 | 8 | CRUD Thèmes (admin) | feature, admin | ✅ Done |
 | 9 | CRUD Protocoles + Upload PDF | feature, admin, backend | ✅ Done |
 | 10 | Navigation publique (Domaine → Protocole) | feature, frontend | ✅ Done |
-| 11 | Templates Twig + Layout général | feature, frontend | Todo |
-| 12 | DataFixtures (données de test) | feature, database | Todo |
+| 11 | Templates Twig + Layout général | feature, frontend | ✅ Done |
+| 12 | DataFixtures (données de test) | feature, database | ✅ Done |
 | 13 | Tests PHPUnit | test | Todo |
+| 33 | Frontend : Responsive mobile-first | feature, frontend | ✅ Done |
 | 18 | Entité Profession + refactor profession User/DemandeInscription | feature, database | ✅ Done |
 | 19 | CRUD Utilisateurs (admin) | feature, admin | ✅ Done |
 | 29 | CRUD Professions (admin) | feature, admin | ✅ Done |
@@ -86,6 +87,7 @@ user.email = maxime-sauvage@live.fr
 | `feature/10-navigation-publique` | #10 | ✅ Mergée |
 | `feature/19-crud-utilisateurs` | #19 | ✅ Mergée |
 | `feature/29-crud-professions` | #29 | ✅ Mergée |
+| `feature/33-responsive-mobile-first` | #33 | ✅ Mergée |
 
 ## 8. Modèle de données (ticket #3)
 
@@ -467,6 +469,35 @@ Symfony UX Turbo précharge les liens `<a>` visibles dans la navbar. Le lien de 
 - **`addReference` / `getReference`** — partage les entités entre classes de fixtures (ex. `UserFixtures` récupère la `Profession` créée par `ProfessionFixtures`).
 - **Protocoles sans fichiers** — les fixtures ne gèrent pas les uploads VichUploader. Les champs `pdfFilename` et `imageFilename` restent `null`.
 - **`isVerified: true`** — tous les comptes de test sont directement activés, sans passer par le workflow d'inscription.
+
+## 20. Responsive mobile-first (ticket #33)
+
+### Composants créés / modifiés
+
+- `assets/controllers/navbar_controller.js` — controller Stimulus pour le toggle hamburger (icône ≡ ↔ ✕)
+- `templates/base.html.twig` — navbar restructurée en 3 niveaux
+
+### Comportement navbar
+
+| Breakpoint | Comportement |
+|---|---|
+| `< md` (< 768px) — téléphone | Logo + bouton hamburger. Menu déroulant avec avatar, Parcourir, sections Admin/Modo, Déconnexion |
+| `md` à `lg` (768px–1023px) — tablette | Logo + nom utilisateur + Parcourir en ligne + hamburger pour le reste |
+| `lg+` (≥ 1024px) — ordinateur | Barre horizontale complète (comportement original) |
+
+### Autres corrections responsive
+
+- **Tables CRUD** (7 fichiers) — enveloppées dans `<div class="overflow-x-auto">` à l'intérieur du wrapper `overflow-hidden`, pour préserver les coins arrondis tout en permettant le scroll horizontal sur mobile
+- **Formulaires à 2 colonnes** — `grid-cols-2` → `grid-cols-1 sm:grid-cols-2` sur `inscription/formulaire.html.twig` et `admin/utilisateur/edit.html.twig`
+- **En-têtes titre+bouton** — `flex justify-between` → `flex flex-col sm:flex-row` sur les 5 pages index avec un bouton "Nouveau"
+- **Home** — `text-4xl` → `text-2xl sm:text-4xl`, `py-16` → `py-8 sm:py-16`
+- **Profil** — padding et taille de l'avatar réduits sur mobile
+
+### Choix de conception
+
+- **Stimulus pour le hamburger** — le toggle est géré par `navbar_controller.js` via `classList.toggle('hidden')`. Deux icônes SVG (≡ et ✕) sont permutées à chaque clic via les targets Stimulus `iconOpen` / `iconClose`.
+- **`lg:hidden` permanent sur le dropdown** — même si le JS ouvre le menu, `lg:hidden` le masque sur ordinateur. Aucun risque d'affichage parasite sur grand écran.
+- **`overflow-x-auto` imbriqué** — le wrapper externe garde `overflow-hidden` pour clipper les coins arrondis du card ; le wrapper interne porte `overflow-x-auto` pour le scroll. Les deux sont nécessaires.
 
 ## 13. Leçons apprises
 
