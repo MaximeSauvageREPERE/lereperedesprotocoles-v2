@@ -73,3 +73,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #36 | PHPStan niveau 5 | ✅ |
 | #37 | PHP CS Fixer (formatage @Symfony) | ✅ |
 | #13 | Tests PHPUnit (tests unitaires) | ✅ |
+| #35 | Tests fonctionnels (HTTP + rôles) | ✅ |

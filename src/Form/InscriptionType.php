@@ -23,11 +23,11 @@ class InscriptionType extends AbstractType
         $builder
             ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
-                'constraints' => [new NotBlank(), new Length(['max' => 100])],
+                'constraints' => [new NotBlank(), new Length(max: 100)],
             ])
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
-                'constraints' => [new NotBlank(), new Length(['max' => 100])],
+                'constraints' => [new NotBlank(), new Length(max: 100)],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse email professionnelle',
@@ -47,7 +47,7 @@ class InscriptionType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas.',
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['min' => 8, 'max' => 4096, 'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères.']),
+                    new Length(min: 8, max: 4096, minMessage: 'Le mot de passe doit faire au moins {{ limit }} caractères.'),
                 ],
             ])
         ;
