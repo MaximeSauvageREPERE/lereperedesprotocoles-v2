@@ -72,3 +72,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #33 | Responsive mobile-first | ✅ |
 | #36 | PHPStan niveau 5 | ✅ |
 | #37 | PHP CS Fixer (formatage @Symfony) | ✅ |
+| #13 | Tests PHPUnit (tests unitaires) | ✅ |
