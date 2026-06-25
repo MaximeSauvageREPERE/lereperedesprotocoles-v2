@@ -304,6 +304,17 @@ vendor/bin/php-cs-fixer fix                    # appliquer les corrections
 La configuration se trouve dans `.php-cs-fixer.dist.php` (règles `@Symfony`, cible `src/` et `tests/`).  
 Le fichier `.php-cs-fixer.cache` est gitignorés (accélère les relances).
 
+### PHPUnit — tests unitaires
+
+```powershell
+vendor/bin/phpunit                             # lancer tous les tests
+vendor/bin/phpunit tests/Unit                  # tests unitaires uniquement
+vendor/bin/phpunit --testdox                   # affichage lisible des noms de tests
+```
+
+La configuration se trouve dans `phpunit.xml.dist` (bootstrap `tests/bootstrap.php`, APP_ENV=test).  
+Le dossier `.phpunit.cache/` et le fichier `phpunit.xml` (overrides locaux) sont gitignorés.
+
 ---
 
 ## Problèmes fréquents
