@@ -17,9 +17,7 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->isVerified()) {
-            throw new CustomUserMessageAuthenticationException(
-                'Votre compte n\'est pas encore activé. Vérifiez votre email ou contactez un administrateur.'
-            );
+            throw new CustomUserMessageAuthenticationException('Votre compte n\'est pas encore activé. Vérifiez votre email ou contactez un administrateur.');
         }
     }
 

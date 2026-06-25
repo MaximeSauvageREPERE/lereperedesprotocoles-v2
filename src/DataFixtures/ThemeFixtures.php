@@ -14,28 +14,28 @@ class ThemeFixtures extends Fixture implements DependentFixtureInterface
     {
         $themes = [
             [
-                'nom'      => 'Prise en charge de la douleur',
-                'slug'     => 'prise-en-charge-douleur',
+                'nom' => 'Prise en charge de la douleur',
+                'slug' => 'prise-en-charge-douleur',
                 'rubrique' => 'soins-courants',
             ],
             [
-                'nom'      => 'ECG et monitoring cardiaque',
-                'slug'     => 'ecg-monitoring-cardiaque',
+                'nom' => 'ECG et monitoring cardiaque',
+                'slug' => 'ecg-monitoring-cardiaque',
                 'rubrique' => 'examens-complementaires',
             ],
             [
-                'nom'      => 'Surveillance des constantes',
-                'slug'     => 'surveillance-constantes',
+                'nom' => 'Surveillance des constantes',
+                'slug' => 'surveillance-constantes',
                 'rubrique' => 'soins-courants',
             ],
             [
-                'nom'      => 'Arrêt cardio-respiratoire',
-                'slug'     => 'arret-cardio-respiratoire',
+                'nom' => 'Arrêt cardio-respiratoire',
+                'slug' => 'arret-cardio-respiratoire',
                 'rubrique' => 'procedures-urgence',
             ],
             [
-                'nom'      => 'AVC et troubles neurologiques',
-                'slug'     => 'avc-troubles-neurologiques',
+                'nom' => 'AVC et troubles neurologiques',
+                'slug' => 'avc-troubles-neurologiques',
                 'rubrique' => 'procedures-urgence',
             ],
         ];
@@ -44,9 +44,9 @@ class ThemeFixtures extends Fixture implements DependentFixtureInterface
             $theme = new Theme();
             $theme->setNom($data['nom']);
             $theme->setSlug($data['slug']);
-            $theme->setRubrique($this->getReference('rubrique-' . $data['rubrique'], Rubrique::class));
+            $theme->setRubrique($this->getReference('rubrique-'.$data['rubrique'], Rubrique::class));
             $manager->persist($theme);
-            $this->addReference('theme-' . $data['slug'], $theme);
+            $this->addReference('theme-'.$data['slug'], $theme);
         }
 
         $manager->flush();

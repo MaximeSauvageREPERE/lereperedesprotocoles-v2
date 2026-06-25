@@ -11,33 +11,35 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function __construct(private UserPasswordHasherInterface $hasher) {}
+    public function __construct(private UserPasswordHasherInterface $hasher)
+    {
+    }
 
     public function load(ObjectManager $manager): void
     {
         $users = [
             [
-                'email'      => 'admin@test.fr',
-                'password'   => 'administrateur',
-                'prenom'     => 'Alice',
-                'nom'        => 'Admin',
-                'roles'      => ['ROLE_ADMIN'],
+                'email' => 'admin@test.fr',
+                'password' => 'administrateur',
+                'prenom' => 'Alice',
+                'nom' => 'Admin',
+                'roles' => ['ROLE_ADMIN'],
                 'profession' => 'medecin-generaliste',
             ],
             [
-                'email'      => 'modo@test.fr',
-                'password'   => 'moderateur',
-                'prenom'     => 'Marc',
-                'nom'        => 'Modo',
-                'roles'      => ['ROLE_MODERATEUR'],
+                'email' => 'modo@test.fr',
+                'password' => 'moderateur',
+                'prenom' => 'Marc',
+                'nom' => 'Modo',
+                'roles' => ['ROLE_MODERATEUR'],
                 'profession' => 'infirmier',
             ],
             [
-                'email'      => 'user@test.fr',
-                'password'   => 'utilisateur',
-                'prenom'     => 'Lucie',
-                'nom'        => 'User',
-                'roles'      => [],
+                'email' => 'user@test.fr',
+                'password' => 'utilisateur',
+                'prenom' => 'Lucie',
+                'nom' => 'User',
+                'roles' => [],
                 'profession' => 'aide-soignant',
             ],
         ];
@@ -50,7 +52,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setNom($data['nom']);
             $user->setRoles($data['roles']);
             $user->setIsVerified(true);
-            $user->setProfession($this->getReference('profession-' . $data['profession'], Profession::class));
+            $user->setProfession($this->getReference('profession-'.$data['profession'], Profession::class));
             $manager->persist($user);
         }
 

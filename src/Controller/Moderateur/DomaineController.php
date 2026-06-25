@@ -71,7 +71,7 @@ class DomaineController extends AbstractController
     #[Route('/{id}/supprimer', name: 'moderateur_domaine_delete', methods: ['POST'])]
     public function delete(Domaine $domaine, Request $request, EntityManagerInterface $em): Response
     {
-        if (!$this->isCsrfTokenValid('delete_domaine_' . $domaine->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('delete_domaine_'.$domaine->getId(), $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
         }
 

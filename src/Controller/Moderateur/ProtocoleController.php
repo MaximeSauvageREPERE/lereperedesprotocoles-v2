@@ -69,7 +69,7 @@ class ProtocoleController extends AbstractController
     #[Route('/{id}/supprimer', name: 'moderateur_protocole_delete', methods: ['POST'])]
     public function delete(Protocole $protocole, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete_protocole_' . $protocole->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete_protocole_'.$protocole->getId(), $request->request->get('_token'))) {
             $em->remove($protocole);
             $em->flush();
             $this->addFlash('success', 'Protocole supprimé.');

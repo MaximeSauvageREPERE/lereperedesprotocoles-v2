@@ -66,7 +66,7 @@ class RubriqueController extends AbstractController
     #[Route('/{id}/supprimer', name: 'moderateur_rubrique_delete', methods: ['POST'])]
     public function delete(Rubrique $rubrique, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete_rubrique_' . $rubrique->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete_rubrique_'.$rubrique->getId(), $request->request->get('_token'))) {
             $em->remove($rubrique);
             $em->flush();
             $this->addFlash('success', 'Rubrique supprimée.');

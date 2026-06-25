@@ -23,7 +23,7 @@ class ProfessionFixtures extends Fixture
             $profession->setNom($data['nom']);
             $profession->setSlug($data['slug']);
             $manager->persist($profession);
-            $this->addReference('profession-' . $data['slug'], $profession);
+            $this->addReference('profession-'.$data['slug'], $profession);
         }
 
         $manager->flush();
