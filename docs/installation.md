@@ -304,16 +304,31 @@ vendor/bin/php-cs-fixer fix                    # appliquer les corrections
 La configuration se trouve dans `.php-cs-fixer.dist.php` (règles `@Symfony`, cible `src/` et `tests/`).  
 Le fichier `.php-cs-fixer.cache` est gitignorés (accélère les relances).
 
-### PHPUnit — tests unitaires
+### PHPUnit — tests unitaires et fonctionnels
 
 ```powershell
-vendor/bin/phpunit                             # lancer tous les tests
-vendor/bin/phpunit tests/Unit                  # tests unitaires uniquement
+vendor/bin/phpunit --testsuite Unit            # tests unitaires (pas de BDD requise)
+vendor/bin/phpunit --testsuite Functional      # tests fonctionnels (BDD test requise)
+vendor/bin/phpunit                             # tous les tests
 vendor/bin/phpunit --testdox                   # affichage lisible des noms de tests
 ```
 
-La configuration se trouve dans `phpunit.xml.dist` (bootstrap `tests/bootstrap.php`, APP_ENV=test).  
-Le dossier `.phpunit.cache/` et le fichier `phpunit.xml` (overrides locaux) sont gitignorés.
+La configuration se trouve dans `phpunit.xml.dist`.
+
+**Initialisation de la BDD de test (une seule fois) :**
+
+```powershell
+# 1. Copier le fichier de template et l'adapter avec tes credentials
+copy .env.test.local.dist .env.test.local
+# Éditer .env.test.local : remplacer TON_USER/TON_PASSWORD par tes credentials MySQL
+
+# 2. Créer la BDD et charger le schéma + fixtures
+php bin/console doctrine:database:create --env=test --if-not-exists
+php bin/console doctrine:schema:create --env=test
+php bin/console doctrine:fixtures:load --env=test --no-interaction
+```
+
+Le dossier `.phpunit.cache/`, le fichier `phpunit.xml` (overrides locaux) et `.env.test.local` sont gitignorés.
 
 ---
 

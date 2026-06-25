@@ -7,7 +7,7 @@ Un test PHPUnit est un morceau de code PHP qui **vérifie automatiquement** qu'u
 Au lieu de tester manuellement dans le navigateur ("je me connecte, je clique, ça marche"), on écrit du code qui fait les vérifications à notre place, et qu'on peut relancer en une commande à chaque fois qu'on modifie le projet.
 
 ```
-vendor/bin/phpunit   →   25 tests, 56 assertions   →   tout est vert = rien de cassé
+vendor/bin/phpunit   →   43 tests, 72 assertions   →   tout est vert = rien de cassé
 ```
 
 ---
@@ -16,8 +16,14 @@ vendor/bin/phpunit   →   25 tests, 56 assertions   →   tout est vert = rien 
 
 | Type | Ticket | Ce qu'il teste | Besoin de la BDD |
 |---|---|---|---|
-| **Tests unitaires** | #13 (fait) | Une classe PHP isolée | ❌ Non |
-| **Tests fonctionnels** | #35 (à venir) | Une page HTTP entière | ✅ Oui |
+| **Tests unitaires** | #13 | Une classe PHP isolée | ❌ Non |
+| **Tests fonctionnels** | #35 | Une page HTTP entière | ✅ Oui |
+
+```powershell
+vendor/bin/phpunit --testsuite Unit        # tests unitaires uniquement (pas besoin de BDD)
+vendor/bin/phpunit --testsuite Functional  # tests fonctionnels uniquement
+vendor/bin/phpunit                         # tous les tests
+```
 
 ### Tests unitaires (#13)
 On instancie une classe PHP directement et on vérifie son comportement.  
@@ -25,7 +31,7 @@ Pas de serveur, pas de base de données. Très rapide.
 
 ### Tests fonctionnels (#35)
 On simule un navigateur : on fait une requête HTTP (`GET /login`), on regarde la réponse (code 200 ? formulaire présent ? redirection ?).  
-Nécessite une base de données de test.
+Nécessite une base de données de test séparée (`app_test`).
 
 ---
 
@@ -130,17 +136,21 @@ Chaque caractère = un test :
 ```
 tests/
 ├── bootstrap.php              Initialisation (charge .env.test, démarre Symfony)
-├── object-manager.php         Accès à Doctrine (utilisé par les tests fonctionnels)
-└── Unit/
-    ├── Entity/
-    │   ├── UserTest.php
-    │   ├── DemandeInscriptionTest.php
-    │   └── ProtocoleTest.php
-    └── Security/
-        └── UserCheckerTest.php
+├── object-manager.php         Accès à Doctrine (utilisé par PHPStan)
+├── Unit/
+│   ├── Entity/
+│   │   ├── UserTest.php
+│   │   ├── DemandeInscriptionTest.php
+│   │   └── ProtocoleTest.php
+│   └── Security/
+│       └── UserCheckerTest.php
+└── Functional/
+    ├── AccessControlTest.php   Redirections anonymes (pas de BDD)
+    ├── SecurityTest.php        Formulaire de login (BDD requise)
+    └── RoleAccessTest.php      Contrôle d'accès par rôle (BDD requise)
 ```
 
-La convention `Unit/` vs `Functional/` (à venir) sépare les deux types de tests.
+La suite `Unit` fonctionne sans base de données. La suite `Functional` nécessite une BDD de test initialisée.
 
 ---
 
@@ -178,3 +188,81 @@ Dans `UserCheckerTest`, j'utilisais `createMock(UserInterface::class)` sans conf
 | **Exemple** | Fournir un `UserInterface` quelconque | Vérifier qu'un service `sendEmail()` est bien appelé une fois |
 
 Dans nos tests unitaires actuels, on n'a besoin que de stubs.
+
+---
+
+## Tests fonctionnels (#35)
+
+### Ce qu'on a testé
+
+#### `AccessControlTest` — 7 tests (aucune BDD)
+
+| Test | Ce qu'il vérifie |
+|---|---|
+| `testHomeIsPublic` | `GET /` retourne 200 pour un visiteur anonyme |
+| `testLoginPageIsPublic` | `GET /login` retourne 200 |
+| `testInscriptionPageIsPublic` | `GET /inscription` retourne 200 |
+| `testParcourirRedirectsToLoginWhenAnonymous` | `GET /parcourir` redirige vers `/login` |
+| `testProfilRedirectsToLoginWhenAnonymous` | `GET /profil` redirige vers `/login` |
+| `testModerateurRedirectsToLoginWhenAnonymous` | `GET /moderateur/domaines` redirige vers `/login` |
+| `testAdminRedirectsToLoginWhenAnonymous` | `GET /admin/utilisateurs` redirige vers `/login` |
+
+#### `SecurityTest` — 4 tests (BDD requise)
+
+| Test | Ce qu'il vérifie |
+|---|---|
+| `testLoginFormContainsRequiredFields` | La page login a les champs `_username`, `_password`, `_csrf_token` |
+| `testLoginWithValidCredentials` | Login correct → redirection vers la page d'accueil |
+| `testLoginWithWrongPasswordStaysOnLoginPage` | Login incorrect → retour sur `/login` avec message d'erreur |
+| `testAlreadyLoggedInUserIsRedirectedFromLogin` | Utilisateur déjà connecté → `/login` redirige vers l'accueil |
+
+#### `RoleAccessTest` — 7 tests (BDD requise)
+
+| Test | Ce qu'il vérifie |
+|---|---|
+| `testUserCanAccessParcourir` | ROLE_USER peut accéder à `/parcourir` |
+| `testUserCannotAccessModerateurPages` | ROLE_USER → 403 sur `/moderateur/domaines` |
+| `testUserCannotAccessAdminPages` | ROLE_USER → 403 sur `/admin/utilisateurs` |
+| `testModerateurCanAccessModerateurPages` | ROLE_MODERATEUR → 200 sur `/moderateur/domaines` |
+| `testModerateurCannotAccessAdminPages` | ROLE_MODERATEUR → 403 sur `/admin/utilisateurs` |
+| `testAdminCanAccessAdminPages` | ROLE_ADMIN → 200 sur `/admin/utilisateurs` |
+| `testAdminCanAccessModerateurPagesViaHierarchy` | ROLE_ADMIN → 200 sur `/moderateur/domaines` (hiérarchie des rôles) |
+
+### Outils utilisés
+
+**`WebTestCase`** (Symfony) — classe de base pour les tests fonctionnels. Démarre un vrai noyau Symfony, permet de faire des requêtes HTTP simulées.
+
+**`$client->loginUser($user)`** — connecte un utilisateur directement dans la session, sans passer par le formulaire. Évite d'avoir à soumettre le formulaire à chaque test de contrôle d'accès.
+
+**`assertResponseIsSuccessful()`** — vérifie que la réponse est 2xx.
+
+**`assertResponseStatusCodeSame(403)`** — vérifie un code HTTP précis.
+
+**`assertResponseRedirects('/login')`** — vérifie que la réponse est une redirection vers cette URL.
+
+**`assertRouteSame('app_home')`** — après `followRedirect()`, vérifie la route courante.
+
+**`assertSelectorExists('.bg-red-50')`** — vérifie la présence d'un élément CSS dans la page HTML.
+
+### Mise en place de la BDD de test
+
+Les tests fonctionnels ont besoin d'une BDD séparée. À faire une seule fois :
+
+```powershell
+# 1. Créer le fichier de credentials locaux (gitignored)
+#    Copier .env.test.local.dist en .env.test.local et y mettre les vraies credentials
+
+# 2. Créer la BDD de test
+php bin/console doctrine:database:create --env=test --if-not-exists
+
+# 3. Créer le schéma
+php bin/console doctrine:schema:create --env=test
+
+# 4. Charger les fixtures (crée admin@test.fr, modo@test.fr, user@test.fr)
+php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+# 5. Lancer les tests
+vendor/bin/phpunit --testsuite Functional
+```
+
+À re-exécuter depuis l'étape 4 si les fixtures changent (modifications de schéma → depuis l'étape 3).
