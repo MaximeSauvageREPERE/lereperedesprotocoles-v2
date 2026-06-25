@@ -18,13 +18,13 @@ class DemandeInscription
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $email = null;
+    private string $email = '';
 
     #[ORM\Column(length: 100)]
-    private ?string $prenom = null;
+    private string $prenom = '';
 
     #[ORM\Column(length: 100)]
-    private ?string $nom = null;
+    private string $nom = '';
 
     #[ORM\ManyToOne(inversedBy: 'demandesInscription')]
     #[ORM\JoinColumn(nullable: false)]
@@ -32,7 +32,7 @@ class DemandeInscription
 
     /** Mot de passe haché, copié vers User lors de l'approbation */
     #[ORM\Column]
-    private ?string $password = null;
+    private string $password = '';
 
     #[ORM\Column(length: 20)]
     private string $statut = self::STATUT_EN_ATTENTE;
@@ -49,7 +49,7 @@ class DemandeInscription
     private ?string $motifRejet = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $traiteeAt = null;
@@ -72,7 +72,7 @@ class DemandeInscription
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -84,7 +84,7 @@ class DemandeInscription
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getPrenom(): string
     {
         return $this->prenom;
     }
@@ -96,7 +96,7 @@ class DemandeInscription
         return $this;
     }
 
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -120,7 +120,7 @@ class DemandeInscription
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -185,7 +185,7 @@ class DemandeInscription
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }

@@ -16,10 +16,10 @@ class Domaine
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private string $nom = '';
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
+    private string $slug = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -39,7 +39,7 @@ class Domaine
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -51,7 +51,7 @@ class Domaine
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -102,6 +102,6 @@ class Domaine
 
     public function __toString(): string
     {
-        return $this->nom ?? '';
+        return $this->nom;
     }
 }

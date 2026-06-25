@@ -16,14 +16,16 @@ class Profession
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
-    private ?string $nom = null;
+    private string $nom = '';
 
     #[ORM\Column(length: 150, unique: true)]
-    private ?string $slug = null;
+    private string $slug = '';
 
+    /** @var Collection<int, User> */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'profession')]
     private Collection $users;
 
+    /** @var Collection<int, DemandeInscription> */
     #[ORM\OneToMany(targetEntity: DemandeInscription::class, mappedBy: 'profession')]
     private Collection $demandesInscription;
 
@@ -38,7 +40,7 @@ class Profession
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -50,7 +52,7 @@ class Profession
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -76,6 +78,6 @@ class Profession
 
     public function __toString(): string
     {
-        return $this->nom ?? '';
+        return $this->nom;
     }
 }

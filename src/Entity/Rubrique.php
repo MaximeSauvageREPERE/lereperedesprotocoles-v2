@@ -16,10 +16,10 @@ class Rubrique
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private string $nom = '';
 
     #[ORM\Column(length: 255, unique: true)]
-    private ?string $slug = null;
+    private string $slug = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -45,7 +45,7 @@ class Rubrique
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNom(): string
     {
         return $this->nom;
     }
@@ -57,7 +57,7 @@ class Rubrique
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -132,6 +132,6 @@ class Rubrique
 
     public function __toString(): string
     {
-        return $this->nom ?? '';
+        return $this->nom;
     }
 }
