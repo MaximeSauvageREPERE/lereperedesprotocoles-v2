@@ -70,3 +70,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #11 | Templates Twig + Layout général | ✅ |
 | #12 | DataFixtures | ✅ |
 | #33 | Responsive mobile-first | ✅ |
+| #36 | PHPStan niveau 5 | ✅ |

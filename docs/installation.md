@@ -283,10 +283,26 @@ lereperedesprotocoles-v2/
 
 ---
 
+## Outils qualité
+
+### PHPStan — analyse statique
+
+```powershell
+php bin/console cache:warmup   # nécessaire pour que PHPStan lise le container Symfony
+vendor/bin/phpstan analyse     # doit retourner "No errors"
+```
+
+La configuration se trouve dans `phpstan.dist.neon` (niveau 5).
+
+---
+
 ## Problèmes fréquents
 
+**`composer require` échoue avec "zip extension and unzip/7z commands are both missing"**  
+Activer l'extension `zip` dans `php.ini` : trouver la ligne `;extension=zip` et retirer le `;`. Le fichier `php.ini` est dans `C:\laragon\bin\php\php-8.3.x\php.ini`.
+
 **`composer install` échoue avec une erreur d'extension PHP**  
-Vérifier que les extensions `pdo_mysql`, `ctype`, `iconv` sont activées dans `php.ini` (Laragon : Menu → PHP → Extensions).
+Vérifier que les extensions `pdo_mysql`, `ctype`, `iconv`, `zip` sont activées dans `php.ini` (Laragon : Menu → PHP → Extensions).
 
 **`doctrine:database:create` : accès refusé**  
 Vérifier la valeur de `DATABASE_URL` dans `.env.local`. Avec Laragon, l'utilisateur est `root` sans mot de passe : `mysql://root:@127.0.0.1:3306/...`
