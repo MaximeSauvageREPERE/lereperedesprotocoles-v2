@@ -3,13 +3,13 @@
 {% block title %}Demande d'accès{% endblock %}
 
 {% block body %}
-<div class="max-w-lg mx-auto px-4 py-12">
+<div class="max-w-lg mx-auto px-4 py-8 sm:py-12">
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Demander un accès</h1>
     <p class="text-gray-500 text-sm mb-8">Votre demande sera examinée par un administrateur. Vous recevrez un email de confirmation.</p>
 
     {{ form_start(form, {'attr': {'class': 'space-y-5', 'novalidate': 'novalidate'}}) }}
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
             {{ form_label(form.prenom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
             {{ form_widget(form.prenom, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
