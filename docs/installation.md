@@ -365,4 +365,5 @@ Node.js doit être installé et accessible dans le PATH. Relancer PowerShell apr
 Lancer `composer install` (une dépendance a peut-être été ajoutée) puis `php bin/console doctrine:migrations:migrate` (une migration a peut-être été ajoutée).
 
 **Emails non reçus en développement**  
-C'est normal. `MAILER_DSN=null://null` intercepte tous les emails. Les consulter dans le Symfony Profiler : barre de débogage en bas → onglet "Emails".
+C'est normal. `MAILER_DSN=null://null` intercepte tous les emails. Les consulter dans le Symfony Profiler : barre de débogage en bas → onglet "Emails".  
+Voir [docs/emails.md](emails.md) pour le détail complet du système d'emails.
