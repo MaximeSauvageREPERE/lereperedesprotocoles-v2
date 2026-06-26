@@ -6,10 +6,10 @@
 <div class="max-w-5xl mx-auto px-4 py-10">
 
     <div class="mb-8">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Utilisateurs ({{ utilisateurs|length }})</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Utilisateurs ({{ pagination.getTotalItemCount() }})</h1>
     </div>
 
-    {% if utilisateurs is empty %}
+    {% if pagination.getTotalItemCount() == 0 %}
         <p class="text-gray-500">Aucun utilisateur.</p>
     {% else %}
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -27,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    {% for user in utilisateurs %}
+                    {% for user in pagination %}
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-3 font-medium text-gray-800">{{ user.prenom }} {{ user.nom }}</td>
                             <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
@@ -71,6 +71,7 @@
             </table>
           </div>
         </div>
+        <div class="mt-4">{{ knp_pagination_render(pagination) }}</div>
     {% endif %}
 
 </div>

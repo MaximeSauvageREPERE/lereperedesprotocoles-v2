@@ -6,14 +6,14 @@
 <div class="max-w-3xl mx-auto px-4 py-10">
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Professions ({{ professions|length }})</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Professions ({{ pagination.getTotalItemCount() }})</h1>
         <a href="{{ path('admin_profession_new') }}"
            class="self-start sm:self-auto bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-700">
             + Nouvelle profession
         </a>
     </div>
 
-    {% if professions is empty %}
+    {% if pagination.getTotalItemCount() == 0 %}
         <p class="text-gray-500">Aucune profession.</p>
     {% else %}
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -29,7 +29,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    {% for profession in professions %}
+                    {% for profession in pagination %}
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-3 font-medium text-gray-800">{{ profession.nom }}</td>
                             <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ profession.slug }}</td>
@@ -61,6 +61,7 @@
             </table>
           </div>
         </div>
+        <div class="mt-4">{{ knp_pagination_render(pagination) }}</div>
     {% endif %}
 
 </div>

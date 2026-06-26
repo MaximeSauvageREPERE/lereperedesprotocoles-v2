@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UtilisateurType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UtilisateurController extends AbstractController
 {
     #[Route('', name: 'admin_utilisateur_index', methods: ['GET'])]
-    public function index(UserRepository $repo): Response
+    public function index(UserRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('u')->orderBy('u.nom', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('admin/utilisateur/index.html.twig', [
-            'utilisateurs' => $repo->findBy([], ['nom' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 

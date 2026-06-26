@@ -19,7 +19,7 @@
         </div>
     {% endfor %}
 
-    {% if protocoles is empty %}
+    {% if pagination.getTotalItemCount() == 0 %}
         <p class="text-gray-500 text-sm">Aucun protocole pour l'instant.</p>
     {% else %}
         <div class="bg-white shadow-sm rounded-lg overflow-hidden">
@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    {% for protocole in protocoles %}
+                    {% for protocole in pagination %}
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3 font-medium text-gray-800">{{ protocole.titre }}</td>
                         <td class="px-4 py-3 text-gray-600">
@@ -91,6 +91,7 @@
             </table>
           </div>
         </div>
+        <div class="mt-4">{{ knp_pagination_render(pagination) }}</div>
     {% endif %}
 
 </div>

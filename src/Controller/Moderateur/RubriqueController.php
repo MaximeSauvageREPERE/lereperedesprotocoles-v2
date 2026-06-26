@@ -6,6 +6,7 @@ use App\Entity\Rubrique;
 use App\Form\RubriqueType;
 use App\Repository\RubriqueRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class RubriqueController extends AbstractController
 {
     #[Route('', name: 'moderateur_rubrique_index', methods: ['GET'])]
-    public function index(RubriqueRepository $repo): Response
+    public function index(RubriqueRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('r')->orderBy('r.nom', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('moderateur/rubrique/index.html.twig', [
-            'rubriques' => $repo->findBy([], ['nom' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 

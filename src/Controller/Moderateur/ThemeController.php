@@ -6,6 +6,7 @@ use App\Entity\Theme;
 use App\Form\ThemeType;
 use App\Repository\ThemeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class ThemeController extends AbstractController
 {
     #[Route('', name: 'moderateur_theme_index', methods: ['GET'])]
-    public function index(ThemeRepository $repo): Response
+    public function index(ThemeRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('t')->orderBy('t.nom', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('moderateur/theme/index.html.twig', [
-            'themes' => $repo->findBy([], ['nom' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 
