@@ -21,14 +21,16 @@ class DomaineController extends AbstractController
     #[Route('', name: 'moderateur_domaine_index', methods: ['GET'])]
     public function index(DomaineRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $q = $request->query->getString('q', '');
         $pagination = $paginator->paginate(
-            $repo->createQueryBuilder('d')->orderBy('d.nom', 'ASC'),
+            $repo->queryBuilderSearch($q),
             $request->query->getInt('page', 1),
             20
         );
 
         return $this->render('moderateur/domaine/index.html.twig', [
             'pagination' => $pagination,
+            'q' => $q,
         ]);
     }
 

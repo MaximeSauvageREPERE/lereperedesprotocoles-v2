@@ -29,13 +29,19 @@ class DemandeInscriptionRepository extends ServiceEntityRepository
         return $this->queryBuilderNonVerifiees()->getQuery()->getResult();
     }
 
-    public function queryBuilderEnAttentePourAdmin(): QueryBuilder
+    public function queryBuilderEnAttentePourAdmin(string $q = ''): QueryBuilder
     {
-        return $this->createQueryBuilder('d')
+        $qb = $this->createQueryBuilder('d')
             ->andWhere('d.statut = :statut')
             ->andWhere('d.emailVerifie = true')
             ->setParameter('statut', DemandeInscription::STATUT_EN_ATTENTE)
             ->orderBy('d.createdAt', 'ASC');
+        if ('' !== $q) {
+            $qb->andWhere('d.nom LIKE :q OR d.prenom LIKE :q OR d.email LIKE :q')
+                ->setParameter('q', '%'.$q.'%');
+        }
+
+        return $qb;
     }
 
     public function queryBuilderNonVerifiees(): QueryBuilder

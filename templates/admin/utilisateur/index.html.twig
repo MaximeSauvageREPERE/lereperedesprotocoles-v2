@@ -5,12 +5,34 @@
 {% block body %}
 <div class="max-w-5xl mx-auto px-4 py-10">
 
-    <div class="mb-8">
+    <div class="mb-4">
         <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Utilisateurs ({{ pagination.getTotalItemCount() }})</h1>
     </div>
 
+    <form method="get" class="mb-6 flex flex-wrap gap-2">
+        <input type="text"
+               name="q"
+               value="{{ q }}"
+               placeholder="Nom, prénom ou email…"
+               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+        <button type="submit"
+                class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200">
+            Rechercher
+        </button>
+        {% if q %}
+            <a href="{{ app.request.pathinfo }}"
+               class="text-sm text-gray-500 hover:text-gray-700 self-center">
+                Effacer
+            </a>
+        {% endif %}
+    </form>
+
     {% if pagination.getTotalItemCount() == 0 %}
-        <p class="text-gray-500">Aucun utilisateur.</p>
+        {% if q %}
+            <p class="text-gray-500">Aucun résultat pour « {{ q }} ».</p>
+        {% else %}
+            <p class="text-gray-500">Aucun utilisateur.</p>
+        {% endif %}
     {% else %}
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div class="overflow-x-auto">
