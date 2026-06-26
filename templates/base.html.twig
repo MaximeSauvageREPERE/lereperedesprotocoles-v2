@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Le Repère des Protocoles{% endblock %}</title>
+        {% block head %}{% endblock %}
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
@@ -40,7 +41,7 @@
                                 <a href="{{ path('moderateur_protocole_index') }}" class="text-blue-600 hover:underline">Protocoles</a>
                             {% endif %}
                             <a href="{{ path('navigation_domaines') }}" class="text-blue-600 hover:underline">Parcourir</a>
-                            <form action="{{ path('app_logout') }}" method="post" class="inline">
+                            <form action="{{ path('app_logout') }}" method="post" class="inline" data-turbo="false">
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                                 <button type="submit" class="text-red-600 hover:underline bg-transparent border-0 p-0 cursor-pointer text-sm font-normal">Déconnexion</button>
                             </form>
@@ -117,7 +118,7 @@
                             {% endif %}
 
                             <div class="mt-2 pt-2 border-t border-gray-100">
-                                <form action="{{ path('app_logout') }}" method="post">
+                                <form action="{{ path('app_logout') }}" method="post" data-turbo="false">
                                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                                     <button type="submit" class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded-md bg-transparent border-0 cursor-pointer text-sm">
                                         Déconnexion

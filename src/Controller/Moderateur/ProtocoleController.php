@@ -6,6 +6,7 @@ use App\Entity\Protocole;
 use App\Form\ProtocoleType;
 use App\Repository\ProtocoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class ProtocoleController extends AbstractController
 {
     #[Route('', name: 'moderateur_protocole_index', methods: ['GET'])]
-    public function index(ProtocoleRepository $repo): Response
+    public function index(ProtocoleRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('p')->orderBy('p.titre', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('moderateur/protocole/index.html.twig', [
-            'protocoles' => $repo->findBy([], ['titre' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 

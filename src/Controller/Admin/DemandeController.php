@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\RefuserDemandeType;
 use App\Repository\DemandeInscriptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,11 +21,24 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DemandeController extends AbstractController
 {
     #[Route('', name: 'admin_demande_index')]
-    public function index(DemandeInscriptionRepository $repo): Response
+    public function index(DemandeInscriptionRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $demandesPagination = $paginator->paginate(
+            $repo->queryBuilderEnAttentePourAdmin(),
+            $request->query->getInt('page', 1),
+            20
+        );
+
+        $emailPagination = $paginator->paginate(
+            $repo->queryBuilderNonVerifiees(),
+            $request->query->getInt('page_email', 1),
+            20,
+            ['pageParameterName' => 'page_email']
+        );
+
         return $this->render('admin/demande/index.html.twig', [
-            'demandes' => $repo->findEnAttentePourAdmin(),
-            'demandes_en_attente_email' => $repo->findNonVerifiees(),
+            'demandes_pagination' => $demandesPagination,
+            'email_pagination' => $emailPagination,
         ]);
     }
 

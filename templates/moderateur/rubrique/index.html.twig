@@ -13,7 +13,7 @@
         </a>
     </div>
 
-    {% if rubriques is empty %}
+    {% if pagination.getTotalItemCount() == 0 %}
         <p class="text-gray-500">Aucune rubrique pour l'instant.</p>
     {% else %}
         <div class="bg-white shadow-sm rounded-lg overflow-hidden">
@@ -28,7 +28,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    {% for rubrique in rubriques %}
+                    {% for rubrique in pagination %}
                         <tr>
                             <td class="px-6 py-4 font-medium text-gray-900">{{ rubrique.nom }}</td>
                             <td class="px-6 py-4 text-gray-600 text-sm">
@@ -56,6 +56,7 @@
             </table>
           </div>
         </div>
+        <div class="mt-4">{{ knp_pagination_render(pagination) }}</div>
     {% endif %}
 
 </div>

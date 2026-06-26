@@ -6,6 +6,7 @@ use App\Entity\Domaine;
 use App\Form\DomaineType;
 use App\Repository\DomaineRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class DomaineController extends AbstractController
 {
     #[Route('', name: 'moderateur_domaine_index', methods: ['GET'])]
-    public function index(DomaineRepository $repo): Response
+    public function index(DomaineRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('d')->orderBy('d.nom', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('moderateur/domaine/index.html.twig', [
-            'domaines' => $repo->findBy([], ['nom' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 

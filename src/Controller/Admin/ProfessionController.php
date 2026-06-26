@@ -6,6 +6,7 @@ use App\Entity\Profession;
 use App\Form\ProfessionType;
 use App\Repository\ProfessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,16 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class ProfessionController extends AbstractController
 {
     #[Route('', name: 'admin_profession_index', methods: ['GET'])]
-    public function index(ProfessionRepository $repo): Response
+    public function index(ProfessionRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $pagination = $paginator->paginate(
+            $repo->createQueryBuilder('p')->orderBy('p.nom', 'ASC'),
+            $request->query->getInt('page', 1),
+            20
+        );
+
         return $this->render('admin/profession/index.html.twig', [
-            'professions' => $repo->findBy([], ['nom' => 'ASC']),
+            'pagination' => $pagination,
         ]);
     }
 
