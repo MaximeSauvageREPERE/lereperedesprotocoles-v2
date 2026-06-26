@@ -77,3 +77,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #13 | Tests PHPUnit (tests unitaires) | ✅ |
 | #35 | Tests fonctionnels (HTTP + rôles) | ✅ |
 | #40 | GitHub Actions CI | ✅ |
+| #44 | Emails transactionnels | ✅ |
