@@ -21,14 +21,16 @@ class ProfessionController extends AbstractController
     #[Route('', name: 'admin_profession_index', methods: ['GET'])]
     public function index(ProfessionRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $q = $request->query->getString('q', '');
         $pagination = $paginator->paginate(
-            $repo->createQueryBuilder('p')->orderBy('p.nom', 'ASC'),
+            $repo->queryBuilderSearch($q),
             $request->query->getInt('page', 1),
             20
         );
 
         return $this->render('admin/profession/index.html.twig', [
             'pagination' => $pagination,
+            'q' => $q,
         ]);
     }
 

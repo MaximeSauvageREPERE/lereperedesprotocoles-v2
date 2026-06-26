@@ -21,14 +21,16 @@ class ProtocoleController extends AbstractController
     #[Route('', name: 'moderateur_protocole_index', methods: ['GET'])]
     public function index(ProtocoleRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $q = $request->query->getString('q', '');
         $pagination = $paginator->paginate(
-            $repo->createQueryBuilder('p')->orderBy('p.titre', 'ASC'),
+            $repo->queryBuilderSearch($q),
             $request->query->getInt('page', 1),
             20
         );
 
         return $this->render('moderateur/protocole/index.html.twig', [
             'pagination' => $pagination,
+            'q' => $q,
         ]);
     }
 

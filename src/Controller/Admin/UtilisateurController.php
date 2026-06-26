@@ -21,14 +21,16 @@ class UtilisateurController extends AbstractController
     #[Route('', name: 'admin_utilisateur_index', methods: ['GET'])]
     public function index(UserRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $q = $request->query->getString('q', '');
         $pagination = $paginator->paginate(
-            $repo->createQueryBuilder('u')->orderBy('u.nom', 'ASC'),
+            $repo->queryBuilderSearch($q),
             $request->query->getInt('page', 1),
             20
         );
 
         return $this->render('admin/utilisateur/index.html.twig', [
             'pagination' => $pagination,
+            'q' => $q,
         ]);
     }
 

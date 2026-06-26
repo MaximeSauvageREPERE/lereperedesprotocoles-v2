@@ -5,9 +5,27 @@
 {% block body %}
 <div class="max-w-5xl mx-auto px-4 py-10">
 
-    <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 sm:mb-8">Demandes d'inscription</h1>
+    <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Demandes d'inscription</h1>
 
-    {% if demandes_pagination.getTotalItemCount() == 0 and email_pagination.getTotalItemCount() == 0 %}
+    <form method="get" class="mb-6 flex flex-wrap gap-2">
+        <input type="text"
+               name="q"
+               value="{{ q }}"
+               placeholder="Nom, prénom ou email…"
+               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+        <button type="submit"
+                class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200">
+            Rechercher
+        </button>
+        {% if q %}
+            <a href="{{ app.request.pathinfo }}"
+               class="text-sm text-gray-500 hover:text-gray-700 self-center">
+                Effacer
+            </a>
+        {% endif %}
+    </form>
+
+    {% if demandes_pagination.getTotalItemCount() == 0 and email_pagination.getTotalItemCount() == 0 and q == '' %}
         <p class="text-gray-500">Aucune demande en attente.</p>
     {% endif %}
 
@@ -50,6 +68,8 @@
           </div>
         </div>
         <div class="mb-10">{{ knp_pagination_render(demandes_pagination) }}</div>
+    {% elseif q %}
+        <p class="text-gray-500 mb-6">Aucun résultat pour « {{ q }} » dans les demandes à traiter.</p>
     {% endif %}
 
     {% if email_pagination.getTotalItemCount() > 0 %}

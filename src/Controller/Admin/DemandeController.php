@@ -23,8 +23,9 @@ class DemandeController extends AbstractController
     #[Route('', name: 'admin_demande_index')]
     public function index(DemandeInscriptionRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
+        $q = $request->query->getString('q', '');
         $demandesPagination = $paginator->paginate(
-            $repo->queryBuilderEnAttentePourAdmin(),
+            $repo->queryBuilderEnAttentePourAdmin($q),
             $request->query->getInt('page', 1),
             20
         );
@@ -39,6 +40,7 @@ class DemandeController extends AbstractController
         return $this->render('admin/demande/index.html.twig', [
             'demandes_pagination' => $demandesPagination,
             'email_pagination' => $emailPagination,
+            'q' => $q,
         ]);
     }
 
