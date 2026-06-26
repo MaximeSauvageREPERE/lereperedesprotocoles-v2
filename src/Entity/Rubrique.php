@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RubriqueRepository::class)]
+#[ORM\Index(columns: ['nom'])]
 class Rubrique
 {
     #[ORM\Id]

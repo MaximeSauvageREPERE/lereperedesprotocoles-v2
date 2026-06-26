@@ -6,6 +6,9 @@ use App\Repository\DemandeInscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DemandeInscriptionRepository::class)]
+#[ORM\Index(columns: ['nom'])]
+#[ORM\Index(columns: ['prenom'])]
+#[ORM\Index(columns: ['email'])]
 class DemandeInscription
 {
     public const STATUT_EN_ATTENTE = 'en_attente';

@@ -305,6 +305,40 @@ public function __toString(): string
 
 ---
 
+## Index Doctrine
+
+Un index de base de données est une structure auxiliaire que MySQL maintient en parallèle de la table. Sans index, une requête `ORDER BY nom` ou `WHERE nom LIKE '%...'` force MySQL à parcourir toutes les lignes. Avec un index, MySQL peut atteindre directement les lignes pertinentes pour les tris, et réduire le travail pour les recherches.
+
+Les index sont déclarés en PHP via l'attribut `#[ORM\Index]` répété directement sur la classe :
+
+```php
+#[ORM\Entity(repositoryClass: DomaineRepository::class)]
+#[ORM\Index(columns: ['nom'])]
+class Domaine
+```
+
+Doctrine génère automatiquement un nom pour chaque index (`IDX_…`). Le SQL produit lors de `doctrine:migrations:diff` :
+
+```sql
+CREATE INDEX IDX_78AF0ACC6C6E55B5 ON domaine (nom);
+```
+
+**Index présents dans ce projet (ajoutés au ticket #42) :**
+
+| Table | Colonne(s) indexée(s) | Utilisée pour |
+|---|---|---|
+| `domaine` | `nom` | ORDER BY + LIKE |
+| `rubrique` | `nom` | ORDER BY + LIKE |
+| `theme` | `nom` | ORDER BY + LIKE |
+| `protocole` | `titre` | ORDER BY + LIKE |
+| `profession` | `nom` | ORDER BY + LIKE |
+| `user` | `nom`, `prenom` | ORDER BY + LIKE (`email` déjà indexé via `unique: true`) |
+| `demande_inscription` | `nom`, `prenom`, `email` | ORDER BY + LIKE |
+
+> **Limite :** les recherches de type `LIKE '%terme%'` (wildcard en début) ne peuvent pas utiliser un index B-tree. Ces index bénéficient surtout aux `ORDER BY` et aux recherches préfixées (`LIKE 'terme%'`). Pour une recherche plein texte optimale, il faudrait des index `FULLTEXT` avec la syntaxe `MATCH() AGAINST()`, ce qui est hors scope ici.
+
+---
+
 ## Workflow de migration
 
 Après toute modification d'une entité (ajout de champ, nouvelle relation, etc.) :
