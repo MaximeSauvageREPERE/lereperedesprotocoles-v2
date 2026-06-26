@@ -356,7 +356,14 @@ Les scripts `post-install-cmd` dans `composer.json` exécutent :
 2. `assets:install` — installe les assets des bundles dans `public/`
 3. `importmap:install` — télécharge les packages JavaScript depuis un CDN
 
-Aucun de ces scripts n'est nécessaire pour les tests PHP. `--no-scripts` les court-circuite pour garder le job simple et rapide.
+`--no-scripts` court-circuite ces automatismes pour éviter que `cache:clear` échoue (il tourne avec l'env `dev` par défaut, sans les variables d'env configurées). Dans le job fonctionnel, `importmap:install` est ensuite relancé **explicitement**, car les templates Twig qui utilisent `{{ importmap('app') }}` ont besoin que les fichiers vendor JS (`@hotwired/stimulus`, `@hotwired/turbo`) soient présents — sans eux, AssetMapper lève une exception PHP et les pages retournent HTTP 500.
+
+```yaml
+- name: Installer les assets JavaScript (requis par les templates Twig)
+  run: php bin/console importmap:install
+```
+
+Le job `quality` n'en a pas besoin : PHPUnit Unit et PHPStan n'instancient pas Symfony et ne rendent aucune page.
 
 ---
 

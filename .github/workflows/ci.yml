@@ -103,6 +103,9 @@ jobs:
       - name: Installer les dépendances Composer
         run: composer install --prefer-dist --no-interaction --no-scripts
 
+      - name: Installer les assets JavaScript (requis par les templates Twig)
+        run: php bin/console importmap:install
+
       - name: Créer la base de données de test
         run: php bin/console doctrine:database:create --env=test --if-not-exists
 
