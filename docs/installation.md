@@ -304,6 +304,21 @@ vendor/bin/php-cs-fixer fix                    # appliquer les corrections
 La configuration se trouve dans `.php-cs-fixer.dist.php` (règles `@Symfony`, cible `src/` et `tests/`).  
 Le fichier `.php-cs-fixer.cache` est gitignorés (accélère les relances).
 
+### GitHub Actions CI
+
+Chaque push et chaque pull request sur `main` déclenchent automatiquement le pipeline défini dans `.github/workflows/ci.yml`.
+
+**Jobs exécutés en parallèle :**
+
+| Job | Étapes |
+|---|---|
+| **Qualité du code** | PHP CS Fixer · PHPStan · PHPUnit Unit |
+| **Tests fonctionnels** | MySQL 8.0 · Création BDD/schéma/fixtures · PHPUnit Functional |
+
+**Voir les résultats :** onglet *Actions* du dépôt GitHub. Le badge en haut du README reflète le statut du dernier run sur `main`.
+
+---
+
 ### PHPUnit — tests unitaires et fonctionnels
 
 ```powershell
