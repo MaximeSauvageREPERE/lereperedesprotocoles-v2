@@ -36,12 +36,16 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         }
 
         $professionSlugs = ['medecin-generaliste', 'infirmier', 'aide-soignant', 'kinesitherapeute', 'pharmacien'];
-        $prenoms = ['Jean', 'Marie', 'Pierre', 'Sophie', 'Luc', 'Camille', 'Antoine', 'Claire', 'Thomas', 'Emma',
-                    'Nicolas', 'Julie', 'David', 'Céline', 'Julien', 'Laure', 'François', 'Nathalie', 'Romain', 'Aurélie',
-                    'Maxime', 'Sandrine'];
-        $noms = ['Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit', 'Durand', 'Leroy', 'Moreau',
-                 'Simon', 'Laurent', 'Lefebvre', 'Michel', 'Garcia', 'David', 'Bertrand', 'Roux', 'Vincent', 'Fournier',
-                 'Morel', 'Girard'];
+        $prenoms = [
+            'Jean', 'Marie', 'Pierre', 'Sophie', 'Luc', 'Camille', 'Antoine', 'Claire', 'Thomas', 'Emma',
+            'Nicolas', 'Julie', 'David', 'Céline', 'Julien', 'Laure', 'François', 'Nathalie', 'Romain', 'Aurélie',
+            'Maxime', 'Sandrine',
+        ];
+        $noms = [
+            'Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit', 'Durand', 'Leroy', 'Moreau',
+            'Simon', 'Laurent', 'Lefebvre', 'Michel', 'Garcia', 'David', 'Bertrand', 'Roux', 'Vincent', 'Fournier',
+            'Morel', 'Girard',
+        ];
 
         $hashedPassword = $this->hasher->hashPassword(new User(), 'utilisateur');
 
