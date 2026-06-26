@@ -1,5 +1,7 @@
 # Le Repère des Protocoles v2
 
+[![CI](https://github.com/MaximeSauvageREPERE/lereperedesprotocoles-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/MaximeSauvageREPERE/lereperedesprotocoles-v2/actions/workflows/ci.yml)
+
 Application Symfony 7.4 de gestion et de consultation de protocoles médicaux. Les utilisateurs accèdent aux protocoles après validation de leur inscription par un administrateur. Les contenus (domaines, rubriques, thèmes, protocoles) sont gérés par des modérateurs.
 
 ## Stack technique
@@ -74,3 +76,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #37 | PHP CS Fixer (formatage @Symfony) | ✅ |
 | #13 | Tests PHPUnit (tests unitaires) | ✅ |
 | #35 | Tests fonctionnels (HTTP + rôles) | ✅ |
+| #40 | GitHub Actions CI | ✅ |

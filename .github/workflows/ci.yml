@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 1 : Qualité du code
+  #   - PHP CS Fixer    → vérifie le formatage (règles @Symfony)
+  #   - PHPStan         → analyse statique niveau 5
+  #   - PHPUnit Unit    → tests unitaires (pas de BDD requise)
+  # ──────────────────────────────────────────────────────────────────────────
+  quality:
+    name: Qualité du code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Installer les dépendances Composer
+        run: composer install --prefer-dist --no-interaction --no-scripts
+
+      - name: PHP CS Fixer
+        run: vendor/bin/php-cs-fixer check --diff --no-interaction
+
+      - name: Warmup cache Symfony (requis par PHPStan pour lire le container)
+        run: php bin/console cache:warmup --env=dev
+        env:
+          APP_SECRET: ci_secret_placeholder
+          DATABASE_URL: "mysql://app:app@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4"
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse --no-progress
+        env:
+          APP_SECRET: ci_secret_placeholder
+          DATABASE_URL: "mysql://app:app@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4"
+
+      - name: PHPUnit – tests unitaires
+        run: vendor/bin/phpunit --testsuite Unit
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Job 2 : Tests fonctionnels
+  #   - Démarre un service MySQL 8.0
+  #   - Crée la BDD de test, le schéma et charge les fixtures
+  #   - PHPUnit Functional → scénarios HTTP (accès, login, rôles)
+  # ──────────────────────────────────────────────────────────────────────────
+  functional:
+    name: Tests fonctionnels
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: "mysql://root:root@127.0.0.1:3306/lereperedesprotocoles_v2?serverVersion=8.0.32&charset=utf8mb4"
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Installer les dépendances Composer
+        run: composer install --prefer-dist --no-interaction --no-scripts
+
+      - name: Créer la base de données de test
+        run: php bin/console doctrine:database:create --env=test --if-not-exists
+
+      - name: Créer le schéma
+        run: php bin/console doctrine:schema:create --env=test
+
+      - name: Charger les fixtures
+        run: php bin/console doctrine:fixtures:load --env=test --no-interaction
+
+      - name: PHPUnit – tests fonctionnels
+        run: vendor/bin/phpunit --testsuite Functional
