@@ -9,6 +9,7 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: ProtocoleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(columns: ['titre'])]
 #[Vich\Uploadable]
 class Protocole
 {
