@@ -157,7 +157,7 @@ php bin/console doctrine:fixtures:load
 | modo@test.fr | moderateur | ROLE_MODERATEUR |
 | user@test.fr | utilisateur | ROLE_USER |
 
-**Données de contenu créées :** 5 professions, 3 domaines, 3 rubriques, 5 thèmes, 5 protocoles.
+**Données de contenu créées :** 25 professions, 3 domaines, 3 rubriques, 5 thèmes, 25 protocoles, 25 utilisateurs (dont 3 nommés ci-dessus).
 
 ---
 
@@ -279,6 +279,7 @@ lereperedesprotocoles-v2/
 | CSS | Tailwind CSS | 3.4 |
 | JS | Stimulus + Turbo (Hotwired) | via AssetMapper |
 | Upload | Vich UploaderBundle | 2.9 |
+| Pagination | KnpPaginatorBundle | 6.10 |
 | Serveur local | Laragon | 2026 / v8.6.1 |
 
 ---
