@@ -16,10 +16,15 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('security/login.html.twig', [
+        $response = $this->render('security/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername(),
         ]);
+
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+
+        return $response;
     }
 
     #[Route('/logout', name: 'app_logout')]

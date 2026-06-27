@@ -14,7 +14,7 @@
                name="q"
                value="{{ q }}"
                placeholder="Nom, prénom ou email…"
-               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu w-64">
         <button type="submit"
                 class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200">
             Rechercher
@@ -65,27 +65,29 @@
                             </td>
                             <td class="px-4 py-3">
                                 {% if user.isVerified %}
-                                    <span class="inline-block bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">Actif</span>
+                                    <span class="inline-block bg-brand-vert-light text-brand-vert-dark text-xs font-medium px-2 py-0.5 rounded-full">Actif</span>
                                 {% else %}
                                     <span class="inline-block bg-gray-100 text-gray-500 text-xs font-medium px-2 py-0.5 rounded-full">Inactif</span>
                                 {% endif %}
                             </td>
                             <td class="px-4 py-3 text-gray-500">{{ user.createdAt|date('d/m/Y') }}</td>
-                            <td class="px-4 py-3 flex gap-2 justify-end">
-                                <a href="{{ path('admin_utilisateur_edit', {id: user.id}) }}"
-                                   class="text-blue-600 hover:underline text-xs font-medium">
-                                    Modifier
-                                </a>
-                                {% if user !== app.user %}
-                                    <form method="post" action="{{ path('admin_utilisateur_delete', {id: user.id}) }}"
-                                          onsubmit="return confirm('Supprimer {{ user.prenom }} {{ user.nom }} ? Cette action est irréversible.')">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
-                                        <button type="submit"
-                                                class="text-red-600 hover:underline text-xs font-medium">
-                                            Supprimer
-                                        </button>
-                                    </form>
-                                {% endif %}
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2 justify-end">
+                                    <a href="{{ path('admin_utilisateur_edit', {id: user.id}) }}"
+                                       class="bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                        Modifier
+                                    </a>
+                                    {% if user !== app.user %}
+                                        <form method="post" action="{{ path('admin_utilisateur_delete', {id: user.id}) }}"
+                                              onsubmit="return confirm('Supprimer {{ user.prenom }} {{ user.nom }} ? Cette action est irréversible.')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                                            <button type="submit"
+                                                    class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -93,7 +95,7 @@
             </table>
           </div>
         </div>
-        <div class="mt-4">{{ knp_pagination_render(pagination) }}</div>
+        <div class="mt-4 flex justify-center">{{ knp_pagination_render(pagination) }}</div>
     {% endif %}
 
 </div>

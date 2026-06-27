@@ -3,73 +3,75 @@
 {% block title %}Accueil — Le Repère des Protocoles{% endblock %}
 
 {% block body %}
-<div class="max-w-4xl mx-auto px-4 py-8 sm:py-16">
 
-    <div class="text-center mb-8 sm:mb-10">
-        <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Le Repère des Protocoles</h1>
-        <p class="text-base sm:text-lg text-gray-600 max-w-xl mx-auto">
+{% if app.user %}
+
+<div class="bg-gradient-to-r from-brand-bleu-fonce to-brand-bleu px-4 py-8 sm:py-12">
+    <div class="max-w-4xl mx-auto flex items-center gap-4">
+        <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-xl select-none shrink-0">
+            {{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}
+        </div>
+        <div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white">Bonjour, {{ app.user.prenom }} {{ app.user.nom }}</h1>
+            <p class="text-white/70 text-sm mt-0.5">
+                {% if is_granted('ROLE_ADMIN') %}Administrateur
+                {% elseif is_granted('ROLE_MODERATEUR') %}Modérateur
+                {% else %}Utilisateur{% endif %}
+                — {{ app.user.profession.nom }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="flex flex-wrap gap-3">
+        <a href="{{ path('navigation_domaines') }}"
+           class="bg-brand-bleu-fonce hover:bg-brand-bleu-fonce-dark text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors">
+            Parcourir les protocoles
+        </a>
+        <a href="{{ path('profil_index') }}"
+           class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+            Mon profil
+        </a>
+        {% if is_granted('ROLE_MODERATEUR') %}
+            <a href="{{ path('moderateur_protocole_index') }}"
+               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+                Gérer les contenus
+            </a>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_demande_index') }}"
+               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
+                Administration
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+
+<div class="bg-gradient-to-br from-brand-bleu-fonce to-brand-bleu py-16 sm:py-24 px-4">
+    <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Le Repère des Protocoles</h1>
+        <p class="text-base sm:text-lg text-white/80 mb-10 max-w-lg mx-auto">
             Accédez aux protocoles médicaux de votre établissement, organisés par domaine, rubrique et thème.
         </p>
-    </div>
-
-    {% if app.user %}
-
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-8 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg select-none">
-                {{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}
-            </div>
-            <div>
-                <p class="font-medium text-gray-900">{{ app.user.prenom }} {{ app.user.nom }}</p>
-                <p class="text-sm text-gray-500">
-                    {% if is_granted('ROLE_ADMIN') %}Administrateur
-                    {% elseif is_granted('ROLE_MODERATEUR') %}Modérateur
-                    {% else %}Utilisateur{% endif %}
-                    — {{ app.user.profession.nom }}
-                </p>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap gap-3">
-            <a href="{{ path('navigation_domaines') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors">
-                Parcourir les protocoles
-            </a>
-            <a href="{{ path('profil_index') }}"
-               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
-                Mon profil
-            </a>
-            {% if is_granted('ROLE_MODERATEUR') %}
-                <a href="{{ path('moderateur_protocole_index') }}"
-                   class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
-                    Gérer les contenus
-                </a>
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('admin_demande_index') }}"
-                   class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
-                    Administration
-                </a>
-            {% endif %}
-        </div>
-
-    {% else %}
-
-        <div class="flex justify-center gap-4">
+        <div class="flex justify-center gap-4 flex-wrap">
             <a href="{{ path('app_login') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-3 rounded-md transition-colors">
+               class="bg-brand-rose hover:bg-brand-rose-dark text-white text-sm font-semibold px-8 py-3 rounded-md transition-colors shadow-lg">
                 Se connecter
             </a>
             <a href="{{ path('app_inscription') }}"
-               class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-6 py-3 rounded-md border border-gray-300 transition-colors">
+               class="bg-white/15 hover:bg-white/25 text-white text-sm font-medium px-8 py-3 rounded-md border border-white/30 transition-colors">
                 Demander l'accès
             </a>
         </div>
-
-        <p class="text-center text-sm text-gray-400 mt-6">
+        <p class="mt-8 text-white/50 text-sm">
             L'accès est réservé aux professionnels de santé autorisés.
         </p>
-
-    {% endif %}
-
+    </div>
 </div>
+
+{% endif %}
+
 {% endblock %}

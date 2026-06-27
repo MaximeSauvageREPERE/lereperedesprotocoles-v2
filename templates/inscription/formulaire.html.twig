@@ -3,58 +3,64 @@
 {% block title %}Demande d'accès{% endblock %}
 
 {% block body %}
-<div class="max-w-lg mx-auto px-4 py-8 sm:py-12">
-    <h1 class="text-2xl font-bold text-gray-800 mb-2">Demander un accès</h1>
-    <p class="text-gray-500 text-sm mb-8">Votre demande sera examinée par un administrateur. Vous recevrez un email de confirmation.</p>
+<div class="min-h-[calc(100vh-8rem)] flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-lg">
 
-    {{ form_start(form, {'attr': {'class': 'space-y-5', 'novalidate': 'novalidate'}}) }}
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-            {{ form_label(form.prenom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-            {{ form_widget(form.prenom, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-            {{ form_errors(form.prenom) }}
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">Demander un accès</h1>
+            <p class="text-sm text-gray-500 mt-1">Votre demande sera examinée par un administrateur.</p>
         </div>
-        <div>
-            {{ form_label(form.nom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-            {{ form_widget(form.nom, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-            {{ form_errors(form.nom) }}
+
+        {{ form_start(form, {'attr': {'class': 'bg-white shadow-sm rounded-lg border-t-4 border-brand-bleu-fonce border border-gray-200 p-8 space-y-5', 'novalidate': 'novalidate'}}) }}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                {{ form_label(form.prenom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.prenom, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu'}}) }}
+                {{ form_errors(form.prenom) }}
+            </div>
+            <div>
+                {{ form_label(form.nom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                {{ form_widget(form.nom, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
         </div>
+
+        <div>
+            {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu'}}) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        <div>
+            {{ form_label(form.profession, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.profession, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu bg-white'}}) }}
+            {{ form_errors(form.profession) }}
+        </div>
+
+        <div>
+            {{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.plainPassword.first, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu'}}) }}
+            {{ form_errors(form.plainPassword.first) }}
+        </div>
+
+        <div>
+            {{ form_label(form.plainPassword.second, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+            {{ form_widget(form.plainPassword.second, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu'}}) }}
+            {{ form_errors(form.plainPassword.second) }}
+            {{ form_errors(form.plainPassword) }}
+        </div>
+
+        <button type="submit" class="w-full bg-brand-bleu-fonce hover:bg-brand-bleu-fonce-dark text-white font-medium py-2 px-4 rounded-md text-sm transition-colors">
+            Envoyer ma demande
+        </button>
+
+        {{ form_end(form) }}
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+            Déjà un compte ? <a href="{{ path('app_login') }}" class="text-brand-bleu hover:underline">Se connecter</a>
+        </p>
+
     </div>
-
-    <div>
-        {{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.email, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-        {{ form_errors(form.email) }}
-    </div>
-
-    <div>
-        {{ form_label(form.profession, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.profession, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'}}) }}
-        {{ form_errors(form.profession) }}
-    </div>
-
-    <div>
-        {{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.plainPassword.first, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-        {{ form_errors(form.plainPassword.first) }}
-    </div>
-
-    <div>
-        {{ form_label(form.plainPassword.second, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-        {{ form_widget(form.plainPassword.second, {'attr': {'class': 'w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
-        {{ form_errors(form.plainPassword.second) }}
-        {{ form_errors(form.plainPassword) }}
-    </div>
-
-    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md text-sm transition-colors">
-        Envoyer ma demande
-    </button>
-
-    {{ form_end(form) }}
-
-    <p class="mt-6 text-center text-sm text-gray-500">
-        Déjà un compte ? <a href="{{ path('app_login') }}" class="text-blue-600 hover:underline">Se connecter</a>
-    </p>
 </div>
 {% endblock %}

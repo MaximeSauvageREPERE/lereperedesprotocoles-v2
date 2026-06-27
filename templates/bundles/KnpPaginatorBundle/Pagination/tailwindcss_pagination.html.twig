@@ -1,0 +1,46 @@
+{% if pageCount > 1 %}
+<nav class="flex items-center gap-1 text-sm">
+
+    {% if first is defined and current != first %}
+        <a href="{{ path(route, knp_pagination_query(query, first, options)) }}"
+           class="px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-brand-bleu-fonce-light hover:text-brand-bleu-fonce hover:border-brand-bleu-fonce transition-colors">
+            «
+        </a>
+    {% endif %}
+
+    {% if previous is defined %}
+        <a rel="prev" href="{{ path(route, knp_pagination_query(query, previous, options)) }}"
+           class="px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-brand-bleu-fonce-light hover:text-brand-bleu-fonce hover:border-brand-bleu-fonce transition-colors">
+            ‹
+        </a>
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <a href="{{ path(route, knp_pagination_query(query, page, options)) }}"
+               class="px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-brand-bleu-fonce-light hover:text-brand-bleu-fonce hover:border-brand-bleu-fonce transition-colors">
+                {{ page }}
+            </a>
+        {% else %}
+            <span class="px-3 py-1.5 rounded-md bg-brand-bleu-fonce text-white font-medium border border-brand-bleu-fonce">
+                {{ page }}
+            </span>
+        {% endif %}
+    {% endfor %}
+
+    {% if next is defined %}
+        <a rel="next" href="{{ path(route, knp_pagination_query(query, next, options)) }}"
+           class="px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-brand-bleu-fonce-light hover:text-brand-bleu-fonce hover:border-brand-bleu-fonce transition-colors">
+            ›
+        </a>
+    {% endif %}
+
+    {% if last is defined and current != last %}
+        <a href="{{ path(route, knp_pagination_query(query, last, options)) }}"
+           class="px-3 py-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-brand-bleu-fonce-light hover:text-brand-bleu-fonce hover:border-brand-bleu-fonce transition-colors">
+            »
+        </a>
+    {% endif %}
+
+</nav>
+{% endif %}
