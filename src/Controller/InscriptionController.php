@@ -8,14 +8,11 @@ use App\Form\InscriptionType;
 use App\Repository\DemandeInscriptionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\ByteString;
 
 class InscriptionController extends AbstractController
 {
@@ -24,7 +21,6 @@ class InscriptionController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
-        MailerInterface $mailer,
         UserRepository $userRepository,
         DemandeInscriptionRepository $demandeRepository,
     ): Response {
@@ -52,25 +48,14 @@ class InscriptionController extends AbstractController
 
             $tempUser = new User();
             $demande->setPassword($hasher->hashPassword($tempUser, $form->get('plainPassword')->getData()));
-
-            $token = ByteString::fromRandom(32)->toString();
-            $demande->setToken($token);
-            $demande->setTokenExpiresAt(new \DateTimeImmutable('+24 hours'));
+            $demande->setEmailVerifie(true);
 
             $em->persist($demande);
             $em->flush();
 
-            $email = (new TemplatedEmail())
-                ->from('noreply@lereperedesprotocoles.fr')
-                ->to($demande->getEmail())
-                ->subject('Confirmez votre adresse email')
-                ->htmlTemplate('emails/inscription_confirmation.html.twig')
-                ->context(['demande' => $demande, 'token' => $token]);
-            $mailer->send($email);
+            $this->addFlash('success', "Votre demande d'accès a bien été enregistrée ({$demande->getEmail()}). Un administrateur examinera votre dossier.");
 
-            return $this->render('inscription/succes.html.twig', [
-                'email' => $demande->getEmail(),
-            ]);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('inscription/formulaire.html.twig', [
