@@ -38,3 +38,36 @@ Quand le seuil est atteint, l'utilisateur voit un message du type :
 
 Bloquer uniquement sur l'IP pénaliserait des utilisateurs légitimes derrière un NAT ou un proxy partagé.
 La clé composite `IP + email saisi` cible l'attaquant sur un compte précis sans affecter les autres.
+
+---
+
+## Validation des uploads (type MIME réel)
+
+### Contexte
+
+VichUploaderBundle stocke les fichiers sans valider leur contenu. La validation est portée par les contraintes Symfony sur les champs du formulaire (`src/Form/ProtocoleType.php`).
+
+### Deux niveaux de validation
+
+| Niveau | Option | Ce qu'elle vérifie |
+|---|---|---|
+| Contenu réel | `mimeTypes` | Lit les magic bytes du fichier via PHP `finfo` — indépendant du nom ou du type déclaré par le navigateur |
+| Extension | `allowedExtensions` | Vérifie l'extension du nom de fichier original (défense en profondeur) |
+
+La validation `mimeTypes` est la protection principale : un fichier PHP renommé en `.pdf` sera rejeté car `finfo` identifie son contenu réel comme `text/x-php`.
+
+### Fichiers acceptés
+
+| Champ | MIME types autorisés | Extensions | Taille max |
+|---|---|---|---|
+| PDF | `application/pdf` | `.pdf` | 10 Mo |
+| Image | `image/jpeg`, `image/png`, `image/webp` | `.jpg`, `.jpeg`, `.png`, `.webp` | 20 Mo |
+
+SVG délibérément exclu (peut contenir du JavaScript).
+
+### Tests unitaires
+
+`tests/Unit/Security/UploadValidationTest.php` :
+- `testPhpFileDisguisedAsPdfIsRejected` — fichier PHP renommé `.pdf` → violation `mimeTypes`
+- `testPhpFileDisguisedAsImageIsRejected` — fichier PHP renommé `.jpg` → violation `mimeTypes`
+- `testFileWithWrongExtensionIsRejected` — extension `.exe` → violation `allowedExtensions`

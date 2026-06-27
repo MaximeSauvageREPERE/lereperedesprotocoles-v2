@@ -47,6 +47,8 @@ class ProtocoleType extends AbstractType
                         mimeTypes: ['application/pdf'],
                         mimeTypesMessage: 'Veuillez uploader un fichier PDF valide.',
                         maxSize: '10M',
+                        extensions: ['pdf'],
+                        extensionsMessage: 'Seul le format PDF est accepté.',
                     ),
                 ],
             ])
@@ -61,6 +63,8 @@ class ProtocoleType extends AbstractType
                         mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
                         mimeTypesMessage: 'Formats acceptés : JPG, PNG, WebP.',
                         maxSize: '20M',
+                        extensions: ['jpg', 'jpeg', 'png', 'webp'],
+                        extensionsMessage: 'Formats acceptés : JPG, PNG, WebP.',
                     ),
                 ],
             ]);
