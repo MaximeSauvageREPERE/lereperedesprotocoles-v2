@@ -10,7 +10,7 @@ class SecurityTest extends WebTestCase
     public function testLoginFormContainsRequiredFields(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
+        $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('input[name="_username"]');
@@ -52,6 +52,35 @@ class SecurityTest extends WebTestCase
         $this->assertResponseRedirects('/login');
         $client->followRedirect();
         $this->assertSelectorExists('.bg-red-50');
+    }
+
+    public function testLoginThrottlingBlocksAfterFiveFailedAttempts(): void
+    {
+        $client = static::createClient();
+
+        $email = 'throttle_'.uniqid().'@example.com';
+
+        for ($i = 0; $i < 5; ++$i) {
+            $crawler = $client->request('GET', '/login');
+            $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+            $client->request('POST', '/login', [
+                '_username' => $email,
+                '_password' => 'wrong',
+                '_csrf_token' => $csrfToken,
+            ]);
+        }
+
+        $crawler = $client->request('GET', '/login');
+        $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/login', [
+            '_username' => $email,
+            '_password' => 'wrong',
+            '_csrf_token' => $csrfToken,
+        ]);
+
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+        $this->assertSelectorTextContains('.bg-red-50', 'minute');
     }
 
     public function testAlreadyLoggedInUserIsRedirectedFromLogin(): void

@@ -81,3 +81,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #41 | Pagination des listes CRUD | ✅ |
 | #43 | Recherche/filtre dans les listes CRUD | ✅ |
 | #42 | Index Doctrine sur les colonnes filtrées | ✅ |
+| #38 | Rate limiting (brute force login) | ✅ |
