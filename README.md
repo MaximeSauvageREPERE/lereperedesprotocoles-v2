@@ -82,3 +82,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #43 | Recherche/filtre dans les listes CRUD | ✅ |
 | #42 | Index Doctrine sur les colonnes filtrées | ✅ |
 | #38 | Rate limiting (brute force login) | ✅ |
+| #39 | Validation uploads (type MIME réel) | ✅ |
