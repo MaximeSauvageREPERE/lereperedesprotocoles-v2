@@ -19,7 +19,7 @@
         <span class="text-gray-800">{{ protocole.titre }}</span>
     </nav>
 
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 overflow-hidden">
 
         {% if protocole.imageFilename %}
             <a href="{{ vich_uploader_asset(protocole, 'imageFile') }}"
@@ -28,7 +28,7 @@
                class="block relative group">
                 <img src="{{ vich_uploader_asset(protocole, 'imageFile') }}"
                      alt="{{ protocole.titre }}"
-                     class="w-full h-48 object-cover">
+                     class="w-full h-auto">
                 <span class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                     <span class="opacity-0 group-hover:opacity-100 bg-white/90 text-gray-700 text-xs px-3 py-1 rounded-full transition-opacity">
                         Voir en taille réelle
@@ -51,7 +51,7 @@
             {% if protocole.pdfFilename %}
                 <a href="{{ vich_uploader_asset(protocole, 'pdfFile') }}"
                    download
-                   class="inline-block bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700">
+                   class="inline-block bg-brand-bleu-fonce text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
                     Télécharger le PDF
                 </a>
             {% else %}
@@ -63,7 +63,7 @@
 
     <div class="mt-4 text-sm">
         <a href="{{ path('navigation_theme', {slug: protocole.theme.slug}) }}"
-           class="text-blue-600 hover:underline">
+           class="text-brand-bleu hover:underline">
             ← Retour aux protocoles de {{ protocole.theme.nom }}
         </a>
     </div>

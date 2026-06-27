@@ -25,20 +25,20 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for protocole in theme.protocoles %}
                 <a href="{{ path('navigation_protocole', {slug: protocole.slug}) }}"
-                   class="block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:border-blue-300 transition-all">
+                   class="block bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 overflow-hidden hover:shadow-md transition-all">
                     {% if protocole.imageFilename %}
                         <img src="{{ vich_uploader_asset(protocole, 'imageFile') }}"
                              alt="{{ protocole.titre }}"
                              class="w-full h-32 object-cover">
                     {% else %}
-                        <div class="w-full h-32 bg-gray-100 flex items-center justify-center">
-                            <span class="text-gray-400 text-xs">Pas d'image</span>
+                        <div class="w-full h-32 bg-brand-bleu-fonce-light flex items-center justify-center">
+                            <span class="text-brand-bleu-fonce text-xs opacity-50">Pas d'image</span>
                         </div>
                     {% endif %}
                     <div class="p-4">
                         <h2 class="font-semibold text-gray-800 text-sm">{{ protocole.titre }}</h2>
                         {% if protocole.pdfFilename %}
-                            <p class="text-blue-600 text-xs mt-2">PDF disponible</p>
+                            <p class="text-brand-bleu text-xs mt-2">PDF disponible</p>
                         {% endif %}
                     </div>
                 </a>

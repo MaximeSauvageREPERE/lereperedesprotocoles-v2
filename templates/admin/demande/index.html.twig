@@ -12,7 +12,7 @@
                name="q"
                value="{{ q }}"
                placeholder="Nom, prénom ou email…"
-               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu w-64">
         <button type="submit"
                 class="bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200">
             Rechercher
@@ -53,7 +53,7 @@
                             <td class="px-4 py-3 flex gap-2 justify-end">
                                 <form method="post" action="{{ path('admin_demande_approuver', {id: demande.id}) }}" onsubmit="return confirm('Créer le compte de {{ demande.prenom }} {{ demande.nom }} ?')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('approuver_' ~ demande.id) }}">
-                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                    <button type="submit" class="bg-brand-vert hover:bg-brand-vert-dark text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                         Approuver
                                     </button>
                                 </form>
@@ -67,7 +67,7 @@
             </table>
           </div>
         </div>
-        <div class="mb-10">{{ knp_pagination_render(demandes_pagination) }}</div>
+        <div class="mb-10 flex justify-center">{{ knp_pagination_render(demandes_pagination) }}</div>
     {% elseif q %}
         <p class="text-gray-500 mb-6">Aucun résultat pour « {{ q }} » dans les demandes à traiter.</p>
     {% endif %}
@@ -100,7 +100,7 @@
             </table>
           </div>
         </div>
-        <div class="mt-4">{{ knp_pagination_render(email_pagination) }}</div>
+        <div class="mt-4 flex justify-center">{{ knp_pagination_render(email_pagination) }}</div>
     {% endif %}
 
 </div>

@@ -22,12 +22,12 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {% for rubrique in domaine.rubriques %}
                 <a href="{{ path('navigation_rubrique', {slug: rubrique.slug}) }}"
-                   class="block bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md hover:border-blue-300 transition-all">
+                   class="block bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 p-5 hover:shadow-md transition-all">
                     <h2 class="font-semibold text-gray-800 mb-1">{{ rubrique.nom }}</h2>
                     {% if rubrique.description %}
                         <p class="text-gray-500 text-sm">{{ rubrique.description|u.truncate(100, '…') }}</p>
                     {% endif %}
-                    <p class="text-blue-600 text-xs mt-3">{{ rubrique.themes|length }} thème(s) →</p>
+                    <p class="text-brand-bleu text-xs mt-3">{{ rubrique.themes|length }} thème(s) →</p>
                 </a>
             {% endfor %}
         </div>
