@@ -9,12 +9,14 @@
         ← Retour aux demandes
     </a>
 
-    <h1 class="text-xl font-bold text-gray-800 mb-1">Refuser la demande</h1>
-    <p class="text-gray-500 text-sm mb-8">
-        {{ demande.prenom }} {{ demande.nom }} — {{ demande.email }}
-    </p>
+    {{ form_start(form, {'attr': {'class': 'bg-white shadow-sm rounded-lg border-t-4 border-brand-bleu-fonce border border-gray-200 p-8 space-y-5'}}) }}
 
-    {{ form_start(form, {'attr': {'class': 'space-y-5'}}) }}
+    <div>
+        <h1 class="text-xl font-bold text-gray-800 mb-1">Refuser la demande</h1>
+        <p class="text-gray-500 text-sm mb-6">
+            {{ demande.prenom }} {{ demande.nom }} — {{ demande.email }}
+        </p>
+    </div>
 
     <div>
         {{ form_label(form.motifRejet, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
@@ -24,10 +26,10 @@
     </div>
 
     <div class="flex gap-3">
-        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-5 rounded-md transition-colors">
+        <button type="submit" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white text-sm font-medium py-2 px-5 rounded-md cursor-pointer transition-colors border-0">
             Confirmer le refus
         </button>
-        <a href="{{ path('admin_demande_index') }}" class="text-sm text-gray-600 hover:underline self-center">
+        <a href="{{ path('admin_demande_index') }}" class="px-4 py-2 rounded-md text-sm font-medium text-gray-600 border border-gray-300 bg-gray-100 hover:bg-gray-200 transition-colors">
             Annuler
         </a>
     </div>

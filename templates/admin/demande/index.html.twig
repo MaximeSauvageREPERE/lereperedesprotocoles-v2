@@ -53,11 +53,11 @@
                             <td class="px-4 py-3 flex gap-2 justify-end">
                                 <form method="post" action="{{ path('admin_demande_approuver', {id: demande.id}) }}" onsubmit="return confirm('Créer le compte de {{ demande.prenom }} {{ demande.nom }} ?')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('approuver_' ~ demande.id) }}">
-                                    <button type="submit" class="bg-brand-vert hover:bg-brand-vert-dark text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                    <button type="submit" class="bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                         Approuver
                                     </button>
                                 </form>
-                                <a href="{{ path('admin_demande_refuser', {id: demande.id}) }}" class="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-medium py-1.5 px-3 rounded transition-colors">
+                                <a href="{{ path('admin_demande_refuser', {id: demande.id}) }}" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                     Refuser
                                 </a>
                             </td>
