@@ -40,6 +40,8 @@ class EmailTest extends WebTestCase
 
         $demande = $this->creerDemandePendante();
 
+        // On doit d'abord visiter la page index pour que le token CSRF soit chargé en session,
+        // puis filtrer le formulaire d'approbation par son action (une action par demande)
         $crawler = $client->request('GET', '/admin/demandes');
         $form = $crawler->filter('form[action$="/'.$demande->getId().'/approuver"]')->form();
         $client->submit($form);
@@ -76,11 +78,14 @@ class EmailTest extends WebTestCase
         $profession = static::getContainer()->get(ProfessionRepository::class)->findOneBy([]);
 
         $demande = new DemandeInscription();
+        // Email unique par uniqid() : évite les conflits d'unicité entre runs de tests
         $demande->setEmail('demande-'.uniqid().'@test.fr');
         $demande->setPrenom('Jean');
         $demande->setNom('Dupont');
         $demande->setProfession($profession);
+        // Hash factice : le test ne vérifie pas le mot de passe, juste l'envoi d'email
         $demande->setPassword('$2y$13$placeholder_uniquement_pour_le_test_fonctionnel');
+        // emailVerifie: true → la demande apparaît dans le tableau "À traiter" de l'admin
         $demande->setEmailVerifie(true);
 
         $em->persist($demande);

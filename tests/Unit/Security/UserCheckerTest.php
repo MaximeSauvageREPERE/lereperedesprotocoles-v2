@@ -19,10 +19,12 @@ class UserCheckerTest extends TestCase
 
     public function testCheckPreAuthSkipsNonAppUser(): void
     {
+        // createStub() au lieu de createMock() : pas d'expectation, juste un faux UserInterface
+        // UserChecker doit ignorer silencieusement les utilisateurs non-App\Entity\User
         $user = $this->createStub(UserInterface::class);
 
         $this->checker->checkPreAuth($user);
-        $this->addToAssertionCount(1);
+        $this->addToAssertionCount(1); // confirme que l'appel s'est terminé sans exception
     }
 
     public function testCheckPreAuthThrowsWhenUserNotVerified(): void
@@ -46,6 +48,7 @@ class UserCheckerTest extends TestCase
 
     public function testCheckPostAuthDoesNothing(): void
     {
+        // checkPostAuth() est intentionnellement vide : aucune vérification post-authentification
         $user = new User();
 
         $this->checker->checkPostAuth($user);

@@ -9,6 +9,8 @@ class SecurityTest extends WebTestCase
 {
     public function testLoginFormContainsRequiredFields(): void
     {
+        // Vérifie que les noms de champs Symfony (_username, _password, _csrf_token)
+        // sont bien présents — le firewall les attend exactement sous ces noms
         $client = static::createClient();
         $client->request('GET', '/login');
 
@@ -23,6 +25,7 @@ class SecurityTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
+        // Le token CSRF est lu depuis le formulaire rendu (valeur générée par le serveur)
         $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
 
         $client->request('POST', '/login', [
@@ -31,6 +34,7 @@ class SecurityTest extends WebTestCase
             '_csrf_token' => $csrfToken,
         ]);
 
+        // Le firewall redirige en 302 vers la page protégée après succès
         $this->assertResponseStatusCodeSame(302);
         $client->followRedirect();
         $this->assertRouteSame('app_home');
@@ -49,6 +53,7 @@ class SecurityTest extends WebTestCase
             '_csrf_token' => $csrfToken,
         ]);
 
+        // Échec → redirection vers /login, puis le bloc d'erreur .bg-red-50 est visible
         $this->assertResponseRedirects('/login');
         $client->followRedirect();
         $this->assertSelectorExists('.bg-red-50');
@@ -58,6 +63,7 @@ class SecurityTest extends WebTestCase
     {
         $client = static::createClient();
 
+        // Email unique via uniqid() pour isoler ce test des autres runs (compteur de rate limiting par email+IP)
         $email = 'throttle_'.uniqid().'@example.com';
 
         for ($i = 0; $i < 5; ++$i) {
@@ -70,6 +76,7 @@ class SecurityTest extends WebTestCase
             ]);
         }
 
+        // La 6e tentative doit être bloquée (rate limiting : 5 tentatives / minute)
         $crawler = $client->request('GET', '/login');
         $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
         $client->request('POST', '/login', [
@@ -80,6 +87,7 @@ class SecurityTest extends WebTestCase
 
         $this->assertResponseRedirects('/login');
         $client->followRedirect();
+        // Le message de blocage contient "minute" (traduction Symfony du rate limiter)
         $this->assertSelectorTextContains('.bg-red-50', 'minute');
     }
 
@@ -88,6 +96,7 @@ class SecurityTest extends WebTestCase
         $client = static::createClient();
         $user = static::getContainer()->get(UserRepository::class)->findOneBy(['email' => 'user@test.fr']);
 
+        // loginUser() authentifie directement sans soumettre le formulaire (shortcut de test)
         $client->loginUser($user);
         $client->request('GET', '/login');
 

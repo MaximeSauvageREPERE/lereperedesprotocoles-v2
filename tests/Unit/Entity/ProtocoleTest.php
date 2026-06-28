@@ -16,6 +16,7 @@ class ProtocoleTest extends TestCase
         $this->assertSame('', $protocole->getTitre());
         $this->assertSame('', $protocole->getSlug());
         $this->assertNull($protocole->getDescription());
+        // pdfFile (objet File) et pdfFilename (string persistée) sont deux choses distinctes
         $this->assertNull($protocole->getPdfFile());
         $this->assertNull($protocole->getPdfFilename());
         $this->assertNull($protocole->getImageFile());
@@ -27,6 +28,9 @@ class ProtocoleTest extends TestCase
 
     public function testSetPdfFileRefreshesUpdatedAt(): void
     {
+        // VichUploader détecte un remplacement de fichier uniquement si updatedAt a changé.
+        // setPdfFile() force updatedAt à now() quand un fichier non-null est fourni.
+        // new File('dummy.pdf', false) : false = ne pas vérifier l'existence du fichier sur le disque
         $protocole = new Protocole();
         $past = new \DateTimeImmutable('-1 day');
         $protocole->setUpdatedAt($past);
@@ -38,6 +42,7 @@ class ProtocoleTest extends TestCase
 
     public function testSetPdfFileNullDoesNotRefreshUpdatedAt(): void
     {
+        // null signifie "pas de nouveau fichier" (champ laissé vide en édition) → updatedAt inchangé
         $protocole = new Protocole();
         $past = new \DateTimeImmutable('-1 day');
         $protocole->setUpdatedAt($past);
@@ -71,6 +76,8 @@ class ProtocoleTest extends TestCase
 
     public function testOnPreUpdateRefreshesUpdatedAt(): void
     {
+        // onPreUpdate() est le lifecycle callback #[ORM\PreUpdate] appelé par Doctrine
+        // avant chaque UPDATE SQL — garantit que updatedAt est toujours à jour en BDD
         $protocole = new Protocole();
         $past = new \DateTimeImmutable('-1 day');
         $protocole->setUpdatedAt($past);

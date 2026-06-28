@@ -7,6 +7,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RoleAccessTest extends WebTestCase
 {
+    // Méthode helper : crée un client authentifié pour l'email donné
+    // loginUser() authentifie directement en session sans passer par le formulaire de login
     private function loginAs(string $email): \Symfony\Bundle\FrameworkBundle\KernelBrowser
     {
         $client = static::createClient();
@@ -60,6 +62,7 @@ class RoleAccessTest extends WebTestCase
 
     public function testAdminCanAccessModerateurPagesViaHierarchy(): void
     {
+        // Vérifie la hiérarchie : ROLE_ADMIN > ROLE_MODERATEUR déclarée dans security.yaml
         $client = $this->loginAs('admin@test.fr');
         $client->request('GET', '/moderateur/domaines');
         $this->assertResponseIsSuccessful();
