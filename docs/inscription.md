@@ -9,11 +9,8 @@ Visiteur          Système                  Admin
    │                  │                      │
    ├─ /inscription ──►│ DemandeInscription   │
    │                  │ statut=en_attente    │
-   │                  │ emailVerifie=false   │
-   │◄── email ────────┤ token (24h)          │
-   │                  │                      │
-   ├─ clic lien ─────►│ emailVerifie=true    │
-   │                  │ token=null           │
+   │                  │ emailVerifie=true    │
+   │◄── redirect ─────┤ → /login (flash)     │
    │                  │                      ├─ /admin/demandes
    │                  │                      │  voit la demande
    │                  │        approuver ────┤
@@ -23,6 +20,8 @@ Visiteur          Système                  Admin
    │  ou              │        refuser ──────┤
    │◄── email ────────┤ statut=refusee       │
 ```
+
+> **Note :** la vérification email à l'inscription est temporairement désactivée pour faciliter les tests. `emailVerifie` est positionné à `true` directement à la soumission. La route `/inscription/confirmer/{token}` reste en place pour la réactivation future (voir [project_email_verification.md](../memory/project_email_verification.md)).
 
 ---
 
@@ -39,38 +38,21 @@ Le visiteur remplit :
 À la soumission valide, le système :
 1. Vérifie qu'aucun `User` ni aucune `DemandeInscription en_attente` n'existe avec cet email
 2. Hache le mot de passe et le stocke dans `DemandeInscription.password`
-3. Génère un token aléatoire de 32 caractères (valable **24 heures**)
-4. Persiste la demande avec `statut=en_attente`, `emailVerifie=false`
-5. Envoie un email de confirmation contenant le lien de vérification
+3. Persiste la demande avec `statut=en_attente`, `emailVerifie=true`
+4. Redirige vers `/login` avec un flash de confirmation (pattern PRG)
 
-Le visiteur est redirigé vers une page de confirmation lui indiquant de vérifier sa boîte mail.
-
----
-
-## Étape 2 — Vérification de l'adresse email
-
-**Route :** `GET /inscription/confirmer/{token}` (`app_inscription_confirmer`)
-
-Lorsque le visiteur clique sur le lien reçu par email :
-
-| Cas | Résultat |
-|---|---|
-| Token valide et email non encore vérifié | `emailVerifie=true`, token effacé, page de confirmation affichée |
-| Token expiré (> 24h) ou introuvable | Page d'erreur avec lien vers `/inscription` |
-| Email déjà vérifié | Redirection vers `/login` |
-
-Après cette étape, la demande est visible dans l'interface admin.
+La demande est immédiatement visible dans l'interface admin sans étape de vérification email.
 
 ---
 
-## Étape 3 — Décision de l'admin
+## Étape 2 — Décision de l'admin
 
 **Route :** `GET /admin/demandes` (`admin_demande_index`)  
 **Accès :** `ROLE_ADMIN` uniquement
 
 La page présente deux tableaux :
-- **À traiter** — demandes dont l'email est vérifié, en attente de décision
-- **En attente d'email** — demandes soumises mais dont le lien n'a pas encore été cliqué
+- **À traiter** — demandes en attente de décision (`emailVerifie=true`)
+- **En attente d'email** — demandes dont l'email n'est pas encore vérifié (inutilisé tant que la vérification est désactivée)
 
 ### Approuver
 
@@ -115,7 +97,7 @@ L'admin saisit un **motif de refus** (obligatoire). Le système :
 
 | Déclencheur | Destinataire | Template |
 |---|---|---|
-| Soumission du formulaire | Demandeur | `emails/inscription_confirmation.html.twig` |
+| ~~Soumission du formulaire~~ | ~~Demandeur~~ | ~~`emails/inscription_confirmation.html.twig`~~ (désactivé) |
 | Approbation admin | Demandeur | `emails/inscription_approuvee.html.twig` |
 | Refus admin | Demandeur | `emails/inscription_refusee.html.twig` |
 

@@ -178,7 +178,7 @@ mkdir public\uploads\protocoles\images
 php bin/console importmap:install
 ```
 
-Cette commande télécharge les dépendances JS déclarées dans `importmap.php` (Stimulus, Turbo) dans `assets/vendor/`.
+Cette commande télécharge les dépendances JS déclarées dans `importmap.php` (Stimulus) dans `assets/vendor/`.
 
 ---
 
@@ -248,7 +248,7 @@ symfony server:start                     # terminal 2
 ```
 lereperedesprotocoles-v2/
 ├── assets/               Assets JS et CSS source
-│   ├── app.js            Point d'entrée JS (Stimulus + Turbo)
+│   ├── app.js            Point d'entrée JS (Stimulus)
 │   └── styles/app.css    Point d'entrée CSS (directives Tailwind)
 ├── config/               Configuration Symfony
 │   └── packages/         Un fichier YAML par bundle
@@ -277,7 +277,7 @@ lereperedesprotocoles-v2/
 | ORM | Doctrine | 3.x |
 | Base de données | MySQL | 8.4 |
 | CSS | Tailwind CSS | 3.4 |
-| JS | Stimulus + Turbo (Hotwired) | via AssetMapper |
+| JS | Stimulus (Hotwired) | via AssetMapper |
 | Upload | Vich UploaderBundle | 2.9 |
 | Pagination | KnpPaginatorBundle | 6.10 |
 | Serveur local | Laragon | 2026 / v8.6.1 |
