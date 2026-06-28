@@ -35,12 +35,15 @@ class InscriptionType extends AbstractType
             ])
             ->add('profession', EntityType::class, [
                 'class' => Profession::class,
+                // choice_label utilise __toString() de Profession pour afficher le nom dans le <select>
                 'choice_label' => 'nom',
                 'label' => 'Profession',
                 'placeholder' => 'Sélectionnez votre profession',
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
+                // mapped: false → le champ n'est pas lié à DemandeInscription (pas de setter plainPassword)
+                // Le contrôleur lit $form->get('plainPassword')->getData() pour hacher manuellement
                 'mapped' => false,
                 'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmez le mot de passe'],
@@ -55,6 +58,7 @@ class InscriptionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        // Lie le formulaire à DemandeInscription : les champs mappés alimentent directement l'entité
         $resolver->setDefaults([
             'data_class' => DemandeInscription::class,
         ]);

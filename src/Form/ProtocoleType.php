@@ -38,15 +38,19 @@ class ProtocoleType extends AbstractType
                 'constraints' => [new NotBlank()],
             ])
             ->add('pdfFile', VichFileType::class, [
+                // VichFileType gère l'upload : lie le champ au mapping 'pdfFile' de l'entité Protocole
+                // La propriété persistée est pdfFilename (string), pdfFile (File) n'est pas en BDD
                 'label' => 'Fichier PDF',
                 'required' => false,
                 'allow_delete' => true,
                 'download_uri' => false,
                 'constraints' => [
                     new File(
+                        // mimeTypes vérifie le type réel via magic bytes (finfo), pas l'extension
                         mimeTypes: ['application/pdf'],
                         mimeTypesMessage: 'Veuillez uploader un fichier PDF valide.',
                         maxSize: '10M',
+                        // extensions ajoute une seconde défense sur le nom de fichier
                         extensions: ['pdf'],
                         extensionsMessage: 'Seul le format PDF est accepté.',
                     ),
@@ -57,6 +61,7 @@ class ProtocoleType extends AbstractType
                 'required' => false,
                 'allow_delete' => true,
                 'download_uri' => false,
+                // image_uri: false désactive l'aperçu généré par VichImageType (on gère l'aperçu nous-mêmes dans le template)
                 'image_uri' => false,
                 'constraints' => [
                     new File(

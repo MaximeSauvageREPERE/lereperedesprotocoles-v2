@@ -28,6 +28,8 @@ class RubriqueType extends AbstractType
             ->add('domaines', EntityType::class, [
                 'class' => Domaine::class,
                 'choice_label' => 'nom',
+                // multiple: true → Collection (ManyToMany), expanded: true → checkboxes au lieu de <select multiple>
+                // Le template remplace les checkboxes par des "pills" via CSS has-[:checked]:
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
