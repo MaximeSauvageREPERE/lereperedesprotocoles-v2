@@ -62,7 +62,7 @@ Puis ouvrir `.env.local` et adapter ces deux variables :
 ```env
 APP_SECRET=une_chaine_aleatoire_de_32_caracteres_minimum
 
-DATABASE_URL="mysql://root:@127.0.0.1:3306/lereperedesprotocoles_v2?serverVersion=8.4&charset=utf8mb4"
+DATABASE_URL="mysql://root:@127.0.0.1:3306/lereperedesprotocoles_v2?serverVersion=8.4.0&charset=utf8mb4"
 ```
 
 **Explication des variables :**
@@ -72,6 +72,7 @@ DATABASE_URL="mysql://root:@127.0.0.1:3306/lereperedesprotocoles_v2?serverVersio
   - `root` : utilisateur MySQL de Laragon (pas de mot de passe par défaut → `:@`)
   - `127.0.0.1:3306` : MySQL tourne localement sur le port 3306
   - `lereperedesprotocoles_v2` : nom de la base à créer
+  - `serverVersion` : **toujours 3 composantes** (`major.minor.patch`, ex. `8.4.0`). Une valeur à 2 composantes (`8.4`) est considérée inférieure à `8.4.0` par PHP's `version_compare`, ce qui déclenche des dépréciations DBAL.
 
 **Avec Laragon**, MySQL démarre automatiquement. Les identifiants par défaut sont `root` sans mot de passe.
 
