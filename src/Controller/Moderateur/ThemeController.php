@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
+// CRUD identique à DomaineController — voir ce fichier pour les commentaires détaillés.
 #[Route('/moderateur/themes')]
 #[IsGranted('ROLE_MODERATEUR')]
 class ThemeController extends AbstractController

@@ -11,9 +11,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+// Tout le contenu est réservé aux utilisateurs connectés — accès refusé aux visiteurs.
 #[IsGranted('ROLE_USER')]
 class NavigationController extends AbstractController
 {
+    // Point d'entrée de la navigation : liste tous les domaines disponibles.
     #[Route('/parcourir', name: 'navigation_domaines')]
     public function domaines(DomaineRepository $repo): Response
     {
@@ -22,6 +24,7 @@ class NavigationController extends AbstractController
         ]);
     }
 
+    // Affiche les rubriques d'un domaine identifié par son slug (ex: /domaines/cardiologie).
     #[Route('/domaines/{slug}', name: 'navigation_domaine')]
     public function domaine(string $slug, DomaineRepository $repo): Response
     {
@@ -35,6 +38,7 @@ class NavigationController extends AbstractController
         ]);
     }
 
+    // Affiche les thèmes d'une rubrique.
     #[Route('/rubriques/{slug}', name: 'navigation_rubrique')]
     public function rubrique(string $slug, RubriqueRepository $repo): Response
     {
@@ -48,6 +52,7 @@ class NavigationController extends AbstractController
         ]);
     }
 
+    // Affiche les protocoles d'un thème.
     #[Route('/themes/{slug}', name: 'navigation_theme')]
     public function theme(string $slug, ThemeRepository $repo): Response
     {
@@ -61,6 +66,7 @@ class NavigationController extends AbstractController
         ]);
     }
 
+    // Affiche la fiche complète d'un protocole (PDF, description, etc.).
     #[Route('/protocoles/{slug}', name: 'navigation_protocole')]
     public function protocole(string $slug, ProtocoleRepository $repo): Response
     {

@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<User>
  */
+// PasswordUpgraderInterface permet à Symfony de rehacher automatiquement le mot de passe
+// lors de la connexion si l'algorithme de hachage a changé (ex: coût bcrypt augmenté).
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
@@ -19,6 +21,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
+    // Retourne un QueryBuilder pour la liste paginée de l'interface admin.
+    // La recherche porte sur nom, prénom ET email simultanément.
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('u')->orderBy('u.nom', 'ASC');
@@ -30,6 +34,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $qb;
     }
 
+    // Appelée automatiquement par Symfony après une connexion réussie si le hash stocké
+    // en base est obsolète (algorithme ou coût différent de la config actuelle).
+    // Symfony génère le nouveau hash et appelle cette méthode pour le persister.
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {

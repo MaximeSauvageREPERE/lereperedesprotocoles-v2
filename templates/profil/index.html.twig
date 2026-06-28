@@ -9,6 +9,7 @@
 
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
 
+        {# En-tête avec avatar initiales — app.user est l'utilisateur connecté (injection Twig globale) #}
         <div class="bg-brand-bleu-fonce px-4 sm:px-6 py-6 sm:py-8 flex items-center gap-3 sm:gap-4">
             <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-xl sm:text-2xl font-bold select-none shrink-0">
                 {{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}
@@ -28,6 +29,7 @@
 
             <div class="px-6 py-4 flex justify-between items-center">
                 <span class="text-sm font-medium text-gray-500">Rôle</span>
+                {# is_granted() respecte la hiérarchie des rôles : ROLE_ADMIN > ROLE_MODERATEUR > ROLE_USER #}
                 <span class="text-xs font-medium px-2 py-1 rounded-full
                     {% if is_granted('ROLE_ADMIN') %}bg-purple-100 text-purple-800
                     {% elseif is_granted('ROLE_MODERATEUR') %}bg-yellow-100 text-yellow-800

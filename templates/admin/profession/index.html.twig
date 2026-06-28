@@ -63,6 +63,8 @@
                                        class="bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                         Modifier
                                     </a>
+                                    {# Le bouton Supprimer est désactivé si la profession a des utilisateurs
+                                       ou des demandes rattachées — la suppression est bloquée côté contrôleur aussi #}
                                     {% if profession.users|length == 0 and profession.demandesInscription|length == 0 %}
                                         <form method="post" action="{{ path('admin_profession_delete', {id: profession.id}) }}"
                                               onsubmit="return confirm('Supprimer la profession « {{ profession.nom }} » ?')">
@@ -73,6 +75,7 @@
                                             </button>
                                         </form>
                                     {% else %}
+                                        {# Bouton grisé non cliquable (cursor-not-allowed) avec explication au survol #}
                                         <span class="bg-gray-50 text-gray-300 text-xs font-medium py-1.5 px-3 rounded cursor-not-allowed" title="Des utilisateurs ou demandes sont rattachés à cette profession">
                                             Supprimer
                                         </span>

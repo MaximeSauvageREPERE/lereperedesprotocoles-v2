@@ -1,3 +1,23 @@
+{# Override du template de pagination de KnpPaginatorBundle.
+   Symfony charge ce fichier à la place du template du bundle grâce à la convention
+   templates/bundles/{NomDuBundle}/{chemin/original} (bundle overriding).
+   Le template original est dans vendor/knplabs/knp-paginator-bundle/templates/Pagination/.
+
+   Variables disponibles dans le contexte KnpPaginator :
+   - pageCount    : nombre total de pages
+   - current      : numéro de la page courante
+   - first/last   : numéros de la première/dernière page
+   - previous/next: numéros de la page précédente/suivante (undefined si n'existe pas)
+   - pagesInRange : tableau des numéros de pages à afficher (fenêtre glissante)
+   - route        : nom de la route Symfony de la page en cours
+   - query        : paramètres GET actuels de l'URL (ex: q=..., page_email=...)
+
+   knp_pagination_query($query, $page, $options) reconstruit le query string en remplaçant
+   uniquement le numéro de page — conserve ainsi le filtre de recherche (q=...) et les
+   autres paramètres de pagination (ex: page_email= quand deux paginateurs coexistent).
+#}
+
+{# Aucun rendu si une seule page — évite d'afficher une pagination inutile #}
 {% if pageCount > 1 %}
 <nav class="flex items-center gap-1 text-sm">
 
@@ -22,6 +42,7 @@
                 {{ page }}
             </a>
         {% else %}
+            {# Page courante : non cliquable, surlignée en bleu #}
             <span class="px-3 py-1.5 rounded-md bg-brand-bleu-fonce text-white font-medium border border-brand-bleu-fonce">
                 {{ page }}
             </span>

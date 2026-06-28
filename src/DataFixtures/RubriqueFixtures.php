@@ -8,6 +8,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
+// Crée 3 rubriques et les rattache à leurs domaines.
+// Une rubrique peut appartenir à plusieurs domaines (relation ManyToMany).
 class RubriqueFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
@@ -17,6 +19,7 @@ class RubriqueFixtures extends Fixture implements DependentFixtureInterface
                 'nom' => 'Soins courants',
                 'slug' => 'soins-courants',
                 'description' => 'Protocoles de soins quotidiens et de surveillance.',
+                // Cette rubrique apparaît à la fois dans Cardiologie et Urgences.
                 'domaines' => ['cardiologie', 'urgences'],
             ],
             [
@@ -38,10 +41,16 @@ class RubriqueFixtures extends Fixture implements DependentFixtureInterface
             $rubrique->setNom($data['nom']);
             $rubrique->setSlug($data['slug']);
             $rubrique->setDescription($data['description']);
+
+            // Rattachement ManyToMany : on récupère chaque Domaine via sa référence
+            // et on l'ajoute à la collection de la rubrique.
             foreach ($data['domaines'] as $slug) {
                 $rubrique->addDomaine($this->getReference('domaine-'.$slug, Domaine::class));
             }
+
             $manager->persist($rubrique);
+
+            // Référence utilisée par ThemeFixtures pour rattacher les thèmes aux bonnes rubriques.
             $this->addReference('rubrique-'.$data['slug'], $rubrique);
         }
 

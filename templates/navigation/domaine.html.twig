@@ -5,6 +5,7 @@
 {% block body %}
 <div class="max-w-5xl mx-auto px-4 py-8">
 
+    {# Fil d'Ariane : Domaines > [domaine actuel] #}
     <nav class="text-sm text-gray-500 mb-6">
         <a href="{{ path('navigation_domaines') }}" class="hover:underline">Domaines</a>
         <span class="mx-2">›</span>
@@ -16,6 +17,7 @@
         <p class="text-gray-600 mb-6">{{ domaine.description }}</p>
     {% endif %}
 
+    {# Liste les rubriques du domaine, triées par nom (OrderBy défini dans l'entité Domaine) #}
     {% if domaine.rubriques is empty %}
         <p class="text-gray-500">Aucune rubrique dans ce domaine.</p>
     {% else %}

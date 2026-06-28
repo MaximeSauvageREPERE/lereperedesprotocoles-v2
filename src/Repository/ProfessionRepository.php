@@ -17,6 +17,9 @@ class ProfessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Profession::class);
     }
 
+    // Retourne un QueryBuilder pour la liste paginée de l'interface admin.
+    // Sans $q : toutes les professions triées par nom.
+    // Avec $q : filtrées par nom (recherche partielle).
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')->orderBy('p.nom', 'ASC');

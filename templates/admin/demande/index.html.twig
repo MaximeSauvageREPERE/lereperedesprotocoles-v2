@@ -7,6 +7,8 @@
 
     <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Demandes d'inscription</h1>
 
+    {# La recherche est un simple GET : le paramètre q est conservé dans l'URL
+       et préservé lors de la pagination grâce à knp_pagination_query() #}
     <form method="get" class="mb-6 flex flex-wrap gap-2">
         <input type="text"
                name="q"
@@ -18,6 +20,7 @@
             Rechercher
         </button>
         {% if q %}
+            {# Efface la recherche en retournant sur l'URL sans paramètre q #}
             <a href="{{ app.request.pathinfo }}"
                class="text-sm text-gray-500 hover:text-gray-700 self-center">
                 Effacer
@@ -29,6 +32,7 @@
         <p class="text-gray-500">Aucune demande en attente.</p>
     {% endif %}
 
+    {# ── Tableau 1 : demandes prêtes à traiter (emailVerifie = true, statut = en_attente) ── #}
     {% if demandes_pagination.getTotalItemCount() > 0 %}
         <h2 class="text-lg font-semibold text-gray-700 mb-4">À traiter ({{ demandes_pagination.getTotalItemCount() }})</h2>
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
@@ -51,12 +55,15 @@
                             <td class="px-4 py-3 text-gray-600">{{ demande.profession }}</td>
                             <td class="px-4 py-3 text-gray-500">{{ demande.createdAt|date('d/m/Y H:i') }}</td>
                             <td class="px-4 py-3 flex gap-2 justify-end">
+                                {# L'approbation est un POST avec CSRF pour éviter les CSRF attacks.
+                                   Le token est spécifique à chaque demande : 'approuver_' ~ demande.id #}
                                 <form method="post" action="{{ path('admin_demande_approuver', {id: demande.id}) }}" onsubmit="return confirm('Créer le compte de {{ demande.prenom }} {{ demande.nom }} ?')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('approuver_' ~ demande.id) }}">
                                     <button type="submit" class="bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                         Approuver
                                     </button>
                                 </form>
+                                {# Le refus ouvre un formulaire intermédiaire pour saisir un motif #}
                                 <a href="{{ path('admin_demande_refuser', {id: demande.id}) }}" class="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                     Refuser
                                 </a>
@@ -67,11 +74,16 @@
             </table>
           </div>
         </div>
+        {# Pagination indépendante pour ce tableau — utilise le paramètre "page" (par défaut KnpPaginator) #}
         <div class="mb-10 flex justify-center">{{ knp_pagination_render(demandes_pagination) }}</div>
     {% elseif q %}
         <p class="text-gray-500 mb-6">Aucun résultat pour « {{ q }} » dans les demandes à traiter.</p>
     {% endif %}
 
+    {# ── Tableau 2 : demandes en attente de confirmation email (emailVerifie = false)
+       Normalement vide car la vérification email est désactivée (emailVerifie = true à l'inscription).
+       Ce tableau restera vide tant que la vérification email n'est pas réactivée.
+       La pagination utilise le paramètre "page_email" pour être indépendante du tableau 1. ── #}
     {% if email_pagination.getTotalItemCount() > 0 %}
         <h2 class="text-lg font-semibold text-gray-700 mb-4">
             En attente de confirmation email ({{ email_pagination.getTotalItemCount() }})

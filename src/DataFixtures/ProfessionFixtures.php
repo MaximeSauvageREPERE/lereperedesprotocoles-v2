@@ -6,6 +6,8 @@ use App\Entity\Profession;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
+// Charge les 25 professions médicales disponibles à l'inscription.
+// Aucune dépendance : cette fixture s'exécute en premier.
 class ProfessionFixtures extends Fixture
 {
     private const PROFESSIONS = [
@@ -43,6 +45,9 @@ class ProfessionFixtures extends Fixture
             $profession->setNom($data['nom']);
             $profession->setSlug($data['slug']);
             $manager->persist($profession);
+
+            // addReference() stocke l'objet sous une clé nommée pour que d'autres fixtures
+            // puissent le récupérer avec getReference() sans refaire de requête SQL.
             $this->addReference('profession-'.$data['slug'], $profession);
         }
 

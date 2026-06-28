@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+{#
+  Email d'approbation envoyé par AdminDemandeController::approuver()
+  quand l'administrateur valide une demande d'inscription.
+
+  Règles spécifiques aux emails :
+  - Pas de fichier CSS externe : les clients email (Gmail, Outlook...) ne les chargent pas.
+    Tout le style est en inline (style="...").
+  - url() au lieu de path() : génère une URL absolue (ex: https://monsite.com/login)
+    indispensable car le destinataire ouvre le lien depuis sa messagerie, pas depuis le site.
+#}
 <html lang="fr">
 <head><meta charset="UTF-8"></head>
 <body style="font-family: sans-serif; color: #374151; max-width: 600px; margin: 0 auto; padding: 24px;">

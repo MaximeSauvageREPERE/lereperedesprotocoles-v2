@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
+// CRUD identique à DomaineController — voir ce fichier pour les commentaires détaillés.
+// Différence notable : le slug est généré depuis le titre (et non le nom) du protocole.
 #[Route('/moderateur/protocoles')]
 #[IsGranted('ROLE_MODERATEUR')]
 class ProtocoleController extends AbstractController

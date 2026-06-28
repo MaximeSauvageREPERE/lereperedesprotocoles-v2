@@ -8,6 +8,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
+// Crée 5 thèmes et les rattache chacun à une rubrique.
+// Un thème appartient à exactement une rubrique (ManyToOne).
 class ThemeFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
@@ -44,8 +46,11 @@ class ThemeFixtures extends Fixture implements DependentFixtureInterface
             $theme = new Theme();
             $theme->setNom($data['nom']);
             $theme->setSlug($data['slug']);
+            // getReference() récupère l'objet Rubrique créé par RubriqueFixtures.
             $theme->setRubrique($this->getReference('rubrique-'.$data['rubrique'], Rubrique::class));
             $manager->persist($theme);
+
+            // Référence utilisée par ProtocoleFixtures pour rattacher les protocoles aux bons thèmes.
             $this->addReference('theme-'.$data['slug'], $theme);
         }
 

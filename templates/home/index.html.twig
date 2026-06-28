@@ -4,16 +4,20 @@
 
 {% block body %}
 
+{# Deux vues selon l'état de connexion : tableau de bord (connecté) ou landing page (visiteur) #}
 {% if app.user %}
 
+{# ── Vue connecté : tableau de bord personnalisé ── #}
 <div class="bg-gradient-to-r from-brand-bleu-fonce to-brand-bleu px-4 py-8 sm:py-12">
     <div class="max-w-4xl mx-auto flex items-center gap-4">
+        {# Avatar avec initiales — même logique que dans base.html.twig #}
         <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-xl select-none shrink-0">
             {{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}
         </div>
         <div>
             <h1 class="text-xl sm:text-2xl font-bold text-white">Bonjour, {{ app.user.prenom }} {{ app.user.nom }}</h1>
             <p class="text-white/70 text-sm mt-0.5">
+                {# Affiche le rôle le plus élevé (ROLE_ADMIN > ROLE_MODERATEUR > utilisateur) #}
                 {% if is_granted('ROLE_ADMIN') %}Administrateur
                 {% elseif is_granted('ROLE_MODERATEUR') %}Modérateur
                 {% else %}Utilisateur{% endif %}
@@ -33,6 +37,7 @@
            class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
             Mon profil
         </a>
+        {# Boutons conditionnels selon le rôle #}
         {% if is_granted('ROLE_MODERATEUR') %}
             <a href="{{ path('moderateur_protocole_index') }}"
                class="bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium px-5 py-2.5 rounded-md border border-gray-300 transition-colors">
@@ -50,6 +55,7 @@
 
 {% else %}
 
+{# ── Vue visiteur : landing page publique ── #}
 <div class="bg-gradient-to-br from-brand-bleu-fonce to-brand-bleu py-16 sm:py-24 px-4">
     <div class="max-w-2xl mx-auto text-center">
         <h1 class="text-3xl sm:text-5xl font-bold text-white mb-4">Le Repère des Protocoles</h1>

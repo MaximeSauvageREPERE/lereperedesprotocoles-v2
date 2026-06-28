@@ -55,6 +55,9 @@
                             <td class="px-4 py-3 text-gray-600">{{ user.email }}</td>
                             <td class="px-4 py-3 text-gray-600">{{ user.profession }}</td>
                             <td class="px-4 py-3">
+                                {# Détection du rôle le plus élevé : on vérifie dans user.roles (tableau en BDD)
+                                   ROLE_USER n'y est pas stocké (ajouté dynamiquement dans getRoles()),
+                                   seuls ROLE_ADMIN et ROLE_MODERATEUR y apparaissent #}
                                 {% if 'ROLE_ADMIN' in user.roles %}
                                     <span class="inline-block bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
                                 {% elseif 'ROLE_MODERATEUR' in user.roles %}
@@ -64,6 +67,9 @@
                                 {% endif %}
                             </td>
                             <td class="px-4 py-3">
+                                {# isVerified est toujours true depuis que la vérification email est désactivée.
+                                   Ce champ peut néanmoins être modifié manuellement dans le formulaire d'édition
+                                   pour désactiver un compte sans le supprimer. #}
                                 {% if user.isVerified %}
                                     <span class="inline-block bg-brand-vert-light text-brand-vert-dark text-xs font-medium px-2 py-0.5 rounded-full">Actif</span>
                                 {% else %}
@@ -77,6 +83,8 @@
                                        class="bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white text-xs font-medium py-1.5 px-3 rounded transition-colors">
                                         Modifier
                                     </a>
+                                    {# Le bouton Supprimer est masqué pour l'utilisateur actuellement connecté
+                                       (app.user) — comparaison par identité d'objet, pas seulement par ID #}
                                     {% if user !== app.user %}
                                         <form method="post" action="{{ path('admin_utilisateur_delete', {id: user.id}) }}"
                                               onsubmit="return confirm('Supprimer {{ user.prenom }} {{ user.nom }} ? Cette action est irréversible.')">

@@ -17,6 +17,8 @@ class ProtocoleRepository extends ServiceEntityRepository
         parent::__construct($registry, Protocole::class);
     }
 
+    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
+    // La recherche porte sur le titre (et non le nom, contrairement aux autres entités).
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')->orderBy('p.titre', 'ASC');

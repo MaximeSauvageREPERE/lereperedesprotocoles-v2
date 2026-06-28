@@ -17,6 +17,9 @@ class RubriqueRepository extends ServiceEntityRepository
         parent::__construct($registry, Rubrique::class);
     }
 
+    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
+    // Sans $q : toutes les rubriques triées par nom.
+    // Avec $q : filtrées par nom (recherche partielle).
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r')->orderBy('r.nom', 'ASC');

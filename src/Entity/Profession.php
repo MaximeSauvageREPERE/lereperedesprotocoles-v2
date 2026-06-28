@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+// Référentiel des professions médicales disponibles à l'inscription.
+// Partagée par User et DemandeInscription — on ne peut pas supprimer une profession
+// qui a des utilisateurs ou des demandes rattachés (contrôle dans ProfessionController).
 #[ORM\Entity(repositoryClass: ProfessionRepository::class)]
 #[ORM\Index(columns: ['nom'])]
 class Profession
@@ -19,9 +22,12 @@ class Profession
     #[ORM\Column(length: 150)]
     private string $nom = '';
 
+    // Identifiant URL unique (ex: "medecin-generaliste") — généré depuis le nom dans le controller.
     #[ORM\Column(length: 150, unique: true)]
     private string $slug = '';
 
+    // Côté inverse de la relation : liste des utilisateurs ayant cette profession.
+    // Chargé en lazy par défaut — accédé uniquement quand on appelle getUsers().
     /** @var Collection<int, User> */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'profession')]
     private Collection $users;
@@ -32,6 +38,7 @@ class Profession
 
     public function __construct()
     {
+        // Doctrine exige des ArrayCollection vides plutôt que des tableaux PHP pour les relations.
         $this->users = new ArrayCollection();
         $this->demandesInscription = new ArrayCollection();
     }
@@ -77,6 +84,7 @@ class Profession
         return $this->demandesInscription;
     }
 
+    // Utilisé par Symfony pour afficher le nom dans les selects de formulaires.
     public function __toString(): string
     {
         return $this->nom;

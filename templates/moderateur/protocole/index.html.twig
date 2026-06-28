@@ -7,6 +7,8 @@
 
     <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Protocoles</h1>
 
+    {# Affichage local des messages flash success (ex: "Protocole supprimé") —
+       ce bloc redouble le flash de base.html.twig pour l'afficher dans le flux de la page #}
     {% for message in app.flashes('success') %}
         <div class="mb-4 bg-green-50 border border-green-200 text-green-800 text-sm rounded-md px-4 py-3">
             {{ message }}
@@ -50,6 +52,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-3 text-left font-medium text-gray-600">Titre</th>
+                        {# La colonne "Thème / Domaine(s)" traverse protocole → theme → rubrique → domaines #}
                         <th class="px-4 py-3 text-left font-medium text-gray-600">Thème / Domaine(s)</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-600">PDF</th>
                         <th class="px-4 py-3 text-left font-medium text-gray-600">Image</th>

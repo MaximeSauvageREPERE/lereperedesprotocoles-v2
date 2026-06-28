@@ -6,6 +6,8 @@ use App\Entity\Domaine;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
+// Crée les 3 domaines médicaux de test (Cardiologie, Neurologie, Urgences).
+// Aucune dépendance : peut s'exécuter indépendamment de UserFixtures et ProfessionFixtures.
 class DomaineFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
@@ -34,6 +36,8 @@ class DomaineFixtures extends Fixture
             $domaine->setSlug($data['slug']);
             $domaine->setDescription($data['description']);
             $manager->persist($domaine);
+
+            // Référence utilisée par RubriqueFixtures pour rattacher les rubriques aux bons domaines.
             $this->addReference('domaine-'.$data['slug'], $domaine);
         }
 

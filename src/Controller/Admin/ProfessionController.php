@@ -42,6 +42,8 @@ class ProfessionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Le slug est généré automatiquement à partir du nom (ex: "Médecin généraliste" → "medecin-generaliste").
+            // Il sert d'identifiant lisible dans les URLs et doit être unique.
             $profession->setSlug($this->slugify($profession->getNom()));
             $em->persist($profession);
             $em->flush();
@@ -84,6 +86,8 @@ class ProfessionController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // Interdit la suppression si des utilisateurs ou des demandes sont rattachés à cette profession
+        // pour ne pas laisser d'enregistrements orphelins en base.
         if ($profession->getUsers()->count() > 0 || $profession->getDemandesInscription()->count() > 0) {
             $this->addFlash('error', 'Impossible de supprimer cette profession : des utilisateurs ou des demandes y sont rattachés.');
 
@@ -99,6 +103,7 @@ class ProfessionController extends AbstractController
         return $this->redirectToRoute('admin_profession_index');
     }
 
+    // Convertit un nom en slug URL-compatible, en gérant les accents et caractères spéciaux français.
     private function slugify(string $nom): string
     {
         return strtolower((new AsciiSlugger('fr'))->slug($nom)->toString());

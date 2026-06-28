@@ -2,6 +2,9 @@
 
 {% block title %}Demande envoyée{% endblock %}
 
+{# Page affichée après soumission réussie quand la vérification email était active.
+   Actuellement non utilisée : le controller redirige directement vers /login
+   avec un flash message. Conservée si la vérification email est réactivée. #}
 {% block body %}
 <div class="max-w-lg mx-auto px-4 py-16 text-center">
     <div class="text-5xl mb-6">✉️</div>

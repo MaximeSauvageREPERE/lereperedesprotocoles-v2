@@ -10,6 +10,8 @@
     </div>
 
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Modifier la profession</h1>
+    {# Le slug actuel est affiché en lecture seule — il sera régénéré à la sauvegarde
+       par AsciiSlugger('fr') dans ProfessionController #}
     <p class="text-sm text-gray-500 mb-8">Slug actuel : <code class="font-mono bg-gray-100 px-1 rounded">{{ profession.slug }}</code></p>
 
     {{ form_start(form, {attr: {class: 'bg-white shadow-sm rounded-lg border-t-4 border-brand-bleu-fonce border border-gray-200 p-8 space-y-5'}}) }}

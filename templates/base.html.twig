@@ -7,11 +7,14 @@
         {% block head %}{% endblock %}
         {% block stylesheets %}{% endblock %}
         {% block javascripts %}
+            {# importmap charge Stimulus et les controllers JS depuis assets/controllers/ #}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body class="min-h-screen bg-gray-50 flex flex-col">
 
+        {# data-controller="navbar" connecte le Stimulus controller assets/controllers/navbar_controller.js
+           qui gère l'ouverture/fermeture du menu mobile et le toggle des icônes hamburger/croix #}
         <nav class="bg-brand-bleu-fonce shadow-md" data-controller="navbar">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -26,6 +29,7 @@
                     {# Ordinateur (lg+) : tous les liens en ligne #}
                     <div class="hidden lg:flex items-center gap-2 text-base">
                         {% if app.user %}
+                            {# Avatar avec initiales : prenom[0] + nom[0] en majuscules #}
                             <a href="{{ path('profil_index') }}"
                                class="flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors">
                                 <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold shrink-0 select-none">
@@ -34,6 +38,8 @@
                                 {{ app.user.prenom }} {{ app.user.nom }}
                             </a>
 
+                            {# Menu Administration — visible uniquement pour ROLE_ADMIN
+                               data-controller="dropdown" gère l'ouverture/fermeture via Stimulus #}
                             {% if is_granted('ROLE_ADMIN') %}
                                 <div class="relative" data-controller="dropdown">
                                     <button data-action="click->dropdown#toggle"
@@ -52,6 +58,7 @@
                                 </div>
                             {% endif %}
 
+                            {# Menu Modération — visible pour ROLE_MODERATEUR et ROLE_ADMIN (hiérarchie) #}
                             {% if is_granted('ROLE_MODERATEUR') %}
                                 <div class="relative" data-controller="dropdown">
                                     <button data-action="click->dropdown#toggle"
@@ -75,6 +82,9 @@
                                class="bg-white text-brand-bleu-fonce font-medium px-4 py-1.5 rounded-md hover:bg-white/90 transition-colors">
                                 Parcourir
                             </a>
+
+                            {# La déconnexion doit être un POST (avec token CSRF) pour éviter
+                               qu'un lien externe puisse déconnecter l'utilisateur à son insu #}
                             <form action="{{ path('app_logout') }}" method="post" class="inline">
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                                 <button type="submit"
@@ -109,7 +119,8 @@
                             {% endif %}
                         </div>
 
-                        {# Bouton hamburger #}
+                        {# Bouton hamburger — data-navbar-target permet au Stimulus controller
+                           de basculer entre iconOpen (☰) et iconClose (✕) #}
                         <button
                             type="button"
                             data-action="click->navbar#toggle"
@@ -127,7 +138,8 @@
                     </div>
                 </div>
 
-                {# ── Menu déroulant (téléphone + tablette) ─────────── #}
+                {# ── Menu déroulant mobile/tablette (< lg) ─────────── #}
+                {# data-navbar-target="menu" : le Stimulus controller affiche/cache ce bloc au clic hamburger #}
                 <div data-navbar-target="menu" class="hidden lg:hidden border-t border-white/20">
                     <div class="py-3 flex flex-col gap-0.5 text-sm">
                         {% if app.user %}
@@ -180,6 +192,8 @@
         </nav>
 
         <main class="flex-1">
+            {# Messages flash affichés en haut de page après une action (succès, erreur).
+               Symfony stocke ces messages en session et les consomme à l'affichage (one-time). #}
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="max-w-7xl mx-auto px-4 mt-4">
@@ -196,6 +210,7 @@
             {% block body %}{% endblock %}
         </main>
 
+        {# "now"|date("Y") affiche l'année courante dynamiquement dans le copyright #}
         <footer class="bg-brand-bleu-fonce text-center text-xs text-white/50 py-4">
             Le Repère des Protocoles &copy; {{ "now"|date("Y") }}
         </footer>

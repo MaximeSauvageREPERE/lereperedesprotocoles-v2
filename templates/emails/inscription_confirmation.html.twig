@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+{#
+  Email de confirmation d'adresse envoyé lors de l'inscription quand la vérification email est active.
+
+  ATTENTION : ce template est actuellement du code mort.
+  La vérification email est désactivée : InscriptionController met emailVerifie à true
+  directement sans envoyer cet email. Ce template sera utilisé si la vérification est réactivée.
+
+  Règles emails : styles inline, url() pour les liens absolus (voir inscription_approuvee.html.twig).
+  La variable "token" est passée par InscriptionController (tokenInscription généré avec random_bytes()).
+#}
 <html lang="fr">
 <head><meta charset="UTF-8"></head>
 <body style="font-family: sans-serif; color: #374151; max-width: 600px; margin: 0 auto; padding: 24px;">
@@ -12,6 +22,7 @@
     <p>Pour continuer, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :</p>
 
     <p style="text-align: center; margin: 32px 0;">
+        {# url() génère l'URL absolue vers /inscription/confirmer/{token} #}
         <a href="{{ url('app_inscription_confirmer', {token: token}) }}"
            style="background-color: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
             Confirmer mon adresse email

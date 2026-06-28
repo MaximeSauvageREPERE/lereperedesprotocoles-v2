@@ -17,6 +17,9 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
+    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
+    // Sans $q : tous les thèmes triés par nom.
+    // Avec $q : filtrés par nom (recherche partielle).
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('t')->orderBy('t.nom', 'ASC');

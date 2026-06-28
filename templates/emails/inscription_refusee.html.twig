@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+{#
+  Email de refus envoyé par AdminDemandeController::refuser()
+  après que l'administrateur a saisi un motif sur la page /admin/demandes/{id}/refuser.
+
+  Règles emails : styles inline, url() pour les liens absolus (voir inscription_approuvee.html.twig).
+  Le motifRejet peut être absent si l'administrateur a laissé le champ vide — la section est conditionnelle.
+#}
 <html lang="fr">
 <head><meta charset="UTF-8"></head>
 <body style="font-family: sans-serif; color: #374151; max-width: 600px; margin: 0 auto; padding: 24px;">
@@ -9,6 +16,7 @@
 
     <p>Nous avons examiné votre demande d'accès au <strong>Repère des Protocoles</strong> et nous ne sommes malheureusement pas en mesure de vous donner accès pour le moment.</p>
 
+    {# Le motif est affiché uniquement s'il a été renseigné par l'administrateur #}
     {% if demande.motifRejet %}
         <p><strong>Motif :</strong></p>
         <blockquote style="border-left: 3px solid #e5e7eb; margin: 0; padding-left: 16px; color: #6b7280;">

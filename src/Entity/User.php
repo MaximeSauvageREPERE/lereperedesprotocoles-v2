@@ -8,10 +8,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+// `user` est un mot réservé en SQL — les backticks forcent Doctrine à l'échapper dans les requêtes.
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+// Index BDD sur nom et prénom pour accélérer les recherches dans la liste admin.
 #[ORM\Index(columns: ['nom'])]
 #[ORM\Index(columns: ['prenom'])]
+// Contrainte d'unicité au niveau formulaire (avant d'atteindre la BDD).
 #[UniqueEntity(fields: ['email'], message: 'Un compte avec cet email existe déjà.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -27,6 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    // Stocke le hash bcrypt — jamais le mot de passe en clair.
     #[ORM\Column]
     private string $password = '';
 
@@ -36,10 +40,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private string $nom = '';
 
+    // nullable: false en BDD — tout utilisateur doit avoir une profession.
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profession $profession = null;
 
+    // Réservé pour une future vérification email côté User (actuellement toujours true).
     #[ORM\Column]
     private bool $isVerified = false;
 
@@ -48,6 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        // Initialisé dans le constructeur pour ne pas avoir à le passer à chaque création.
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -68,6 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // Identifiant utilisé par Symfony pour retrouver l'utilisateur en session.
     public function getUserIdentifier(): string
     {
         return $this->email;
@@ -77,6 +85,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+        // Symfony exige que tout utilisateur connecté ait au moins ROLE_USER.
+        // On l'ajoute ici plutôt qu'en BDD pour éviter les doublons à l'affichage.
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -102,6 +112,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // Appelée par Symfony après l'authentification pour effacer les données sensibles en mémoire.
+    // Rien à faire ici car on ne stocke jamais le mot de passe en clair sur l'objet.
     public function eraseCredentials(): void
     {
     }

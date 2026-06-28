@@ -8,6 +8,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
+// Crée 25 protocoles répartis sur les 5 thèmes existants.
+// C'est le bas de la chaîne de dépendances : Profession → User, Domaine → Rubrique → Thème → Protocole.
 class ProtocoleFixtures extends Fixture implements DependentFixtureInterface
 {
     private const PROTOCOLES = [
@@ -44,8 +46,10 @@ class ProtocoleFixtures extends Fixture implements DependentFixtureInterface
             $protocole = new Protocole();
             $protocole->setTitre($data['titre']);
             $protocole->setSlug($data['slug']);
+            // getReference() récupère l'objet Theme créé par ThemeFixtures.
             $protocole->setTheme($this->getReference('theme-'.$data['theme'], Theme::class));
             $manager->persist($protocole);
+            // Pas de addReference() ici : aucune autre fixture n'a besoin des protocoles.
         }
 
         $manager->flush();

@@ -26,6 +26,9 @@
 
         <div>
             {{ form_label(form.domaines, 'Domaines associés', {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+            {# Checkbox pills — même principe que dans new.html.twig :
+               has-[:checked] applique le style "sélectionné" sans JavaScript.
+               Les cases cochées correspondent aux domaines déjà liés à cette rubrique. #}
             <div class="flex flex-wrap gap-2">
                 {% for domaine in form.domaines %}
                     <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm cursor-pointer transition-colors select-none border-gray-200 bg-gray-50 text-gray-600 hover:border-brand-bleu-fonce hover:text-brand-bleu-fonce has-[:checked]:border-brand-bleu-fonce has-[:checked]:bg-brand-bleu-fonce-light has-[:checked]:text-brand-bleu-fonce">

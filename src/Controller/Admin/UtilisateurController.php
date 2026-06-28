@@ -43,6 +43,8 @@ class UtilisateurController extends AbstractController
     ): Response {
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
 
+        // Symfony stocke les rôles comme un tableau (ex: ['ROLE_ADMIN', 'ROLE_USER']).
+        // On en déduit un niveau unique pour pré-remplir le select du formulaire.
         $currentRoles = $utilisateur->getRoles();
         $niveau = match (true) {
             in_array('ROLE_ADMIN', $currentRoles, true) => 'ROLE_ADMIN',
@@ -54,11 +56,14 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Le champ mot de passe est optionnel : si vide, on conserve le mot de passe actuel.
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $utilisateur->setPassword($hasher->hashPassword($utilisateur, $plainPassword));
             }
 
+            // On remplace le tableau de rôles entier par le niveau sélectionné.
+            // Symfony ajoute ROLE_USER automatiquement via getRoles() pour tout utilisateur connecté.
             $utilisateur->setRoles([$form->get('niveau')->getData()]);
 
             $em->flush();
@@ -80,6 +85,7 @@ class UtilisateurController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // Un admin ne peut pas se supprimer lui-même pour éviter de se bloquer hors de l'application.
         if ($utilisateur === $this->getUser()) {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
 
