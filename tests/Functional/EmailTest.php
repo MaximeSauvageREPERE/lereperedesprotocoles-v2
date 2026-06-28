@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class EmailTest extends WebTestCase
 {
-    public function testInscriptionEnvoieEmailConfirmation(): void
+    public function testInscriptionRedirigeVersLoginSansEmail(): void
     {
         $client = static::createClient();
         $profession = static::getContainer()->get(ProfessionRepository::class)->findOneBy([]);
@@ -26,9 +26,10 @@ class EmailTest extends WebTestCase
         ]);
         $client->submit($form);
 
-        $this->assertEmailCount(1);
-        $email = $this->getMailerMessage();
-        $this->assertEmailHtmlBodyContains($email, 'Confirmez votre adresse email');
+        // La vérification email est désactivée : redirection directe vers /login, aucun email envoyé.
+        $this->assertResponseStatusCodeSame(303);
+        $this->assertResponseRedirects('/login');
+        $this->assertEmailCount(0);
     }
 
     public function testApprobationDemandeEnvoieEmail(): void
