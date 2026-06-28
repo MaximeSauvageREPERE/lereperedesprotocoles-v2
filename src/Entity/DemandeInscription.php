@@ -16,8 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
 class DemandeInscription
 {
     public const STATUT_EN_ATTENTE = 'en_attente';
-    public const STATUT_APPROUVEE  = 'approuvee';
-    public const STATUT_REFUSEE    = 'refusee';
+    public const STATUT_APPROUVEE = 'approuvee';
+    public const STATUT_REFUSEE = 'refusee';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
