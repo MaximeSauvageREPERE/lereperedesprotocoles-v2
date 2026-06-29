@@ -31,7 +31,7 @@ user.email = maxime-sauvage@live.fr
 - PHP 8.3 / Symfony 7.4
 - MySQL 8.4 (via Laragon)
 - Tailwind CSS v3.4
-- Stimulus + Turbo (Hotwired)
+- Stimulus (Hotwired)
 - Vich UploaderBundle (upload PDF)
 - Docker (à configurer)
 
@@ -457,11 +457,11 @@ VALUES (
 php bin/console doctrine:fixtures:load
 ```
 
-### Bug corrigé — logout déclenché par Turbo
+### Bug corrigé — logout et double-requêtes CSRF
 
-Symfony UX Turbo précharge les liens `<a>` visibles dans la navbar. Le lien de déconnexion était un `<a href="/logout">` (GET) — Turbo le préchargeait automatiquement après le login, déconnectant l'utilisateur immédiatement.
+Le lien de déconnexion était un `<a href="/logout">` (GET). Correction initiale : remplacement par un formulaire POST avec token CSRF, et ajout de `csrf_token_manager` dans `security.yaml`.
 
-**Correction :** remplacement du lien par un formulaire POST avec token CSRF, et ajout de `csrf_token_manager` dans `security.yaml`.
+Turbo avait été installé par défaut via `symfony/ux-turbo` mais causait des bugs CSRF (double-requêtes sur Windows). Il a été entièrement retiré — seul Stimulus est conservé.
 
 ### Choix de conception
 

@@ -13,7 +13,7 @@ Application Symfony 7.4 de gestion et de consultation de protocoles médicaux. L
 | ORM | Doctrine 3 + Migrations |
 | Base de données | MySQL 8.4 |
 | CSS | Tailwind CSS 3.4 (via symfonycasts/tailwind-bundle) |
-| JS | Stimulus + Turbo (Hotwired, via AssetMapper) |
+| JS | Stimulus (Hotwired, via AssetMapper) |
 | Upload | Vich UploaderBundle v2.9 |
 | Serveur local | Laragon 2026 |
 

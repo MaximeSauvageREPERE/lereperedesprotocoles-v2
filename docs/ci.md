@@ -356,7 +356,7 @@ Les scripts `post-install-cmd` dans `composer.json` exécutent :
 2. `assets:install` — installe les assets des bundles dans `public/`
 3. `importmap:install` — télécharge les packages JavaScript depuis un CDN
 
-`--no-scripts` court-circuite ces automatismes pour éviter que `cache:clear` échoue (il tourne avec l'env `dev` par défaut, sans les variables d'env configurées). Dans le job fonctionnel, `importmap:install` est ensuite relancé **explicitement**, car les templates Twig qui utilisent `{{ importmap('app') }}` ont besoin que les fichiers vendor JS (`@hotwired/stimulus`, `@hotwired/turbo`) soient présents — sans eux, AssetMapper lève une exception PHP et les pages retournent HTTP 500.
+`--no-scripts` court-circuite ces automatismes pour éviter que `cache:clear` échoue (il tourne avec l'env `dev` par défaut, sans les variables d'env configurées). Dans le job fonctionnel, `importmap:install` est ensuite relancé **explicitement**, car les templates Twig qui utilisent `{{ importmap('app') }}` ont besoin que les fichiers vendor JS (`@hotwired/stimulus`) soient présents — sans eux, AssetMapper lève une exception PHP et les pages retournent HTTP 500.
 
 ```yaml
 - name: Installer les assets JavaScript (requis par les templates Twig)

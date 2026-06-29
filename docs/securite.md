@@ -78,20 +78,11 @@ SVG délibérément exclu (peut contenir du JavaScript).
 
 ### Contexte
 
-L'application utilise Turbo 8 (`@hotwired/turbo` v8.0.23). Turbo Drive intercepte les navigations et maintient un cache interne de snapshots de pages. Le navigateur dispose également de son propre **bfcache** (Back/Forward Cache) qui gèle une copie complète de la page en mémoire pour les navigations arrière/avant.
+Le navigateur dispose d'un **bfcache** (Back/Forward Cache) qui gèle une copie complète de la page en mémoire pour les navigations arrière/avant.
 
 ### Problème
 
 Après un logout, quand l'utilisateur retourne sur `/login`, le navigateur peut restaurer une version gelée de la page depuis son bfcache — une version qui contient le token CSRF de l'ancienne session (désormais invalide). La soumission du formulaire échoue alors avec **"Invalid CSRF token"**, même si l'utilisateur n'a rien fait de suspect.
-
-Deux caches distincts peuvent provoquer ce comportement :
-
-| Cache | Contrôle |
-|---|---|
-| Cache Turbo (snapshots JS) | `<meta name="turbo-cache-control" content="no-cache">` dans `base.html.twig` |
-| **bfcache navigateur** | `Cache-Control: no-store` en header HTTP |
-
-La meta Turbo seule est insuffisante : elle ne communique pas avec le bfcache du navigateur.
 
 ### Fix appliqué
 
@@ -107,4 +98,4 @@ $response->headers->set('Pragma', 'no-cache');
 ### Formulaires concernés
 
 - **Login** : token `authenticate` validé par `FormLoginAuthenticator` (`enable_csrf: true` dans `security.yaml`)
-- **Logout** : token `logout` validé par le firewall. Protégé différemment : `data-turbo="false"` sur le formulaire force une soumission HTTP native, et la page entière a le meta `no-cache` Turbo via `base.html.twig`.
+- **Logout** : token `logout` validé par le firewall. Le formulaire soumet en POST natif (pas de JS intercepteur).
