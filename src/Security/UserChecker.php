@@ -14,8 +14,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Déclaré dans security.yaml via : user_checker: App\Security\UserChecker.
  * Bloque la connexion des comptes inactifs (isVerified = false) avec un message lisible,
  * ce qui peut arriver si un admin désactive un compte après création.
- *
- * @package App\Security
  */
 class UserChecker implements UserCheckerInterface
 {

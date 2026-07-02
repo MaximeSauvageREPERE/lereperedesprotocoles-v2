@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des demandes d'inscription.
  *
  * @extends ServiceEntityRepository<DemandeInscription>
- * @package App\Repository
  */
 class DemandeInscriptionRepository extends ServiceEntityRepository
 {

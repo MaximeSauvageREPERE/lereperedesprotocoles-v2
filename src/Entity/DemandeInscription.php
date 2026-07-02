@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Cycle de vie : en_attente → approuvee ou refusee.
  * Seules les demandes avec emailVerifie = true sont visibles par l'admin.
  * À l'approbation, un {@see User} est créé et lié à cette demande via $utilisateur.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: DemandeInscriptionRepository::class)]
 // Index BDD pour accélérer la recherche dans la liste admin (filtre par nom/prénom/email).
@@ -46,8 +44,6 @@ class DemandeInscription
     /**
      * Mot de passe haché à l'inscription — copié tel quel vers User lors de l'approbation
      * pour ne pas redemander le mot de passe au candidat.
-     *
-     * @var string
      */
     #[ORM\Column]
     private string $password = '';
@@ -55,8 +51,6 @@ class DemandeInscription
     /**
      * Statut courant de la demande : en_attente, approuvee ou refusee.
      * Utiliser les constantes STATUT_* pour les comparaisons.
-     *
-     * @var string
      */
     #[ORM\Column(length: 20)]
     private string $statut = self::STATUT_EN_ATTENTE;
@@ -64,24 +58,18 @@ class DemandeInscription
     /**
      * Token à usage unique envoyé par email pour confirmer l'adresse.
      * Null quand la vérification email est désactivée ou après utilisation du lien.
-     *
-     * @var string|null
      */
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $token = null;
 
     /**
      * Date d'expiration du token — au-delà, le lien de confirmation n'est plus valide.
-     *
-     * @var \DateTimeImmutable|null
      */
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $tokenExpiresAt = null;
 
     /**
      * Motif renseigné par l'admin lors d'un refus — inclus dans l'email envoyé au candidat.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $motifRejet = null;
@@ -91,8 +79,6 @@ class DemandeInscription
 
     /**
      * Date à laquelle l'admin a traité la demande (approbation ou refus).
-     *
-     * @var \DateTimeImmutable|null
      */
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $traiteeAt = null;
@@ -100,8 +86,6 @@ class DemandeInscription
     /**
      * True dès que l'email est confirmé (ou immédiatement si la vérification email est désactivée).
      * Seules les demandes avec emailVerifie = true sont visibles par l'admin.
-     *
-     * @var bool
      */
     #[ORM\Column]
     private bool $emailVerifie = false;
@@ -109,8 +93,6 @@ class DemandeInscription
     /**
      * Lien vers le User créé après approbation.
      * SET NULL si le User est supprimé pour conserver l'historique de la demande.
-     *
-     * @var User|null
      */
     #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]

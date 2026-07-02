@@ -19,8 +19,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Permet de modifier le rôle (ROLE_USER / ROLE_MODERATEUR / ROLE_ADMIN) et le mot de passe.
  * Un admin ne peut pas supprimer son propre compte.
- *
- * @package App\Controller\Admin
  */
 #[Route('/admin/utilisateurs')]
 #[IsGranted('ROLE_ADMIN')]

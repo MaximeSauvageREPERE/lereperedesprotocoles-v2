@@ -12,8 +12,6 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  *
  * La route /logout est interceptée par le firewall Symfony avant d'atteindre le controller —
  * la méthode logout() ne s'exécute donc jamais.
- *
- * @package App\Controller
  */
 class SecurityController extends AbstractController
 {

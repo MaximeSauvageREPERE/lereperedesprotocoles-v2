@@ -13,8 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Partagée par {@see User} et {@see DemandeInscription}.
  * La suppression d'une profession est bloquée dans ProfessionController
  * si des utilisateurs ou des demandes y sont encore rattachés.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: ProfessionRepository::class)]
 #[ORM\Index(columns: ['nom'])]
@@ -30,8 +28,6 @@ class Profession
 
     /**
      * Identifiant URL unique (ex: "medecin-generaliste") — généré depuis le nom dans le controller.
-     *
-     * @var string
      */
     #[ORM\Column(length: 150, unique: true)]
     private string $slug = '';

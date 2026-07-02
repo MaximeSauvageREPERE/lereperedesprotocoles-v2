@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des protocoles médicaux.
  *
  * @extends ServiceEntityRepository<Protocole>
- * @package App\Repository
  */
 class ProtocoleRepository extends ServiceEntityRepository
 {

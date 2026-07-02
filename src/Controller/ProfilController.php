@@ -9,8 +9,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * Affiche la page de profil de l'utilisateur connecté.
- *
- * @package App\Controller
  */
 #[Route('/profil')]
 #[IsGranted('ROLE_USER')]

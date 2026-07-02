@@ -20,8 +20,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  * ROLE_MODERATEUR est requis — les admins y ont aussi accès car leur rôle est
  * hiérarchiquement supérieur (défini dans security.yaml).
  * La suppression via POST empêche les bots ou prefetchers de déclencher l'action via un lien GET.
- *
- * @package App\Controller\Moderateur
  */
 #[Route('/moderateur/domaines')]
 #[IsGranted('ROLE_MODERATEUR')]
@@ -119,6 +117,7 @@ class DomaineController extends AbstractController
      * Convertit un nom en slug URL-compatible en gérant les accents et caractères spéciaux français.
      *
      * @param string $nom Nom brut (ex: "Cardiologie & Vasculaire")
+     *
      * @return string Slug normalisé (ex: "cardiologie-vasculaire")
      */
     private function slugify(string $nom): string

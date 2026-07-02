@@ -23,8 +23,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * et les demandes dont l'email n'est pas encore vérifié (normalement vide).
  * L'approbation crée un compte {@see User} et envoie un email de notification.
  * Le refus demande un motif et envoie également un email au candidat.
- *
- * @package App\Controller\Admin
  */
 #[Route('/admin/demandes')]
 #[IsGranted('ROLE_ADMIN')]

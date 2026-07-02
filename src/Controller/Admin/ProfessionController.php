@@ -20,8 +20,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  * La suppression est bloquée si des utilisateurs ou des demandes d'inscription
  * sont encore rattachés à la profession, pour éviter des enregistrements orphelins.
  * Le slug est généré automatiquement depuis le nom via AsciiSlugger (locale 'fr').
- *
- * @package App\Controller\Admin
  */
 #[Route('/admin/professions')]
 #[IsGranted('ROLE_ADMIN')]
@@ -129,6 +127,7 @@ class ProfessionController extends AbstractController
      * Convertit un nom en slug URL-compatible en gérant les accents et caractères spéciaux français.
      *
      * @param string $nom Nom brut (ex: "Médecin généraliste")
+     *
      * @return string Slug normalisé (ex: "medecin-generaliste")
      */
     private function slugify(string $nom): string

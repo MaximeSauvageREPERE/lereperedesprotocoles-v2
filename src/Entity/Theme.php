@@ -12,8 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Un thème appartient à exactement une rubrique et contient plusieurs protocoles.
  * La suppression d'un thème entraîne la suppression en cascade de ses protocoles.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
 #[ORM\Index(columns: ['nom'])]
@@ -32,8 +30,6 @@ class Theme
 
     /**
      * Rubrique parente du thème (nullable: false — un thème doit toujours être rattaché à une rubrique).
-     *
-     * @var Rubrique|null
      */
     #[ORM\ManyToOne(inversedBy: 'themes')]
     #[ORM\JoinColumn(nullable: false)]

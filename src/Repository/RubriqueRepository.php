@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des rubriques.
  *
  * @extends ServiceEntityRepository<Rubrique>
- * @package App\Repository
  */
 class RubriqueRepository extends ServiceEntityRepository
 {

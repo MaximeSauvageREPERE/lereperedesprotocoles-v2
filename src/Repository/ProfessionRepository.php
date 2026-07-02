@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des professions médicales.
  *
  * @extends ServiceEntityRepository<Profession>
- * @package App\Repository
  */
 class ProfessionRepository extends ServiceEntityRepository
 {

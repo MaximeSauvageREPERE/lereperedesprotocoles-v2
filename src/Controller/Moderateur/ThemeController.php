@@ -19,8 +19,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  *
  * Même structure que {@see DomaineController}.
  * La suppression d'un thème supprime en cascade ses protocoles.
- *
- * @package App\Controller\Moderateur
  */
 #[Route('/moderateur/themes')]
 #[IsGranted('ROLE_MODERATEUR')]

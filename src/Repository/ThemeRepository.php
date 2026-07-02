@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des thèmes.
  *
  * @extends ServiceEntityRepository<Theme>
- * @package App\Repository
  */
 class ThemeRepository extends ServiceEntityRepository
 {

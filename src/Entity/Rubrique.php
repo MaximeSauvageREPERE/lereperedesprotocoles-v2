@@ -13,8 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Une rubrique peut appartenir à plusieurs domaines (ManyToMany, côté propriétaire)
  * et contient plusieurs thèmes (OneToMany). La suppression d'une rubrique entraîne
  * la suppression en cascade de ses thèmes, et donc de leurs protocoles.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: RubriqueRepository::class)]
 #[ORM\Index(columns: ['nom'])]

@@ -20,8 +20,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  * Même structure que {@see DomaineController}.
  * Différence notable : le slug est généré depuis le titre (et non le nom) du protocole.
  * La gestion des fichiers PDF et image est assurée par VichUploaderBundle via {@see Protocole}.
- *
- * @package App\Controller\Moderateur
  */
 #[Route('/moderateur/protocoles')]
 #[IsGranted('ROLE_MODERATEUR')]

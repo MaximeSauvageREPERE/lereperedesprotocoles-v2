@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  * le mot de passe lors de la connexion si l'algorithme ou le coût bcrypt a changé.
  *
  * @extends ServiceEntityRepository<User>
- * @package App\Repository
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {

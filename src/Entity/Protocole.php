@@ -13,8 +13,6 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
  * Feuille de la hiérarchie de navigation : Domaine → Rubrique → Thème → Protocole.
  * Supporte l'upload de fichiers (PDF et image de couverture) via VichUploaderBundle.
  * HasLifecycleCallbacks active le callback {@see onPreUpdate()} déclenché avant chaque UPDATE.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: ProtocoleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -38,8 +36,6 @@ class Protocole
 
     /**
      * Objet File PHP non persisté en BDD — VichUploader lit ce champ pour déplacer le fichier uploadé.
-     *
-     * @var File|null
      */
     #[Vich\UploadableField(mapping: 'protocole_pdf', fileNameProperty: 'pdfFilename')]
     private ?File $pdfFile = null;
@@ -47,24 +43,18 @@ class Protocole
     /**
      * Nom du fichier PDF généré par VichUploader et stocké en BDD (ex: "abc123.pdf").
      * Le fichier physique est dans public/uploads/protocoles/pdf/.
-     *
-     * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pdfFilename = null;
 
     /**
      * Objet File PHP non persisté en BDD — VichUploader lit ce champ pour déplacer l'image uploadée.
-     *
-     * @var File|null
      */
     #[Vich\UploadableField(mapping: 'protocole_image', fileNameProperty: 'imageFilename')]
     private ?File $imageFile = null;
 
     /**
      * Nom du fichier image stocké en BDD — fichier physique dans public/uploads/protocoles/images/.
-     *
-     * @var string|null
      */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
@@ -80,8 +70,6 @@ class Protocole
      * Mis à jour automatiquement via {@see onPreUpdate()} avant chaque UPDATE Doctrine,
      * et manuellement dans {@see setPdfFile()}/{@see setImageFile()} pour que VichUploader
      * détecte le changement et déclenche le traitement de l'upload.
-     *
-     * @var \DateTimeImmutable
      */
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
@@ -151,8 +139,6 @@ class Protocole
     /**
      * Assigne le fichier PDF et force la mise à jour de $updatedAt pour que VichUploader
      * détecte le changement et déclenche le traitement de l'upload lors du flush.
-     *
-     * @param File|null $pdfFile
      */
     public function setPdfFile(?File $pdfFile): static
     {
@@ -185,8 +171,6 @@ class Protocole
     /**
      * Assigne l'image de couverture et force la mise à jour de $updatedAt pour que VichUploader
      * détecte le changement et déclenche le traitement de l'upload lors du flush.
-     *
-     * @param File|null $imageFile
      */
     public function setImageFile(?File $imageFile): static
     {

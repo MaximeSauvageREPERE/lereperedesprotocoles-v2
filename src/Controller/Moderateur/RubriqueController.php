@@ -19,8 +19,6 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
  *
  * Même structure que {@see DomaineController}.
  * La suppression d'une rubrique supprime en cascade ses thèmes et leurs protocoles.
- *
- * @package App\Controller\Moderateur
  */
 #[Route('/moderateur/rubriques')]
 #[IsGranted('ROLE_MODERATEUR')]

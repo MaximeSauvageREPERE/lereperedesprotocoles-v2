@@ -8,8 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Affiche la page d'accueil publique de l'application.
- *
- * @package App\Controller
  */
 class HomeController extends AbstractController
 {

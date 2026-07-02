@@ -11,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Repository des domaines.
  *
  * @extends ServiceEntityRepository<Domaine>
- * @package App\Repository
  */
 class DomaineRepository extends ServiceEntityRepository
 {

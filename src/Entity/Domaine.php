@@ -13,8 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  * Un domaine regroupe plusieurs rubriques via une relation ManyToMany
  * (une rubrique peut apparaître dans plusieurs domaines).
  * Doctrine est côté inverse de la relation — Rubrique est le propriétaire.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: DomaineRepository::class)]
 #[ORM\Index(columns: ['nom'])]

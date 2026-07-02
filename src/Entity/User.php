@@ -14,8 +14,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * Implémente UserInterface et PasswordAuthenticatedUserInterface pour l'intégration
  * avec le firewall Symfony. L'email sert d'identifiant unique (getUserIdentifier).
  * Le nom de table est échappé en backticks car `user` est un mot réservé en SQL.
- *
- * @package App\Entity
  */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -44,8 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Hash bcrypt du mot de passe — jamais le mot de passe en clair.
-     *
-     * @var string
      */
     #[ORM\Column]
     private string $password = '';
@@ -58,8 +54,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Tout utilisateur doit avoir une profession (nullable: false en BDD).
-     *
-     * @var Profession|null
      */
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
@@ -68,8 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Indique si le compte a été activé par un administrateur.
      * Vérifié par {@see \App\Security\UserChecker} avant l'authentification.
-     *
-     * @var bool
      */
     #[ORM\Column]
     private bool $isVerified = false;

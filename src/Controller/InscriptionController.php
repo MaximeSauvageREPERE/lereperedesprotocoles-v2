@@ -20,8 +20,6 @@ use Symfony\Component\Routing\Attribute\Route;
  * La vérification email est actuellement désactivée : emailVerifie est mis à true
  * directement à la soumission, ce qui rend la demande immédiatement visible par l'admin.
  * La route /inscription/confirmer/{token} est conservée pour une réactivation future.
- *
- * @package App\Controller
  */
 class InscriptionController extends AbstractController
 {

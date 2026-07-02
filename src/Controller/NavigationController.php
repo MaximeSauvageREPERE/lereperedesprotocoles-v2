@@ -16,8 +16,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  *
  * Tout le contenu est réservé aux utilisateurs connectés (ROLE_USER).
  * Chaque niveau est identifié par son slug dans l'URL.
- *
- * @package App\Controller
  */
 #[IsGranted('ROLE_USER')]
 class NavigationController extends AbstractController
