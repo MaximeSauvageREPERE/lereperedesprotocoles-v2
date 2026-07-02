@@ -14,12 +14,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-// CRUD identique à DomaineController — voir ce fichier pour les commentaires détaillés.
-// Différence notable : le slug est généré depuis le titre (et non le nom) du protocole.
+/**
+ * CRUD des protocoles médicaux, accessible aux modérateurs et administrateurs.
+ *
+ * Même structure que {@see DomaineController}.
+ * Différence notable : le slug est généré depuis le titre (et non le nom) du protocole.
+ * La gestion des fichiers PDF et image est assurée par VichUploaderBundle via {@see Protocole}.
+ *
+ * @package App\Controller\Moderateur
+ */
 #[Route('/moderateur/protocoles')]
 #[IsGranted('ROLE_MODERATEUR')]
 class ProtocoleController extends AbstractController
 {
+    /**
+     * Liste paginée des protocoles avec recherche par titre.
+     */
     #[Route('', name: 'moderateur_protocole_index', methods: ['GET'])]
     public function index(ProtocoleRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
@@ -36,6 +46,10 @@ class ProtocoleController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le formulaire de création (GET) et persiste le nouveau protocole (POST).
+     * Le slug est généré depuis le titre à la soumission.
+     */
     #[Route('/nouveau', name: 'moderateur_protocole_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -56,6 +70,10 @@ class ProtocoleController extends AbstractController
         return $this->render('moderateur/protocole/new.html.twig', ['form' => $form]);
     }
 
+    /**
+     * Affiche le formulaire de modification et met à jour le protocole.
+     * Le slug est recalculé à chaque modification du titre.
+     */
     #[Route('/{id}/modifier', name: 'moderateur_protocole_edit', methods: ['GET', 'POST'])]
     public function edit(Protocole $protocole, Request $request, EntityManagerInterface $em): Response
     {
@@ -77,6 +95,10 @@ class ProtocoleController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un protocole après vérification du token CSRF.
+     * VichUploaderBundle supprime automatiquement les fichiers PDF et image associés.
+     */
     #[Route('/{id}/supprimer', name: 'moderateur_protocole_delete', methods: ['POST'])]
     public function delete(Protocole $protocole, Request $request, EntityManagerInterface $em): Response
     {

@@ -7,13 +7,18 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
-// Feuille de la hiérarchie : Domaine → Rubrique → Thème → Protocole.
-// Supporte l'upload de fichiers (PDF + image) via VichUploaderBundle.
+/**
+ * Entité représentant un protocole médical.
+ *
+ * Feuille de la hiérarchie de navigation : Domaine → Rubrique → Thème → Protocole.
+ * Supporte l'upload de fichiers (PDF et image de couverture) via VichUploaderBundle.
+ * HasLifecycleCallbacks active le callback {@see onPreUpdate()} déclenché avant chaque UPDATE.
+ *
+ * @package App\Entity
+ */
 #[ORM\Entity(repositoryClass: ProtocoleRepository::class)]
-// HasLifecycleCallbacks active les callbacks ORM comme #[ORM\PreUpdate] ci-dessous.
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Index(columns: ['titre'])]
-// Uploadable indique à VichUploader que cette entité a des champs fichiers à gérer.
 #[Vich\Uploadable]
 class Protocole
 {
@@ -31,19 +36,36 @@ class Protocole
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    // Objet File PHP (non persisté en BDD) — VichUploader lit ce champ pour déplacer le fichier uploadé.
+    /**
+     * Objet File PHP non persisté en BDD — VichUploader lit ce champ pour déplacer le fichier uploadé.
+     *
+     * @var File|null
+     */
     #[Vich\UploadableField(mapping: 'protocole_pdf', fileNameProperty: 'pdfFilename')]
     private ?File $pdfFile = null;
 
-    // Nom du fichier généré par VichUploader et stocké en BDD (ex: "abc123.pdf").
-    // Le fichier physique est dans public/uploads/protocoles/pdf/.
+    /**
+     * Nom du fichier PDF généré par VichUploader et stocké en BDD (ex: "abc123.pdf").
+     * Le fichier physique est dans public/uploads/protocoles/pdf/.
+     *
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pdfFilename = null;
 
+    /**
+     * Objet File PHP non persisté en BDD — VichUploader lit ce champ pour déplacer l'image uploadée.
+     *
+     * @var File|null
+     */
     #[Vich\UploadableField(mapping: 'protocole_image', fileNameProperty: 'imageFilename')]
     private ?File $imageFile = null;
 
-    // Nom du fichier image stocké en BDD — fichier physique dans public/uploads/protocoles/images/.
+    /**
+     * Nom du fichier image stocké en BDD — fichier physique dans public/uploads/protocoles/images/.
+     *
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
 
@@ -54,8 +76,13 @@ class Protocole
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    // updatedAt est mis à jour automatiquement à chaque modification via #[ORM\PreUpdate]
-    // et aussi manuellement dans setPdfFile/setImageFile pour que VichUploader détecte le changement.
+    /**
+     * Mis à jour automatiquement via {@see onPreUpdate()} avant chaque UPDATE Doctrine,
+     * et manuellement dans {@see setPdfFile()}/{@see setImageFile()} pour que VichUploader
+     * détecte le changement et déclenche le traitement de l'upload.
+     *
+     * @var \DateTimeImmutable
+     */
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
@@ -65,8 +92,10 @@ class Protocole
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-    // Callback Doctrine déclenché automatiquement avant chaque UPDATE SQL.
-    // Garantit que updatedAt reflète toujours la dernière modification de l'entité.
+    /**
+     * Callback Doctrine déclenché automatiquement avant chaque UPDATE SQL.
+     * Garantit que $updatedAt reflète toujours la dernière modification de l'entité.
+     */
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
@@ -119,12 +148,16 @@ class Protocole
         return $this->pdfFile;
     }
 
+    /**
+     * Assigne le fichier PDF et force la mise à jour de $updatedAt pour que VichUploader
+     * détecte le changement et déclenche le traitement de l'upload lors du flush.
+     *
+     * @param File|null $pdfFile
+     */
     public function setPdfFile(?File $pdfFile): static
     {
         $this->pdfFile = $pdfFile;
 
-        // VichUploader détecte un nouveau fichier uniquement si updatedAt change —
-        // on le force ici pour déclencher le traitement de l'upload lors du flush.
         if (null !== $pdfFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }
@@ -149,11 +182,16 @@ class Protocole
         return $this->imageFile;
     }
 
+    /**
+     * Assigne l'image de couverture et force la mise à jour de $updatedAt pour que VichUploader
+     * détecte le changement et déclenche le traitement de l'upload lors du flush.
+     *
+     * @param File|null $imageFile
+     */
     public function setImageFile(?File $imageFile): static
     {
         $this->imageFile = $imageFile;
 
-        // Même raison que setPdfFile : force la détection du changement par VichUploader.
         if (null !== $imageFile) {
             $this->updatedAt = new \DateTimeImmutable();
         }

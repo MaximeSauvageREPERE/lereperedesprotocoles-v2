@@ -14,11 +14,21 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-// CRUD identique à DomaineController — voir ce fichier pour les commentaires détaillés.
+/**
+ * CRUD des thèmes, accessible aux modérateurs et administrateurs.
+ *
+ * Même structure que {@see DomaineController}.
+ * La suppression d'un thème supprime en cascade ses protocoles.
+ *
+ * @package App\Controller\Moderateur
+ */
 #[Route('/moderateur/themes')]
 #[IsGranted('ROLE_MODERATEUR')]
 class ThemeController extends AbstractController
 {
+    /**
+     * Liste paginée des thèmes avec recherche par nom.
+     */
     #[Route('', name: 'moderateur_theme_index', methods: ['GET'])]
     public function index(ThemeRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
@@ -35,6 +45,9 @@ class ThemeController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le formulaire de création (GET) et persiste le nouveau thème (POST).
+     */
     #[Route('/nouveau', name: 'moderateur_theme_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -55,6 +68,9 @@ class ThemeController extends AbstractController
         return $this->render('moderateur/theme/new.html.twig', ['form' => $form]);
     }
 
+    /**
+     * Affiche le formulaire de modification et met à jour le thème.
+     */
     #[Route('/{id}/modifier', name: 'moderateur_theme_edit', methods: ['GET', 'POST'])]
     public function edit(Theme $theme, Request $request, EntityManagerInterface $em): Response
     {
@@ -73,6 +89,10 @@ class ThemeController extends AbstractController
         return $this->render('moderateur/theme/edit.html.twig', ['form' => $form, 'theme' => $theme]);
     }
 
+    /**
+     * Supprime un thème après vérification du token CSRF.
+     * Entraîne la suppression en cascade des protocoles associés.
+     */
     #[Route('/{id}/supprimer', name: 'moderateur_theme_delete', methods: ['POST'])]
     public function delete(Theme $theme, Request $request, EntityManagerInterface $em): Response
     {

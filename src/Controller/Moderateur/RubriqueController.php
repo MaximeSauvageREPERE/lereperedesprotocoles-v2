@@ -14,11 +14,21 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-// CRUD identique à DomaineController — voir ce fichier pour les commentaires détaillés.
+/**
+ * CRUD des rubriques, accessible aux modérateurs et administrateurs.
+ *
+ * Même structure que {@see DomaineController}.
+ * La suppression d'une rubrique supprime en cascade ses thèmes et leurs protocoles.
+ *
+ * @package App\Controller\Moderateur
+ */
 #[Route('/moderateur/rubriques')]
 #[IsGranted('ROLE_MODERATEUR')]
 class RubriqueController extends AbstractController
 {
+    /**
+     * Liste paginée des rubriques avec recherche par nom.
+     */
     #[Route('', name: 'moderateur_rubrique_index', methods: ['GET'])]
     public function index(RubriqueRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
@@ -35,6 +45,9 @@ class RubriqueController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche le formulaire de création (GET) et persiste la nouvelle rubrique (POST).
+     */
     #[Route('/nouveau', name: 'moderateur_rubrique_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -55,6 +68,9 @@ class RubriqueController extends AbstractController
         return $this->render('moderateur/rubrique/new.html.twig', ['form' => $form]);
     }
 
+    /**
+     * Affiche le formulaire de modification et met à jour la rubrique.
+     */
     #[Route('/{id}/modifier', name: 'moderateur_rubrique_edit', methods: ['GET', 'POST'])]
     public function edit(Rubrique $rubrique, Request $request, EntityManagerInterface $em): Response
     {
@@ -73,6 +89,10 @@ class RubriqueController extends AbstractController
         return $this->render('moderateur/rubrique/edit.html.twig', ['form' => $form, 'rubrique' => $rubrique]);
     }
 
+    /**
+     * Supprime une rubrique après vérification du token CSRF.
+     * Entraîne la suppression en cascade des thèmes et protocoles associés.
+     */
     #[Route('/{id}/supprimer', name: 'moderateur_rubrique_delete', methods: ['POST'])]
     public function delete(Rubrique $rubrique, Request $request, EntityManagerInterface $em): Response
     {

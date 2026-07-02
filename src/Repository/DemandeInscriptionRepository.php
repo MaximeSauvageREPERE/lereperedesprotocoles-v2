@@ -8,7 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository des demandes d'inscription.
+ *
  * @extends ServiceEntityRepository<DemandeInscription>
+ * @package App\Repository
  */
 class DemandeInscriptionRepository extends ServiceEntityRepository
 {
@@ -17,32 +20,45 @@ class DemandeInscriptionRepository extends ServiceEntityRepository
         parent::__construct($registry, DemandeInscription::class);
     }
 
-    // Retourne directement le tableau de résultats — utilisé quand on n'a pas besoin de pagination.
+    /**
+     * Retourne les demandes en attente avec email vérifié, sans pagination.
+     *
+     * @return DemandeInscription[]
+     */
     public function findEnAttentePourAdmin(): array
     {
         return $this->queryBuilderEnAttentePourAdmin()->getQuery()->getResult();
     }
 
-    // Retourne directement le tableau — utilisé quand on n'a pas besoin de pagination.
+    /**
+     * Retourne les demandes dont l'email n'est pas encore vérifié, sans pagination.
+     * Normalement vide depuis la désactivation de la vérification email.
+     *
+     * @return DemandeInscription[]
+     */
     public function findNonVerifiees(): array
     {
         return $this->queryBuilderNonVerifiees()->getQuery()->getResult();
     }
 
-    // Retourne un QueryBuilder (et non un tableau) pour que KnpPaginator puisse
-    // ajouter dynamiquement LIMIT/OFFSET et compter le total sans charger tous les objets en mémoire.
-    // Le filtre $q est optionnel : sans lui, toutes les demandes en attente sont retournées.
+    /**
+     * Retourne un QueryBuilder pour les demandes en attente avec email vérifié.
+     *
+     * Retourne un QueryBuilder (et non un tableau) pour que KnpPaginator puisse
+     * ajouter dynamiquement LIMIT/OFFSET et compter le total sans charger tous les objets en mémoire.
+     * Triées des plus anciennes aux plus récentes (ordre d'arrivée pour l'admin).
+     *
+     * @param string $q Terme de recherche sur nom, prénom et email (chaîne vide pour tout retourner)
+     */
     public function queryBuilderEnAttentePourAdmin(string $q = ''): QueryBuilder
     {
         $qb = $this->createQueryBuilder('d')
             ->andWhere('d.statut = :statut')
             ->andWhere('d.emailVerifie = true')
             ->setParameter('statut', DemandeInscription::STATUT_EN_ATTENTE)
-            // Les plus anciennes en premier : l'admin traite dans l'ordre d'arrivée.
             ->orderBy('d.createdAt', 'ASC');
 
         if ('' !== $q) {
-            // Recherche partielle (LIKE %q%) sur nom, prénom et email simultanément.
             $qb->andWhere('d.nom LIKE :q OR d.prenom LIKE :q OR d.email LIKE :q')
                 ->setParameter('q', '%'.$q.'%');
         }
@@ -50,8 +66,10 @@ class DemandeInscriptionRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    // Demandes soumises mais email pas encore vérifié — normalement vide depuis
-    // que la vérification email est désactivée (emailVerifie mis à true à la soumission).
+    /**
+     * Retourne un QueryBuilder pour les demandes soumises mais avec email non vérifié.
+     * Normalement vide depuis que la vérification email est désactivée (emailVerifie mis à true à la soumission).
+     */
     public function queryBuilderNonVerifiees(): QueryBuilder
     {
         return $this->createQueryBuilder('d')

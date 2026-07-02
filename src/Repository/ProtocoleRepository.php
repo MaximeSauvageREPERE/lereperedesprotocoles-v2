@@ -8,7 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository des protocoles médicaux.
+ *
  * @extends ServiceEntityRepository<Protocole>
+ * @package App\Repository
  */
 class ProtocoleRepository extends ServiceEntityRepository
 {
@@ -17,8 +20,14 @@ class ProtocoleRepository extends ServiceEntityRepository
         parent::__construct($registry, Protocole::class);
     }
 
-    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
-    // La recherche porte sur le titre (et non le nom, contrairement aux autres entités).
+    /**
+     * Retourne un QueryBuilder pour la liste paginée des protocoles (interface modérateur).
+     *
+     * La recherche porte sur le titre (contrairement aux autres entités qui filtrent sur le nom).
+     * Sans $q : tous les protocoles triés par titre. Avec $q : filtrés par titre (LIKE %q%).
+     *
+     * @param string $q Terme de recherche (chaîne vide pour tout retourner)
+     */
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')->orderBy('p.titre', 'ASC');

@@ -8,7 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository des rubriques.
+ *
  * @extends ServiceEntityRepository<Rubrique>
+ * @package App\Repository
  */
 class RubriqueRepository extends ServiceEntityRepository
 {
@@ -17,9 +20,13 @@ class RubriqueRepository extends ServiceEntityRepository
         parent::__construct($registry, Rubrique::class);
     }
 
-    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
-    // Sans $q : toutes les rubriques triées par nom.
-    // Avec $q : filtrées par nom (recherche partielle).
+    /**
+     * Retourne un QueryBuilder pour la liste paginée des rubriques (interface modérateur).
+     *
+     * Sans $q : toutes les rubriques triées par nom. Avec $q : filtrées par nom (LIKE %q%).
+     *
+     * @param string $q Terme de recherche (chaîne vide pour tout retourner)
+     */
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r')->orderBy('r.nom', 'ASC');

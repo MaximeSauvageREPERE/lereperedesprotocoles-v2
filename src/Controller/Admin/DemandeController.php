@@ -16,24 +16,37 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Gère le traitement des demandes d'inscription par l'administrateur.
+ *
+ * Deux listes sont affichées : les demandes en attente (emailVerifie = true)
+ * et les demandes dont l'email n'est pas encore vérifié (normalement vide).
+ * L'approbation crée un compte {@see User} et envoie un email de notification.
+ * Le refus demande un motif et envoie également un email au candidat.
+ *
+ * @package App\Controller\Admin
+ */
 #[Route('/admin/demandes')]
 #[IsGranted('ROLE_ADMIN')]
 class DemandeController extends AbstractController
 {
+    /**
+     * Liste paginée des demandes en attente et des demandes non vérifiées.
+     * Supporte la recherche par nom, prénom et email via le paramètre `q`.
+     */
     #[Route('', name: 'admin_demande_index')]
     public function index(DemandeInscriptionRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
         $q = $request->query->getString('q', '');
 
-        // Deux tableaux paginés indépendants sur la même page, chacun avec son propre paramètre de page.
         $demandesPagination = $paginator->paginate(
             $repo->queryBuilderEnAttentePourAdmin($q),
             $request->query->getInt('page', 1),
             20
         );
 
-        // Section secondaire : demandes dont l'email n'est pas encore vérifié
-        // (normalement vide depuis la désactivation de la vérification email).
+        // Section secondaire : demandes dont l'email n'est pas encore vérifié.
+        // Normalement vide depuis la désactivation de la vérification email.
         $emailPagination = $paginator->paginate(
             $repo->queryBuilderNonVerifiees(),
             $request->query->getInt('page_email', 1),
@@ -48,6 +61,14 @@ class DemandeController extends AbstractController
         ]);
     }
 
+    /**
+     * Approuve une demande : crée le compte User, met à jour la demande et envoie un email.
+     *
+     * Le mot de passe est copié directement depuis la demande (déjà haché à l'inscription).
+     * Vérifie le token CSRF et que la demande est toujours en attente avec email vérifié.
+     *
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException si le token CSRF est invalide
+     */
     #[Route('/{id}/approuver', name: 'admin_demande_approuver', methods: ['POST'])]
     public function approuver(
         DemandeInscription $demande,
@@ -55,21 +76,16 @@ class DemandeController extends AbstractController
         EntityManagerInterface $em,
         MailerInterface $mailer,
     ): Response {
-        // Protection CSRF : vérifie que la requête vient bien du formulaire de l'application
-        // et non d'un site tiers (Cross-Site Request Forgery).
         if (!$this->isCsrfTokenValid('approuver_'.$demande->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF invalide.');
         }
 
-        // Double sécurité : on ne peut approuver que si l'email est vérifié ET que la demande est encore en attente.
         if (!$demande->isEmailVerifie() || DemandeInscription::STATUT_EN_ATTENTE !== $demande->getStatut()) {
             $this->addFlash('error', 'Cette demande ne peut pas être approuvée.');
 
             return $this->redirectToRoute('admin_demande_index');
         }
 
-        // Création du compte utilisateur à partir des données de la demande.
-        // Le mot de passe est déjà haché dans la demande (fait à l'inscription), on le copie directement.
         $user = new User();
         $user->setEmail($demande->getEmail());
         $user->setPrenom($demande->getPrenom());
@@ -81,13 +97,11 @@ class DemandeController extends AbstractController
 
         $demande->setStatut(DemandeInscription::STATUT_APPROUVEE);
         $demande->setTraiteeAt(new \DateTimeImmutable());
-        // Lien entre la demande et le compte créé, utile pour l'historique.
         $demande->setUtilisateur($user);
 
         $em->persist($user);
         $em->flush();
 
-        // Email de notification envoyé à l'utilisateur : son accès est accordé.
         $email = (new TemplatedEmail())
             ->from('noreply@lereperedesprotocoles.fr')
             ->to($demande->getEmail())
@@ -101,6 +115,12 @@ class DemandeController extends AbstractController
         return $this->redirectToRoute('admin_demande_index');
     }
 
+    /**
+     * Affiche le formulaire de refus et traite la soumission.
+     *
+     * Le motif de refus saisi est inclus dans l'email envoyé au candidat.
+     * Bloque le traitement si la demande a déjà été approuvée ou refusée.
+     */
     #[Route('/{id}/refuser', name: 'admin_demande_refuser', methods: ['GET', 'POST'])]
     public function refuser(
         DemandeInscription $demande,
@@ -108,14 +128,12 @@ class DemandeController extends AbstractController
         EntityManagerInterface $em,
         MailerInterface $mailer,
     ): Response {
-        // Empêche de refuser une demande déjà traitée (déjà approuvée ou refusée).
         if (DemandeInscription::STATUT_EN_ATTENTE !== $demande->getStatut()) {
             $this->addFlash('error', 'Cette demande a déjà été traitée.');
 
             return $this->redirectToRoute('admin_demande_index');
         }
 
-        // Le formulaire de refus demande un motif qui sera inclus dans l'email envoyé au candidat.
         $form = $this->createForm(RefuserDemandeType::class, $demande);
         $form->handleRequest($request);
 
@@ -124,7 +142,6 @@ class DemandeController extends AbstractController
             $demande->setTraiteeAt(new \DateTimeImmutable());
             $em->flush();
 
-            // Email de notification avec le motif de refus.
             $email = (new TemplatedEmail())
                 ->from('noreply@lereperedesprotocoles.fr')
                 ->to($demande->getEmail())

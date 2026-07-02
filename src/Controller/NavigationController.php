@@ -11,11 +11,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-// Tout le contenu est réservé aux utilisateurs connectés — accès refusé aux visiteurs.
+/**
+ * Gère la navigation hiérarchique dans le catalogue : Domaines → Rubriques → Thèmes → Protocoles.
+ *
+ * Tout le contenu est réservé aux utilisateurs connectés (ROLE_USER).
+ * Chaque niveau est identifié par son slug dans l'URL.
+ *
+ * @package App\Controller
+ */
 #[IsGranted('ROLE_USER')]
 class NavigationController extends AbstractController
 {
-    // Point d'entrée de la navigation : liste tous les domaines disponibles.
+    /**
+     * Point d'entrée de la navigation : liste tous les domaines disponibles.
+     */
     #[Route('/parcourir', name: 'navigation_domaines')]
     public function domaines(DomaineRepository $repo): Response
     {
@@ -24,7 +33,11 @@ class NavigationController extends AbstractController
         ]);
     }
 
-    // Affiche les rubriques d'un domaine identifié par son slug (ex: /domaines/cardiologie).
+    /**
+     * Affiche les rubriques d'un domaine identifié par son slug.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException si le domaine est introuvable
+     */
     #[Route('/domaines/{slug}', name: 'navigation_domaine')]
     public function domaine(string $slug, DomaineRepository $repo): Response
     {
@@ -38,7 +51,11 @@ class NavigationController extends AbstractController
         ]);
     }
 
-    // Affiche les thèmes d'une rubrique.
+    /**
+     * Affiche les thèmes d'une rubrique identifiée par son slug.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException si la rubrique est introuvable
+     */
     #[Route('/rubriques/{slug}', name: 'navigation_rubrique')]
     public function rubrique(string $slug, RubriqueRepository $repo): Response
     {
@@ -52,7 +69,11 @@ class NavigationController extends AbstractController
         ]);
     }
 
-    // Affiche les protocoles d'un thème.
+    /**
+     * Affiche les protocoles d'un thème identifié par son slug.
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException si le thème est introuvable
+     */
     #[Route('/themes/{slug}', name: 'navigation_theme')]
     public function theme(string $slug, ThemeRepository $repo): Response
     {
@@ -66,7 +87,11 @@ class NavigationController extends AbstractController
         ]);
     }
 
-    // Affiche la fiche complète d'un protocole (PDF, description, etc.).
+    /**
+     * Affiche la fiche complète d'un protocole (PDF, image, description).
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException si le protocole est introuvable
+     */
     #[Route('/protocoles/{slug}', name: 'navigation_protocole')]
     public function protocole(string $slug, ProtocoleRepository $repo): Response
     {

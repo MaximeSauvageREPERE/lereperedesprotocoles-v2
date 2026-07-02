@@ -7,9 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-// Premier niveau de la hiérarchie de navigation : Domaine → Rubrique → Thème → Protocole.
-// Un domaine regroupe plusieurs rubriques via une relation ManyToMany
-// (une rubrique peut apparaître dans plusieurs domaines).
+/**
+ * Premier niveau de la hiérarchie de navigation : Domaine → Rubrique → Thème → Protocole.
+ *
+ * Un domaine regroupe plusieurs rubriques via une relation ManyToMany
+ * (une rubrique peut apparaître dans plusieurs domaines).
+ * Doctrine est côté inverse de la relation — Rubrique est le propriétaire.
+ *
+ * @package App\Entity
+ */
 #[ORM\Entity(repositoryClass: DomaineRepository::class)]
 #[ORM\Index(columns: ['nom'])]
 class Domaine
@@ -28,9 +34,12 @@ class Domaine
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    // Côté inverse du ManyToMany (Rubrique est le propriétaire).
-    // OrderBy appliqué automatiquement à chaque chargement de la collection.
-    /** @var Collection<int, Rubrique> */
+    /**
+     * Côté inverse du ManyToMany — Rubrique est le propriétaire (gère la table de liaison).
+     * OrderBy appliqué automatiquement à chaque chargement de la collection.
+     *
+     * @var Collection<int, Rubrique>
+     */
     #[ORM\ManyToMany(targetEntity: Rubrique::class, mappedBy: 'domaines')]
     #[ORM\OrderBy(['nom' => 'ASC'])]
     private Collection $rubriques;
@@ -87,8 +96,10 @@ class Domaine
         return $this->rubriques;
     }
 
-    // La synchronisation bidirectionnelle est gérée ici : ajouter une rubrique au domaine
-    // appelle aussi rubrique->addDomaine($this) pour garder les deux côtés cohérents.
+    /**
+     * Synchronise les deux côtés de la relation ManyToMany : ajouter une rubrique au domaine
+     * appelle aussi rubrique->addDomaine($this) pour maintenir la cohérence bidirectionnelle.
+     */
     public function addRubrique(Rubrique $rubrique): static
     {
         if (!$this->rubriques->contains($rubrique)) {

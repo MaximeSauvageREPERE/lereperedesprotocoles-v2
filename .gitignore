@@ -31,3 +31,9 @@ phpstan.neon
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
+
+###> phpdocumentor ###
+/phpDocumentor.phar
+/.phpdoc/
+/docs/api/
+###< phpdocumentor ###

@@ -7,8 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-// Troisième niveau de la hiérarchie : Domaine → Rubrique → Thème → Protocole.
-// Un thème appartient à exactement une rubrique et contient plusieurs protocoles.
+/**
+ * Troisième niveau de la hiérarchie de navigation : Domaine → Rubrique → Thème → Protocole.
+ *
+ * Un thème appartient à exactement une rubrique et contient plusieurs protocoles.
+ * La suppression d'un thème entraîne la suppression en cascade de ses protocoles.
+ *
+ * @package App\Entity
+ */
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
 #[ORM\Index(columns: ['nom'])]
 class Theme
@@ -24,13 +30,21 @@ class Theme
     #[ORM\Column(length: 255, unique: true)]
     private string $slug = '';
 
-    // nullable: false — un thème doit toujours être rattaché à une rubrique.
+    /**
+     * Rubrique parente du thème (nullable: false — un thème doit toujours être rattaché à une rubrique).
+     *
+     * @var Rubrique|null
+     */
     #[ORM\ManyToOne(inversedBy: 'themes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Rubrique $rubrique = null;
 
-    // cascade: remove → supprimer un thème supprime automatiquement ses protocoles.
-    /** @var Collection<int, Protocole> */
+    /**
+     * Protocoles appartenant à ce thème.
+     * cascade: remove → supprimer un thème supprime automatiquement ses protocoles.
+     *
+     * @var Collection<int, Protocole>
+     */
     #[ORM\OneToMany(targetEntity: Protocole::class, mappedBy: 'theme', cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['titre' => 'ASC'])]
     private Collection $protocoles;
@@ -87,7 +101,9 @@ class Theme
         return $this->protocoles;
     }
 
-    // Synchronisation bidirectionnelle : on met aussi à jour protocole->theme.
+    /**
+     * Synchronise les deux côtés de la relation OneToMany : met aussi à jour protocole->theme.
+     */
     public function addProtocole(Protocole $protocole): static
     {
         if (!$this->protocoles->contains($protocole)) {

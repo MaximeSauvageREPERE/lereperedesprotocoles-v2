@@ -14,10 +14,21 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Gère la liste et la modification des comptes utilisateurs par l'administrateur.
+ *
+ * Permet de modifier le rôle (ROLE_USER / ROLE_MODERATEUR / ROLE_ADMIN) et le mot de passe.
+ * Un admin ne peut pas supprimer son propre compte.
+ *
+ * @package App\Controller\Admin
+ */
 #[Route('/admin/utilisateurs')]
 #[IsGranted('ROLE_ADMIN')]
 class UtilisateurController extends AbstractController
 {
+    /**
+     * Liste paginée des utilisateurs avec recherche par nom, prénom et email.
+     */
     #[Route('', name: 'admin_utilisateur_index', methods: ['GET'])]
     public function index(UserRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
@@ -34,6 +45,12 @@ class UtilisateurController extends AbstractController
         ]);
     }
 
+    /**
+     * Modifie le profil, le rôle et optionnellement le mot de passe d'un utilisateur.
+     *
+     * Le niveau de rôle est déduit du tableau de rôles stocké en BDD pour pré-remplir
+     * le select du formulaire. Si le champ mot de passe est vide, le mot de passe actuel est conservé.
+     */
     #[Route('/{id}/modifier', name: 'admin_utilisateur_edit', methods: ['GET', 'POST'])]
     public function edit(
         User $utilisateur,
@@ -43,8 +60,6 @@ class UtilisateurController extends AbstractController
     ): Response {
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
 
-        // Symfony stocke les rôles comme un tableau (ex: ['ROLE_ADMIN', 'ROLE_USER']).
-        // On en déduit un niveau unique pour pré-remplir le select du formulaire.
         $currentRoles = $utilisateur->getRoles();
         $niveau = match (true) {
             in_array('ROLE_ADMIN', $currentRoles, true) => 'ROLE_ADMIN',
@@ -56,14 +71,12 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Le champ mot de passe est optionnel : si vide, on conserve le mot de passe actuel.
             $plainPassword = $form->get('plainPassword')->getData();
             if ($plainPassword) {
                 $utilisateur->setPassword($hasher->hashPassword($utilisateur, $plainPassword));
             }
 
-            // On remplace le tableau de rôles entier par le niveau sélectionné.
-            // Symfony ajoute ROLE_USER automatiquement via getRoles() pour tout utilisateur connecté.
+            // Symfony ajoute ROLE_USER automatiquement via getRoles() — on stocke uniquement le niveau choisi.
             $utilisateur->setRoles([$form->get('niveau')->getData()]);
 
             $em->flush();
@@ -78,6 +91,12 @@ class UtilisateurController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un compte utilisateur après vérification CSRF.
+     * Interdit à un admin de supprimer son propre compte.
+     *
+     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException si le token CSRF est invalide
+     */
     #[Route('/{id}/supprimer', name: 'admin_utilisateur_delete', methods: ['POST'])]
     public function delete(User $utilisateur, Request $request, EntityManagerInterface $em): Response
     {
@@ -85,7 +104,6 @@ class UtilisateurController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        // Un admin ne peut pas se supprimer lui-même pour éviter de se bloquer hors de l'application.
         if ($utilisateur === $this->getUser()) {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte.');
 

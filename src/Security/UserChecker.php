@@ -10,15 +10,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Vérifie l'état du compte utilisateur avant et après l'authentification.
+ *
  * Déclaré dans security.yaml via : user_checker: App\Security\UserChecker.
+ * Bloque la connexion des comptes inactifs (isVerified = false) avec un message lisible,
+ * ce qui peut arriver si un admin désactive un compte après création.
+ *
+ * @package App\Security
  */
 class UserChecker implements UserCheckerInterface
 {
     /**
      * Appelé par le firewall AVANT la vérification du mot de passe.
+     *
      * Bloque les comptes inactifs (isVerified = false) avec un message lisible.
-     * CustomUserMessageAuthenticationException affiche le message tel quel dans le template login
-     * (contrairement à AuthenticationException qui affiche une clé de traduction).
+     * CustomUserMessageAuthenticationException affiche le message tel quel dans le template login,
+     * contrairement à AuthenticationException qui affiche une clé de traduction.
+     *
+     * @throws CustomUserMessageAuthenticationException si le compte n'est pas encore activé
      */
     public function checkPreAuth(UserInterface $user): void
     {
@@ -31,7 +39,9 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    // Appelé après l'authentification réussie — aucune vérification supplémentaire nécessaire.
+    /**
+     * Appelé après l'authentification réussie — aucune vérification supplémentaire nécessaire.
+     */
     public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
     }

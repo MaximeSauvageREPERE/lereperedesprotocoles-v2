@@ -14,18 +14,27 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-// ROLE_MODERATEUR est requis sur toutes les routes de ce controller.
-// Les admins y ont aussi accès car leur rôle est hiérarchiquement supérieur (défini dans security.yaml).
+/**
+ * CRUD des domaines, accessible aux modérateurs et administrateurs.
+ *
+ * ROLE_MODERATEUR est requis — les admins y ont aussi accès car leur rôle est
+ * hiérarchiquement supérieur (défini dans security.yaml).
+ * La suppression via POST empêche les bots ou prefetchers de déclencher l'action via un lien GET.
+ *
+ * @package App\Controller\Moderateur
+ */
 #[Route('/moderateur/domaines')]
 #[IsGranted('ROLE_MODERATEUR')]
 class DomaineController extends AbstractController
 {
+    /**
+     * Liste paginée des domaines avec recherche par nom.
+     */
     #[Route('', name: 'moderateur_domaine_index', methods: ['GET'])]
     public function index(DomaineRepository $repo, PaginatorInterface $paginator, Request $request): Response
     {
         $q = $request->query->getString('q', '');
         $pagination = $paginator->paginate(
-            // Le QueryBuilder permet à KnpPaginator de compter les résultats et de construire la requête paginée.
             $repo->queryBuilderSearch($q),
             $request->query->getInt('page', 1),
             20
@@ -37,7 +46,10 @@ class DomaineController extends AbstractController
         ]);
     }
 
-    // GET affiche le formulaire vide, POST le traite — une seule route gère les deux cas.
+    /**
+     * Affiche le formulaire de création (GET) et persiste le nouveau domaine (POST).
+     * Le slug est généré depuis le nom à la soumission.
+     */
     #[Route('/nouveau', name: 'moderateur_domaine_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
@@ -60,7 +72,11 @@ class DomaineController extends AbstractController
         ]);
     }
 
-    // Symfony résout automatiquement l'objet Domaine depuis l'id dans l'URL (ParamConverter).
+    /**
+     * Affiche le formulaire de modification et met à jour le domaine.
+     * Symfony résout automatiquement l'objet Domaine depuis l'id dans l'URL (ParamConverter).
+     * Le slug est recalculé à chaque modification du nom.
+     */
     #[Route('/{id}/modifier', name: 'moderateur_domaine_edit', methods: ['GET', 'POST'])]
     public function edit(Domaine $domaine, Request $request, EntityManagerInterface $em): Response
     {
@@ -68,7 +84,6 @@ class DomaineController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Le slug est recalculé à chaque modification du nom.
             $domaine->setSlug($this->slugify($domaine->getNom()));
             $em->flush();
 
@@ -83,8 +98,10 @@ class DomaineController extends AbstractController
         ]);
     }
 
-    // POST uniquement : la suppression ne doit jamais se faire via un simple lien GET
-    // (un bot ou prefetcher pourrait déclencher la suppression en suivant le lien).
+    /**
+     * Supprime un domaine après vérification du token CSRF.
+     * Route POST uniquement pour éviter une suppression accidentelle via un lien GET.
+     */
     #[Route('/{id}/supprimer', name: 'moderateur_domaine_delete', methods: ['POST'])]
     public function delete(Domaine $domaine, Request $request, EntityManagerInterface $em): Response
     {
@@ -98,7 +115,12 @@ class DomaineController extends AbstractController
         return $this->redirectToRoute('moderateur_domaine_index');
     }
 
-    // AsciiSlugger gère les caractères spéciaux et accents français (locale 'fr').
+    /**
+     * Convertit un nom en slug URL-compatible en gérant les accents et caractères spéciaux français.
+     *
+     * @param string $nom Nom brut (ex: "Cardiologie & Vasculaire")
+     * @return string Slug normalisé (ex: "cardiologie-vasculaire")
+     */
     private function slugify(string $nom): string
     {
         return strtolower((new AsciiSlugger('fr'))->slug($nom)->toString());

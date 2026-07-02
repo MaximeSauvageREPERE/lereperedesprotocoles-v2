@@ -8,7 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository des professions médicales.
+ *
  * @extends ServiceEntityRepository<Profession>
+ * @package App\Repository
  */
 class ProfessionRepository extends ServiceEntityRepository
 {
@@ -17,9 +20,13 @@ class ProfessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Profession::class);
     }
 
-    // Retourne un QueryBuilder pour la liste paginée de l'interface admin.
-    // Sans $q : toutes les professions triées par nom.
-    // Avec $q : filtrées par nom (recherche partielle).
+    /**
+     * Retourne un QueryBuilder pour la liste paginée des professions (interface admin).
+     *
+     * Sans $q : toutes les professions triées par nom. Avec $q : filtrées par nom (LIKE %q%).
+     *
+     * @param string $q Terme de recherche (chaîne vide pour tout retourner)
+     */
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')->orderBy('p.nom', 'ASC');

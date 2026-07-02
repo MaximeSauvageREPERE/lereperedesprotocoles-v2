@@ -14,8 +14,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Gère le flux d'inscription : soumission de la demande d'accès et confirmation par email.
+ *
+ * La vérification email est actuellement désactivée : emailVerifie est mis à true
+ * directement à la soumission, ce qui rend la demande immédiatement visible par l'admin.
+ * La route /inscription/confirmer/{token} est conservée pour une réactivation future.
+ *
+ * @package App\Controller
+ */
 class InscriptionController extends AbstractController
 {
+    /**
+     * Affiche et traite le formulaire de demande d'accès.
+     *
+     * Vérifie l'absence de doublons (compte existant ou demande en attente pour le même email)
+     * avant de persister la demande. Le mot de passe est haché via un User temporaire
+     * pour utiliser l'algorithme défini dans security.yaml.
+     * Redirige en 303 (PRG) vers /login après soumission réussie.
+     */
     #[Route('/inscription', name: 'app_inscription')]
     public function formulaire(
         Request $request,
@@ -24,7 +41,6 @@ class InscriptionController extends AbstractController
         UserRepository $userRepository,
         DemandeInscriptionRepository $demandeRepository,
     ): Response {
-        // Redirige vers l'accueil si l'utilisateur est déjà connecté.
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
@@ -34,14 +50,12 @@ class InscriptionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Bloque les doublons : un compte existe déjà avec cet email.
             if ($userRepository->findOneBy(['email' => $demande->getEmail()])) {
                 $this->addFlash('error', 'Un compte existe déjà avec cette adresse email.');
 
                 return $this->redirectToRoute('app_inscription');
             }
 
-            // Bloque les doublons : une demande est déjà en attente pour cet email.
             $existante = $demandeRepository->findOneBy(['email' => $demande->getEmail(), 'statut' => DemandeInscription::STATUT_EN_ATTENTE]);
             if ($existante) {
                 $this->addFlash('error', 'Une demande est déjà en cours pour cette adresse email.');
@@ -49,13 +63,11 @@ class InscriptionController extends AbstractController
                 return $this->redirectToRoute('app_inscription');
             }
 
-            // Le hasher a besoin d'un objet User pour appliquer l'algorithme défini dans security.yaml.
-            // On en crée un temporaire — seul le hash résultant est conservé dans la demande.
+            // Le hasher nécessite un objet User pour appliquer l'algorithme de security.yaml.
+            // Un User temporaire est créé uniquement pour obtenir le hash — il n'est pas persisté.
             $tempUser = new User();
             $demande->setPassword($hasher->hashPassword($tempUser, $form->get('plainPassword')->getData()));
 
-            // La vérification email est désactivée : on marque directement l'email comme vérifié
-            // pour que la demande soit immédiatement traitable par l'admin.
             $demande->setEmailVerifie(true);
 
             $em->persist($demande);
@@ -63,8 +75,6 @@ class InscriptionController extends AbstractController
 
             $this->addFlash('success', "Votre demande d'accès a bien été enregistrée ({$demande->getEmail()}). Un administrateur examinera votre dossier.");
 
-            // PRG (Post-Redirect-Get) : le 303 force le navigateur à faire un GET sur /login,
-            // ce qui évite de re-soumettre le formulaire si l'utilisateur recharge la page.
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -73,8 +83,14 @@ class InscriptionController extends AbstractController
         ]);
     }
 
-    // Route de confirmation par email — actuellement inaccessible car setEmailVerifie(true)
-    // est fait directement à la soumission. Conservée si la vérification email est réactivée.
+    /**
+     * Confirme l'adresse email via le token envoyé par email.
+     *
+     * Route actuellement inaccessible : emailVerifie est mis à true directement à la soumission
+     * depuis que la vérification email est désactivée. Conservée pour une réactivation future.
+     *
+     * @param string $token Token à usage unique extrait de l'URL
+     */
     #[Route('/inscription/confirmer/{token}', name: 'app_inscription_confirmer')]
     public function confirmer(
         string $token,

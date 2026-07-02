@@ -8,7 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Repository des thèmes.
+ *
  * @extends ServiceEntityRepository<Theme>
+ * @package App\Repository
  */
 class ThemeRepository extends ServiceEntityRepository
 {
@@ -17,9 +20,13 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
-    // Retourne un QueryBuilder pour la liste paginée de l'interface modérateur.
-    // Sans $q : tous les thèmes triés par nom.
-    // Avec $q : filtrés par nom (recherche partielle).
+    /**
+     * Retourne un QueryBuilder pour la liste paginée des thèmes (interface modérateur).
+     *
+     * Sans $q : tous les thèmes triés par nom. Avec $q : filtrés par nom (LIKE %q%).
+     *
+     * @param string $q Terme de recherche (chaîne vide pour tout retourner)
+     */
     public function queryBuilderSearch(string $q): QueryBuilder
     {
         $qb = $this->createQueryBuilder('t')->orderBy('t.nom', 'ASC');
