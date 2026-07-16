@@ -7825,3 +7825,6 @@ dialog :link{
     display:none;
   }
 }
+
+/* Personnalisation : masquer les boutons inutiles en lecture seule */
+#editorModeButtons, #secondaryToolbarToggle, #printButton { display: none !important; }
