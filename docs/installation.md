@@ -256,6 +256,7 @@ lereperedesprotocoles-v2/
 ├── docs/                 Cette documentation
 ├── migrations/           Historique des migrations Doctrine
 ├── public/               Racine web (seul dossier exposé)
+│   └── pdfjs/            Lecteur PDF.js (commité — aucune installation requise)
 ├── src/
 │   ├── Controller/       Controllers HTTP
 │   ├── Entity/           Entités Doctrine (modèle de données)
@@ -279,6 +280,7 @@ lereperedesprotocoles-v2/
 | Base de données | MySQL | 8.4 |
 | CSS | Tailwind CSS | 3.4 |
 | JS | Stimulus (Hotwired) | via AssetMapper |
+| Lecteur PDF | PDF.js (Mozilla) | 4.x |
 | Upload | Vich UploaderBundle | 2.9 |
 | Pagination | KnpPaginatorBundle | 6.10 |
 | Serveur local | Laragon | 2026 / v8.6.1 |
