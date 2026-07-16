@@ -23,8 +23,16 @@
 
     <div class="bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 overflow-hidden">
 
-        {# Image cliquable pour voir en taille réelle — ouvre l'original dans un nouvel onglet #}
-        {% if protocole.imageFilename %}
+        {# Lecteur PDF intégré via PDF.js (public/pdfjs/) si un PDF est disponible.
+           Fallback vers l'image si le protocole n'a pas de PDF mais a une image. #}
+        {% if protocole.pdfFilename %}
+            <iframe
+                src="{{ asset('pdfjs/web/viewer.html') }}?file={{ vich_uploader_asset(protocole, 'pdfFile')|url_encode }}"
+                class="w-full border-0"
+                height="680"
+                title="Lecteur PDF — {{ protocole.titre }}"
+            ></iframe>
+        {% elseif protocole.imageFilename %}
             <a href="{{ vich_uploader_asset(protocole, 'imageFile') }}"
                target="_blank"
                title="Voir l'image en taille réelle"
