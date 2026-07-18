@@ -36,4 +36,22 @@ class ProtocoleRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    /**
+     * Recherche globale dans tous les protocoles (navigation publique).
+     *
+     * Porte sur le titre et la description. Les JOINs pré-chargent theme, rubrique et domaines
+     * pour éviter les requêtes N+1 lors de l'affichage du fil d'Ariane dans les résultats.
+     *
+     * @return Protocole[]
+     */
+    public function search(string $q): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.titre LIKE :q OR p.description LIKE :q')
+            ->setParameter('q', '%'.$q.'%')
+            ->orderBy('p.titre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

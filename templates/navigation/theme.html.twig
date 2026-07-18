@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}{{ theme.nom }}{% endblock %}
 
@@ -28,7 +28,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {% for protocole in theme.protocoles %}
                 <a href="{{ path('navigation_protocole', {slug: protocole.slug}) }}"
-                   class="block bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 overflow-hidden hover:shadow-md transition-all">
+                   class="block bg-white rounded-lg shadow-sm border-t-4 border-t-brand-bleu-fonce border border-gray-200 overflow-hidden hover:shadow-md transition-all">
                     {# vich_uploader_asset() génère l'URL publique du fichier uploadé
                        à partir du mapping VichUploader défini dans config/packages/vich_uploader.yaml #}
                     {% if protocole.imageFilename %}
