@@ -23,15 +23,76 @@
 
     <div class="bg-white rounded-lg shadow-sm border-t-4 border-brand-bleu-fonce border border-gray-200 overflow-hidden">
 
-        {# Lecteur PDF intégré via PDF.js (public/pdfjs/) si un PDF est disponible.
-           Fallback vers l'image si le protocole n'a pas de PDF mais a une image. #}
+        {# Le wrapper englobe l'iframe ET la barre d'actions pour que le bouton
+           "Plein écran / Quitter" reste visible en mode plein écran sur tous les appareils. #}
         {% if protocole.pdfFilename %}
-            <iframe
-                src="{{ asset('pdfjs/web/viewer.html') }}?file={{ vich_uploader_asset(protocole, 'pdfFile')|url_encode }}"
-                class="w-full border-0"
-                height="680"
-                title="Lecteur PDF — {{ protocole.titre }}"
-            ></iframe>
+            <div id="pdf-fullscreen-wrapper">
+                <div id="pdf-container">
+                    <iframe
+                        id="pdf-iframe"
+                        src="{{ asset('pdfjs/web/viewer.html') }}?file={{ vich_uploader_asset(protocole, 'pdfFile')|url_encode }}"
+                        class="w-full border-0 block"
+                        height="680"
+                        title="Lecteur PDF — {{ protocole.titre }}"
+                    ></iframe>
+                </div>
+                <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-white">
+                    {# L'attribut HTML "download" déclenche le téléchargement du fichier
+                       au lieu de l'ouvrir dans le navigateur #}
+                    <a href="{{ vich_uploader_asset(protocole, 'pdfFile') }}"
+                       download
+                       class="inline-block bg-brand-bleu-fonce text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
+                        Télécharger le PDF
+                    </a>
+                    <button
+                        id="pdf-fullscreen-btn"
+                        type="button"
+                        title="Plein écran"
+                        class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 border border-gray-300 rounded-md px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                    >
+                        <svg id="pdf-icon-expand" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                        </svg>
+                        <svg id="pdf-icon-compress" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                        </svg>
+                        Plein écran
+                    </button>
+                </div>
+            </div>
+            <style>
+                #pdf-fullscreen-wrapper:fullscreen { display: flex; flex-direction: column; background: white; }
+                #pdf-fullscreen-wrapper:fullscreen #pdf-container { flex: 1; overflow: hidden; }
+                #pdf-fullscreen-wrapper:fullscreen iframe { height: 100% !important; }
+            </style>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    var btn = document.getElementById('pdf-fullscreen-btn');
+                    var wrapper = document.getElementById('pdf-fullscreen-wrapper');
+                    var expand = document.getElementById('pdf-icon-expand');
+                    var compress = document.getElementById('pdf-icon-compress');
+
+                    btn.addEventListener('click', function () {
+                        if (!document.fullscreenElement) {
+                            wrapper.requestFullscreen();
+                        } else {
+                            document.exitFullscreen();
+                        }
+                    });
+
+                    document.addEventListener('fullscreenchange', function () {
+                        if (document.fullscreenElement) {
+                            expand.classList.add('hidden');
+                            compress.classList.remove('hidden');
+                            btn.title = 'Quitter le plein écran';
+                        } else {
+                            expand.classList.remove('hidden');
+                            compress.classList.add('hidden');
+                            btn.title = 'Plein écran';
+                        }
+                    });
+                });
+            </script>
         {% elseif protocole.imageFilename %}
             <a href="{{ vich_uploader_asset(protocole, 'imageFile') }}"
                target="_blank"
@@ -58,18 +119,10 @@
             </p>
 
             {% if protocole.description %}
-                <p class="text-gray-600 mb-6">{{ protocole.description }}</p>
+                <p class="text-gray-600">{{ protocole.description }}</p>
             {% endif %}
 
-            {# L'attribut HTML "download" déclenche le téléchargement du fichier
-               au lieu de l'ouvrir dans le navigateur #}
-            {% if protocole.pdfFilename %}
-                <a href="{{ vich_uploader_asset(protocole, 'pdfFile') }}"
-                   download
-                   class="inline-block bg-brand-bleu-fonce text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
-                    Télécharger le PDF
-                </a>
-            {% else %}
+            {% if not protocole.pdfFilename %}
                 <p class="text-gray-400 text-sm italic">Aucun PDF disponible pour ce protocole.</p>
             {% endif %}
         </div>
