@@ -49,7 +49,7 @@ Le visiteur ne peut pas consulter les protocoles. Toute URL protégée redirige 
                                                                               │
                                                                          /protocole/{slug}
                                                                               │
-                                                                    lit le PDF en ligne ou le télécharge
+                                                                    lit le PDF en ligne, le télécharge ou l'ouvre en plein écran
 ```
 
 ### Pages disponibles
@@ -61,7 +61,7 @@ Le visiteur ne peut pas consulter les protocoles. Toute URL protégée redirige 
 | `/domaine/{slug}` | Rubriques d'un domaine |
 | `/rubrique/{slug}` | Thèmes d'une rubrique |
 | `/theme/{slug}` | Protocoles d'un thème |
-| `/protocole/{slug}` | Détail d'un protocole + viewer PDF intégré (PDF.js) + bouton téléchargement |
+| `/protocole/{slug}` | Détail d'un protocole + viewer PDF intégré (PDF.js) + bouton téléchargement + bouton plein écran |
 
 ---
 
