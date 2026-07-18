@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% if q %} — {{ q }}{% endif %}{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Rechercher un protocole</h1>
+
+    {# Formulaire de recherche principal — pré-rempli avec la requête courante #}
+    <form action="{{ path('navigation_recherche') }}" method="GET" class="flex gap-2 mb-8">
+        <input
+            type="search"
+            name="q"
+            value="{{ q }}"
+            placeholder="Titre ou description…"
+            autofocus
+            class="flex-1 border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-bleu"
+        >
+        <button type="submit"
+                class="bg-brand-bleu-fonce text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
+            Rechercher
+        </button>
+    </form>
+
+    {% if q == '' %}
+
+        <p class="text-gray-500 text-sm">Saisissez un terme pour rechercher parmi tous les protocoles.</p>
+
+    {% elseif resultats is empty %}
+
+        <p class="text-gray-500 text-sm">
+            Aucun protocole trouvé pour <strong class="text-gray-700">« {{ q }} »</strong>.
+        </p>
+
+    {% else %}
+
+        <p class="text-sm text-gray-500 mb-4">
+            {{ resultats|length }} résultat{{ resultats|length > 1 ? 's' : '' }} pour
+            <strong class="text-gray-700">« {{ q }} »</strong>
+        </p>
+
+        <ul class="space-y-5">
+            {% for protocole in resultats %}
+                <li class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-4 hover:shadow-md transition-shadow flex items-center gap-4 overflow-hidden">
+
+                    {# Contenu principal #}
+                    <div class="flex-1 min-w-0">
+                        {# Fil d'Ariane contextuel — dans un <div>, pas dans un <a>, pour éviter les <a> imbriqués #}
+                        <p class="text-xs text-gray-400 mb-1">
+                            {% set domaines = protocole.theme.rubrique.domaines %}
+                            {% if domaines is not empty %}
+                                <a href="{{ path('navigation_domaine', {slug: domaines|first.slug}) }}"
+                                   class="hover:underline">{{ domaines|first.nom }}</a>
+                                <span class="mx-1">›</span>
+                            {% endif %}
+                            <a href="{{ path('navigation_rubrique', {slug: protocole.theme.rubrique.slug}) }}"
+                               class="hover:underline">{{ protocole.theme.rubrique.nom }}</a>
+                            <span class="mx-1">›</span>
+                            <a href="{{ path('navigation_theme', {slug: protocole.theme.slug}) }}"
+                               class="hover:underline">{{ protocole.theme.nom }}</a>
+                        </p>
+
+                        <a href="{{ path('navigation_protocole', {slug: protocole.slug}) }}"
+                           class="block font-semibold text-gray-800 text-sm hover:text-brand-bleu-fonce hover:underline">
+                            {{ protocole.titre }}
+                        </a>
+
+                        {% if protocole.pdfFilename %}
+                            <span class="block text-xs text-brand-bleu font-medium mt-1">PDF disponible</span>
+                        {% endif %}
+                        {% if protocole.description %}
+                            <p class="text-xs text-gray-400 mt-1 overflow-hidden" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ protocole.description }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Miniature image — affichée uniquement si une image est associée au protocole #}
+                    {% if protocole.imageFilename %}
+                        <a href="{{ path('navigation_protocole', {slug: protocole.slug}) }}" class="shrink-0">
+                            <img src="{{ vich_uploader_asset(protocole, 'imageFile') }}"
+                                 alt="{{ protocole.titre }}"
+                                 class="w-16 h-16 object-cover rounded-md border border-gray-200">
+                        </a>
+                    {% endif %}
+
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+</div>
+{% endblock %}

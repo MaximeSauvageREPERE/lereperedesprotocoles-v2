@@ -7,6 +7,7 @@ use App\Repository\ProtocoleRepository;
 use App\Repository\RubriqueRepository;
 use App\Repository\ThemeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -82,6 +83,24 @@ class NavigationController extends AbstractController
 
         return $this->render('navigation/theme.html.twig', [
             'theme' => $theme,
+        ]);
+    }
+
+    /**
+     * Recherche globale dans tous les protocoles par titre ou description.
+     *
+     * La requête est transmise via le paramètre GET "q". Une requête vide affiche le formulaire
+     * sans résultats. Les résultats incluent le fil d'Ariane complet (thème → rubrique → domaine).
+     */
+    #[Route('/recherche', name: 'navigation_recherche')]
+    public function recherche(Request $request, ProtocoleRepository $repo): Response
+    {
+        $q = trim((string) $request->query->get('q', ''));
+        $resultats = '' !== $q ? $repo->search($q) : [];
+
+        return $this->render('navigation/recherche.html.twig', [
+            'q' => $q,
+            'resultats' => $resultats,
         ]);
     }
 
