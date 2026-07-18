@@ -40,10 +40,16 @@
                 </p>
             {% endif %}
             <div class="border border-gray-200 rounded-md bg-gray-50 px-3 py-2">
-                {{ form_widget(form.pdfFile, {attr: {class: 'block w-full text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-brand-bleu-fonce-light file:text-brand-bleu-fonce hover:file:bg-brand-bleu-fonce hover:file:text-white file:cursor-pointer file:transition-colors cursor-pointer'}}) }}
+                {{ form_widget(form.pdfFile.file, {attr: {class: 'block w-full text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-brand-bleu-fonce-light file:text-brand-bleu-fonce hover:file:bg-brand-bleu-fonce hover:file:text-white file:cursor-pointer file:transition-colors cursor-pointer'}}) }}
             </div>
             {# Laisser vide conserve l'ancien fichier — VichUploader ne touche pas au champ si vide #}
             <p class="text-xs text-gray-400 mt-1">PDF uniquement, 10 Mo max. Laisser vide pour conserver l'actuel.</p>
+            {% if protocole.pdfFilename %}
+                <label class="inline-flex items-center gap-2 mt-2 cursor-pointer group">
+                    {{ form_widget(form.pdfFile.delete, {attr: {class: 'w-4 h-4 rounded border-gray-300 accent-red-500 cursor-pointer'}}) }}
+                    <span class="text-sm transition-colors" style="color: #ef4444;">Supprimer le fichier actuel</span>
+                </label>
+            {% endif %}
             {{ form_errors(form.pdfFile) }}
         </div>
 
@@ -56,9 +62,15 @@
                      class="h-20 w-20 object-cover rounded mb-2">
             {% endif %}
             <div class="border border-gray-200 rounded-md bg-gray-50 px-3 py-2">
-                {{ form_widget(form.imageFile, {attr: {class: 'block w-full text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-brand-bleu-fonce-light file:text-brand-bleu-fonce hover:file:bg-brand-bleu-fonce hover:file:text-white file:cursor-pointer file:transition-colors cursor-pointer'}}) }}
+                {{ form_widget(form.imageFile.file, {attr: {class: 'block w-full text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-brand-bleu-fonce-light file:text-brand-bleu-fonce hover:file:bg-brand-bleu-fonce hover:file:text-white file:cursor-pointer file:transition-colors cursor-pointer'}}) }}
             </div>
             <p class="text-xs text-gray-400 mt-1">JPG, PNG ou WebP, 20 Mo max. Laisser vide pour conserver l'actuelle.</p>
+            {% if protocole.imageFilename %}
+                <label class="inline-flex items-center gap-2 mt-2 cursor-pointer group">
+                    {{ form_widget(form.imageFile.delete, {attr: {class: 'w-4 h-4 rounded border-gray-300 accent-red-500 cursor-pointer'}}) }}
+                    <span class="text-sm transition-colors" style="color: #ef4444;">Supprimer l'image actuelle</span>
+                </label>
+            {% endif %}
             {{ form_errors(form.imageFile) }}
         </div>
 
