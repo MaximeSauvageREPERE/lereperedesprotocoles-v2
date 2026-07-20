@@ -50,6 +50,8 @@ Le visiteur ne peut pas consulter les protocoles. Toute URL protégée redirige 
                                                                          /protocole/{slug}
                                                                               │
                                                                     lit le PDF en ligne, le télécharge ou l'ouvre en plein écran
+                                                              │
+                                              OU recherche directement via la navbar ──► /recherche?q=...
 ```
 
 ### Pages disponibles
@@ -62,6 +64,7 @@ Le visiteur ne peut pas consulter les protocoles. Toute URL protégée redirige 
 | `/rubrique/{slug}` | Thèmes d'une rubrique |
 | `/theme/{slug}` | Protocoles d'un thème |
 | `/protocole/{slug}` | Détail d'un protocole + viewer PDF intégré (PDF.js) + bouton téléchargement + bouton plein écran |
+| `/recherche?q=...` | Recherche globale par titre ou description dans tous les protocoles |
 
 ---
 
@@ -101,6 +104,7 @@ Le visiteur ne peut pas consulter les protocoles. Toute URL protégée redirige 
 
 | URL | Description |
 |---|---|
+| `/moderateur/dashboard` | Tableau de bord : stats (protocoles, domaines, rubriques, thèmes), alerte contenu incomplet, derniers protocoles modifiés, accès rapides |
 | `/moderateur/domaines` | Liste + CRUD domaines |
 | `/moderateur/rubriques` | Liste + CRUD rubriques |
 | `/moderateur/themes` | Liste + CRUD thèmes |
@@ -160,6 +164,7 @@ Les professions sont proposées dans le formulaire d'inscription et associées a
 
 | URL | Description |
 |---|---|
+| `/admin/dashboard` | Tableau de bord : stats globales, alerte demandes en attente, accès rapides |
 | `/admin/demandes` | Demandes d'inscription à traiter |
 | `/admin/demandes/{id}/approuver` | Approuver une demande |
 | `/admin/demandes/{id}/refuser` | Refuser une demande (motif obligatoire) |

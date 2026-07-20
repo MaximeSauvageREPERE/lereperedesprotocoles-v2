@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord — Modération{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
+        <p class="text-sm text-gray-500 mt-1">Bonjour {{ app.user.prenom }}, voici l'état du contenu.</p>
+    </div>
+
+    {# Alerte contenu à compléter — fond vert clair disponible dans la config #}
+    {% if nbSansPdf > 0 or nbSansImage > 0 %}
+        <div class="bg-brand-rose-light border border-brand-rose rounded-lg px-5 py-4 mb-8 text-sm text-brand-rose">
+            <p class="font-medium mb-1">Contenu à compléter</p>
+            {% if nbSansPdf > 0 %}
+                <p>— {{ nbSansPdf }} protocole{{ nbSansPdf > 1 ? 's' : '' }} sans PDF</p>
+            {% endif %}
+            {% if nbSansImage > 0 %}
+                <p>— {{ nbSansImage }} protocole{{ nbSansImage > 1 ? 's' : '' }} sans image</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {# Grille de statistiques #}
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+
+        <a href="{{ path('moderateur_protocole_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbProtocoles }}</p>
+            <p class="text-sm text-gray-500 mt-1">Protocoles</p>
+        </a>
+
+        <a href="{{ path('moderateur_domaine_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbDomaines }}</p>
+            <p class="text-sm text-gray-500 mt-1">Domaines</p>
+        </a>
+
+        <a href="{{ path('moderateur_rubrique_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbRubriques }}</p>
+            <p class="text-sm text-gray-500 mt-1">Rubriques</p>
+        </a>
+
+        <a href="{{ path('moderateur_theme_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbThemes }}</p>
+            <p class="text-sm text-gray-500 mt-1">Thèmes</p>
+        </a>
+
+    </div>
+
+    {# Derniers protocoles modifiés #}
+    {% if derniersProtocoles is not empty %}
+        <h2 class="text-base font-semibold text-gray-700 mb-3">Derniers protocoles modifiés</h2>
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden mb-8">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Titre</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Thème</th>
+                        <th class="px-4 py-3 text-left font-medium text-gray-600">Modifié le</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for protocole in derniersProtocoles %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-medium text-gray-800">{{ protocole.titre }}</td>
+                        <td class="px-4 py-3 text-gray-500">{{ protocole.theme.nom }}</td>
+                        <td class="px-4 py-3 text-gray-400 text-xs">{{ protocole.updatedAt|date('d/m/Y') }}</td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{{ path('moderateur_protocole_edit', {id: protocole.id}) }}"
+                               class="text-xs bg-brand-bleu-fonce-light text-brand-bleu-fonce hover:bg-brand-bleu-fonce hover:text-white px-3 py-1.5 rounded transition-colors font-medium">
+                                Modifier
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+        </div>
+    {% endif %}
+
+    {# Accès rapides #}
+    <h2 class="text-base font-semibold text-gray-700 mb-3">Accès rapides</h2>
+    <div class="flex flex-wrap gap-3">
+        <a href="{{ path('moderateur_protocole_new') }}"
+           class="bg-brand-bleu-fonce text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
+            + Nouveau protocole
+        </a>
+        <a href="{{ path('moderateur_protocole_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Tous les protocoles
+        </a>
+        <a href="{{ path('moderateur_domaine_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Domaines
+        </a>
+        <a href="{{ path('moderateur_rubrique_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Rubriques
+        </a>
+        <a href="{{ path('moderateur_theme_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Thèmes
+        </a>
+    </div>
+
+</div>
+{% endblock %}

@@ -38,6 +38,20 @@ class ProtocoleRepository extends ServiceEntityRepository
     }
 
     /**
+     * Retourne les N protocoles les plus récemment modifiés (dashboard modérateur).
+     *
+     * @return Protocole[]
+     */
+    public function findDerniersAjoutes(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Recherche globale dans tous les protocoles (navigation publique).
      *
      * Porte sur le titre et la description. Les JOINs pré-chargent theme, rubrique et domaines
