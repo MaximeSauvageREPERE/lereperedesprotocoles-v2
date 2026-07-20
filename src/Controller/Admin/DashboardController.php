@@ -27,7 +27,7 @@ class DashboardController extends AbstractController
     ): Response {
         return $this->render('admin/dashboard.html.twig', [
             'nbDemandesEnAttente' => $demandeRepo->count(['statut' => DemandeInscription::STATUT_EN_ATTENTE, 'emailVerifie' => true]),
-            'nbUtilisateurs'      => $userRepo->count([]),
+            'nbUtilisateurs' => $userRepo->count([]),
             'derniersUtilisateurs' => $userRepo->findDerniersInscrits(5),
         ]);
     }

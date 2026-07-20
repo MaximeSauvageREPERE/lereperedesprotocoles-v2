@@ -29,12 +29,12 @@ class DashboardController extends AbstractController
         ThemeRepository $themeRepo,
     ): Response {
         return $this->render('moderateur/dashboard.html.twig', [
-            'nbSansPdf'          => $protocoleRepo->count(['pdfFilename' => null]),
-            'nbSansImage'        => $protocoleRepo->count(['imageFilename' => null]),
-            'nbProtocoles'       => $protocoleRepo->count([]),
-            'nbDomaines'         => $domaineRepo->count([]),
-            'nbRubriques'        => $rubriqueRepo->count([]),
-            'nbThemes'           => $themeRepo->count([]),
+            'nbSansPdf' => $protocoleRepo->count(['pdfFilename' => null]),
+            'nbSansImage' => $protocoleRepo->count(['imageFilename' => null]),
+            'nbProtocoles' => $protocoleRepo->count([]),
+            'nbDomaines' => $domaineRepo->count([]),
+            'nbRubriques' => $rubriqueRepo->count([]),
+            'nbThemes' => $themeRepo->count([]),
             'derniersProtocoles' => $protocoleRepo->findDerniersAjoutes(5),
         ]);
     }
