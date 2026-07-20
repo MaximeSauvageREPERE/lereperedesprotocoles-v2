@@ -1,0 +1,3 @@
+# Exclure les bibliothèques tierces des statistiques de langages GitHub
+public/pdfjs/** linguist-vendored
+assets/vendor/** linguist-vendored
