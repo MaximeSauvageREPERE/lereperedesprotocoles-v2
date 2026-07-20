@@ -14,7 +14,9 @@ Application Symfony 7.4 de gestion et de consultation de protocoles médicaux. L
 | Base de données | MySQL 8.4 |
 | CSS | Tailwind CSS 3.4 (via symfonycasts/tailwind-bundle) |
 | JS | Stimulus (Hotwired, via AssetMapper) |
+| Lecteur PDF | PDF.js v4 (Mozilla, intégré en iframe) |
 | Upload | Vich UploaderBundle v2.9 |
+| Pagination | KnpPaginatorBundle |
 | Serveur local | Laragon 2026 |
 
 ## Installation
@@ -35,9 +37,9 @@ symfony server:start                     # terminal 2
 
 | Rôle | Zone URL | Permissions |
 |---|---|---|
-| `ROLE_USER` | `/profil/*` | Consulter et télécharger les protocoles |
-| `ROLE_MODERATEUR` | `/moderateur/*` | + CRUD Domaine, Rubrique, Thème, Protocole |
-| `ROLE_ADMIN` | `/admin/*` | + CRUD Utilisateurs, Professions |
+| `ROLE_USER` | `/profil/*` `/recherche` | Consulter, rechercher et télécharger les protocoles |
+| `ROLE_MODERATEUR` | `/moderateur/*` | + Tableau de bord, CRUD Domaine, Rubrique, Thème, Protocole |
+| `ROLE_ADMIN` | `/admin/*` | + Tableau de bord, CRUD Utilisateurs, Professions, validation des inscriptions |
 
 La hiérarchie est cumulative : `ROLE_ADMIN` hérite de `ROLE_MODERATEUR`, qui hérite de `ROLE_USER`.
 
@@ -83,3 +85,9 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #42 | Index Doctrine sur les colonnes filtrées | ✅ |
 | #38 | Rate limiting (brute force login) | ✅ |
 | #39 | Validation uploads (type MIME réel) | ✅ |
+| #45 | Charte graphique — refonte frontend | ✅ |
+| #46 | Lecteur PDF intégré (PDF.js, plein écran) | ✅ |
+| #60 | Améliorations UX viewer PDF + formulaire protocole | ✅ |
+| #61 | Recherche globale des protocoles | ✅ |
+| #66 | Tableaux de bord admin et modérateur | ✅ |
+| #68 | Correction stats de langages GitHub (.gitattributes) | ✅ |
