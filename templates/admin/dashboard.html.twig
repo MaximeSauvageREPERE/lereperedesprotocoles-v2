@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord — Administration{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
+        <p class="text-sm text-gray-500 mt-1">Bonjour {{ app.user.prenom }}, voici l'état de la plateforme.</p>
+    </div>
+
+    {# Alerte demandes en attente — fond rose clair, couleurs solides (pas de modificateurs d'opacité) #}
+    {% if nbDemandesEnAttente > 0 %}
+        <div class="bg-brand-rose-light border border-brand-rose rounded-lg px-5 py-4 mb-8">
+            <a href="{{ path('admin_demande_index') }}" class="flex items-center gap-3 text-brand-rose hover:text-brand-rose-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+                <span class="font-medium">
+                    {{ nbDemandesEnAttente }} demande{{ nbDemandesEnAttente > 1 ? 's' : '' }} d'inscription en attente de traitement
+                </span>
+                <span class="ml-auto text-sm underline shrink-0">Voir les demandes</span>
+            </a>
+        </div>
+    {% endif %}
+
+    {# Grille de statistiques #}
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+
+        <a href="{{ path('admin_demande_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbDemandesEnAttente }}</p>
+            <p class="text-sm text-gray-500 mt-1">Demandes en attente</p>
+        </a>
+
+        <a href="{{ path('admin_utilisateur_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbUtilisateurs }}</p>
+            <p class="text-sm text-gray-500 mt-1">Utilisateurs</p>
+        </a>
+
+        <a href="{{ path('moderateur_protocole_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbProtocoles }}</p>
+            <p class="text-sm text-gray-500 mt-1">Protocoles</p>
+        </a>
+
+        <a href="{{ path('moderateur_domaine_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbDomaines }}</p>
+            <p class="text-sm text-gray-500 mt-1">Domaines</p>
+        </a>
+
+        <a href="{{ path('moderateur_rubrique_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbRubriques }}</p>
+            <p class="text-sm text-gray-500 mt-1">Rubriques</p>
+        </a>
+
+        <a href="{{ path('moderateur_theme_index') }}"
+           class="bg-white rounded-lg border border-gray-200 border-t-4 border-t-brand-bleu-fonce px-5 py-5 hover:shadow-md transition-shadow">
+            <p class="text-3xl font-bold text-brand-bleu-fonce">{{ nbThemes }}</p>
+            <p class="text-sm text-gray-500 mt-1">Thèmes</p>
+        </a>
+
+    </div>
+
+    {# Accès rapides #}
+    <h2 class="text-base font-semibold text-gray-700 mb-3">Accès rapides</h2>
+    <div class="flex flex-wrap gap-3">
+        <a href="{{ path('admin_demande_index') }}"
+           class="bg-brand-bleu-fonce text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand-bleu-fonce-dark transition-colors">
+            Demandes d'inscription
+        </a>
+        <a href="{{ path('admin_utilisateur_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Utilisateurs
+        </a>
+        <a href="{{ path('admin_profession_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Professions
+        </a>
+        <a href="{{ path('moderateur_protocole_index') }}"
+           class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+            Protocoles
+        </a>
+    </div>
+
+</div>
+{% endblock %}

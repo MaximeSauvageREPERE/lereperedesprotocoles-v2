@@ -24,5 +24,10 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'grid-cols-2',
+    'sm:grid-cols-2',
+    'sm:grid-cols-4',
+  ],
   plugins: [],
 }
