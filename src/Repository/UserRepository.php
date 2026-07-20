@@ -43,6 +43,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Retourne les N derniers utilisateurs créés (tableau de bord admin).
+     */
+    public function findDerniersInscrits(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Appelée automatiquement par Symfony après une connexion réussie si le hash stocké
      * en base est obsolète (algorithme ou coût différent de la configuration actuelle).
      *

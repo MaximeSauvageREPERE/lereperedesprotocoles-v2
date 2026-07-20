@@ -12,7 +12,7 @@
 
     {# Alerte contenu à compléter — fond vert clair disponible dans la config #}
     {% if nbSansPdf > 0 or nbSansImage > 0 %}
-        <div class="bg-yellow-50 border border-yellow-300 rounded-lg px-5 py-4 mb-8 text-sm text-yellow-800">
+        <div class="bg-brand-rose-light border border-brand-rose rounded-lg px-5 py-4 mb-8 text-sm text-brand-rose">
             <p class="font-medium mb-1">Contenu à compléter</p>
             {% if nbSansPdf > 0 %}
                 <p>— {{ nbSansPdf }} protocole{{ nbSansPdf > 1 ? 's' : '' }} sans PDF</p>
