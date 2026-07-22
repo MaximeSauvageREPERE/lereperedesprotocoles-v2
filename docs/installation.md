@@ -298,6 +298,14 @@ vendor/bin/phpstan analyse     # doit retourner "No errors"
 
 La configuration se trouve dans `phpstan.dist.neon` (niveau 5).
 
+### Composer Audit — vulnérabilités des dépendances
+
+```powershell
+composer audit
+```
+
+Interroge la base de données [security.symfony.com](https://security.symfony.com) et liste les packages installés ayant des vulnérabilités connues. Exécuté automatiquement en CI à chaque push.
+
 ### PHP CS Fixer — formatage du code
 
 ```powershell
@@ -316,7 +324,7 @@ Chaque push et chaque pull request sur `main` déclenchent automatiquement le pi
 
 | Job | Étapes |
 |---|---|
-| **Qualité du code** | PHP CS Fixer · PHPStan · PHPUnit Unit |
+| **Qualité du code** | Composer Audit · PHP CS Fixer · PHPStan · PHPUnit Unit |
 | **Tests fonctionnels** | MySQL 8.0 · Création BDD/schéma/fixtures · PHPUnit Functional |
 
 **Voir les résultats :** onglet *Actions* du dépôt GitHub. Le badge en haut du README reflète le statut du dernier run sur `main`.
