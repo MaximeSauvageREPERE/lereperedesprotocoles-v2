@@ -38,6 +38,9 @@ jobs:
       - name: Installer les dépendances Composer
         run: composer install --prefer-dist --no-interaction --no-scripts
 
+      - name: Audit des dépendances
+        run: composer audit
+
       - name: PHP CS Fixer
         run: vendor/bin/php-cs-fixer check --diff --no-interaction
 
