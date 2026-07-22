@@ -91,3 +91,4 @@ Voir [docs/entites.md](docs/entites.md) pour le détail de chaque entité.
 | #61 | Recherche globale des protocoles | ✅ |
 | #66 | Tableaux de bord admin et modérateur | ✅ |
 | #68 | Correction stats de langages GitHub (.gitattributes) | ✅ |
+| #70 | Audit automatisé des dépendances (composer audit en CI) | ✅ |
